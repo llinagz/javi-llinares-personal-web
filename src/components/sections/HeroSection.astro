@@ -1,4 +1,6 @@
 ---
+import heroEditorialStudio from "@/assets/hero/hero-editorial-studio.png";
+import heroInlinePanorama from "@/assets/hero/hero-inline-panorama.png";
 import Button from "@/components/ui/Button.astro";
 ---
 
@@ -8,11 +10,14 @@ import Button from "@/components/ui/Button.astro";
     <div class="max-w-6xl" data-reveal>
       <h1 class="display-type max-w-6xl text-[clamp(3.4rem,7vw,6.8rem)] font-black leading-[0.9] text-text">
         Pensar software
-        <span
-          class="mx-2 inline-block h-12 w-28 rounded-full bg-cover bg-center align-middle grayscale contrast-125 md:h-16 md:w-40"
-          style="background-image: url('https://picsum.photos/seed/mountain-notes/420/180')"
-          aria-hidden="true"
-        ></span>
+        <span class="mx-2 inline-flex h-12 w-28 overflow-hidden rounded-full align-middle md:h-16 md:w-40">
+          <img
+            class="h-full w-full object-cover grayscale contrast-125"
+            src={heroInlinePanorama.src}
+            alt=""
+            aria-hidden="true"
+          />
+        </span>
         como quien aprende a vivir.
       </h1>
       <p class="mt-8 max-w-3xl text-xl leading-9 text-muted md:text-2xl">
@@ -27,11 +32,11 @@ import Button from "@/components/ui/Button.astro";
 
     <div class="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/40 bg-[#081917] shadow-[0_36px_100px_rgba(8,25,23,0.22)]" data-reveal>
       <img
-        class="h-full min-h-[520px] w-full object-cover opacity-85 grayscale contrast-125 transition-transform duration-700 ease-out group-hover:scale-105"
-        src="https://picsum.photos/seed/editorial-code-cabin/1200/1500"
-        alt="Paisaje editorial abstracto para representar tecnología y vida contemplativa"
+        class="h-full min-h-[520px] w-full object-cover opacity-95 grayscale contrast-110 transition-transform duration-700 ease-out group-hover:scale-105"
+        src={heroEditorialStudio.src}
+        alt="Escritorio de trabajo sereno con cuadernos, libros y código frente a un paisaje natural"
       />
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,transparent,rgba(8,25,23,0.76)),linear-gradient(180deg,transparent,rgba(8,25,23,0.82))]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_52%_16%,transparent_12%,rgba(8,25,23,0.32)_72%),linear-gradient(180deg,rgba(8,25,23,0.08)_0%,rgba(8,25,23,0.18)_48%,rgba(8,25,23,0.72)_100%)]"></div>
       <div class="absolute bottom-0 left-0 right-0 p-7 text-white md:p-9">
         <p class="editorial-serif text-3xl leading-tight">
           Claridad técnica con temperatura humana.
