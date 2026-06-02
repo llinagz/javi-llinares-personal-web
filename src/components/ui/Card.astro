@@ -1,11 +1,12 @@
 ---
 interface Props {
   href?: string;
+  class?: string;
 }
 
-const { href } = Astro.props;
+const { href, class: customClass = "" } = Astro.props;
 const className =
-  "group block h-full rounded-3xl border border-border bg-surface p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-quiet";
+  `group block h-full overflow-hidden rounded-3xl border border-border bg-surface p-6 transition duration-500 hover:-translate-y-1 hover:border-primary/40 hover:shadow-quiet ${customClass}`;
 ---
 
 {

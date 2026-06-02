@@ -1,49 +1,70 @@
 ---
+import heroEditorialStudio from "@/assets/hero/hero-editorial-studio.png";
+import heroInlinePanorama from "@/assets/hero/hero-inline-panorama.png";
 import Button from "@/components/ui/Button.astro";
 ---
 
-<section class="container section grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-  <div>
-    <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary">
-      Software, pensamiento y vida cotidiana
-    </p>
-    <h1 class="mt-5 max-w-3xl font-serif text-4xl font-semibold leading-[1.05] tracking-tight text-text md:text-6xl">
-      Ideas, código y proyectos desde una vida entre dos mundos.
-    </h1>
-    <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
-      Un espacio personal sobre desarrollo de software, producto, filosofía, literatura,
-      tecnología, naturaleza y el intento de construir cosas útiles con significado.
-    </p>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <Button href="/blog">Leer el blog</Button>
-      <Button href="/projects" variant="secondary">Ver proyectos</Button>
+<section class="noise-field relative overflow-hidden pt-28 md:pt-36">
+  <div class="absolute inset-x-0 top-0 h-[48rem] bg-[radial-gradient(circle_at_78%_18%,rgba(22,82,78,0.28),transparent_28rem),radial-gradient(circle_at_24%_22%,rgba(181,93,56,0.22),transparent_24rem)]"></div>
+  <div class="container relative grid items-end gap-12 pb-16 md:pb-20 lg:grid-cols-[1fr_0.68fr]">
+    <div class="max-w-6xl" data-reveal>
+      <h1 class="display-type max-w-6xl text-[clamp(3.4rem,7vw,6.8rem)] font-black leading-[0.9] text-text">
+        Pensar software
+        <span class="mx-2 inline-flex h-12 w-28 overflow-hidden rounded-full align-middle md:h-16 md:w-40">
+          <img
+            class="h-full w-full object-cover grayscale contrast-125"
+            src={heroInlinePanorama.src}
+            alt=""
+            aria-hidden="true"
+          />
+        </span>
+        como quien aprende a vivir.
+      </h1>
+      <p class="mt-8 max-w-3xl text-xl leading-9 text-muted md:text-2xl">
+        Una casa editorial para código, lectura, producto y esas preguntas lentas que no caben
+        en un sprint pero terminan cambiando la forma de construir.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <Button href="/blog">Leer el blog</Button>
+        <Button href="/projects" variant="secondary">Explorar proyectos</Button>
+      </div>
     </div>
-  </div>
 
-  <div
-    class="relative overflow-hidden rounded-3xl border border-border bg-surface p-5 shadow-quiet"
-    aria-label="Composición editorial que une notas técnicas y reflexión personal"
-  >
-    <div class="grid min-h-[420px] gap-4 sm:grid-cols-2">
-      <div class="rounded-2xl bg-primary p-5 text-white">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">mundo técnico</p>
-        <div class="mt-12 space-y-3 font-mono text-sm text-white/80">
-          <p>type Proyecto = &#123;</p>
-          <p class="pl-4">claridad: true;</p>
-          <p class="pl-4">uso: "real";</p>
-          <p class="pl-4">ritmo: "sostenible";</p>
-          <p>&#125;</p>
-        </div>
-      </div>
-      <div class="rounded-2xl bg-primary-soft p-5">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary-dark">mundo humano</p>
-        <div class="mt-12 space-y-4">
-          <p class="font-serif text-2xl leading-tight text-text">Leer despacio. Pensar mejor. Vivir con atención.</p>
-          <div class="h-px w-24 bg-primary/30"></div>
-          <p class="text-sm leading-6 text-muted">Libros, montaña, cultura y preguntas que no se resuelven en un sprint.</p>
+    <div class="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/40 bg-[#081917] shadow-[0_36px_100px_rgba(8,25,23,0.22)]" data-reveal>
+      <img
+        class="h-full min-h-[520px] w-full object-cover opacity-95 grayscale contrast-110 transition-transform duration-700 ease-out group-hover:scale-105"
+        src={heroEditorialStudio.src}
+        alt="Escritorio de trabajo sereno con cuadernos, libros y código frente a un paisaje natural"
+      />
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_52%_16%,transparent_12%,rgba(8,25,23,0.32)_72%),linear-gradient(180deg,rgba(8,25,23,0.08)_0%,rgba(8,25,23,0.18)_48%,rgba(8,25,23,0.72)_100%)]"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-7 text-white md:p-9">
+        <p class="editorial-serif text-3xl leading-tight">
+          Claridad técnica con temperatura humana.
+        </p>
+        <div class="mt-8 grid grid-cols-2 border-t border-white/25 pt-5 text-sm text-white/76">
+          <span>Astro estático</span>
+          <span class="text-right">Ensayo personal</span>
         </div>
       </div>
     </div>
-    <div class="absolute left-1/2 top-7 hidden h-[calc(100%-3.5rem)] w-px -translate-x-1/2 bg-white/60 sm:block"></div>
   </div>
 </section>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script is:inline>
+  window.addEventListener("load", () => {
+    if (!window.gsap || !window.ScrollTrigger || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from("[data-reveal]", {
+      y: 38,
+      opacity: 0,
+      duration: 0.9,
+      ease: "power3.out",
+      stagger: 0.12
+    });
+  });
+</script>

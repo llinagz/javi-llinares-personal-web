@@ -1,40 +1,39 @@
 <section class="section">
   <div class="container">
-    <div class="rounded-3xl border border-border bg-primary p-8 text-white md:p-12">
-      <div class="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
+    <div class="relative overflow-hidden rounded-[3rem] border border-white/30 bg-[#081917] p-8 text-white shadow-[0_36px_100px_rgba(8,25,23,0.22)] md:p-12">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(181,93,56,0.34),transparent_22rem),radial-gradient(circle_at_90%_0%,rgba(22,82,78,0.55),transparent_24rem)]"></div>
+      <div class="relative grid gap-10 lg:grid-cols-[1fr_420px] lg:items-end">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">Notas futuras</p>
-          <h2 class="mt-3 font-serif text-3xl font-semibold tracking-tight md:text-5xl">
-            Escribo sobre programación, producto, lectura, cultura y la búsqueda de una vida con más sentido.
+          <h2 class="display-type text-5xl font-black leading-[0.92] md:text-7xl">
+            Recibir ideas sin ruido.
           </h2>
-          <p class="mt-5 text-white/78">
-            Sin ruido ni promesas grandilocuentes: solo ideas trabajadas, proyectos en marcha y notas con calma.
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-white/72">
+            Sin promesas grandilocuentes: solo ideas trabajadas, proyectos en marcha y notas con calma.
           </p>
         </div>
 
-        <form class="rounded-2xl bg-white p-3 shadow-quiet" action="#" method="post">
-          <!-- TODO: Connect newsletter provider when the publishing workflow is decided. -->
-          <!-- TODO: Conectar proveedor de newsletter cuando se decida el flujo de publicación. -->
-          <label class="sr-only" for="email">Email</label>
-          <div class="grid gap-3 sm:grid-cols-[1fr_auto]">
-            <input
-              class="min-h-12 rounded-xl border border-border px-4 text-text placeholder:text-muted"
-              id="email"
-              name="email"
-              type="email"
-              placeholder="tu@email.com"
-            />
-            <button
-              class="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
-              type="submit"
+        <div class="rounded-[1.75rem] bg-white p-6 shadow-quiet md:p-7">
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+            Newsletter en Substack
+          </p>
+          <p class="mt-4 text-base leading-7 text-text">
+            Publico allí ensayos, notas y aprendizajes con más contexto. Si te interesa seguir el hilo con calma, ese es el mejor lugar.
+          </p>
+          <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <a
+              class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-primary-dark"
+              href="https://vidaentredosmundos.substack.com/"
+              rel="noreferrer"
+              target="_blank"
             >
               Suscribirme
-            </button>
+            </a>
+            <p class="text-sm leading-6 text-muted">
+              También puedes escribirme a
+              <a class="font-semibold text-primary hover:underline" href="mailto:hola@javillinares.com">hola@javillinares.com</a>.
+            </p>
           </div>
-          <p class="mt-3 text-sm text-muted">
-            También puedes escribirme directamente desde <a class="font-semibold text-primary hover:underline" href="mailto:hola@javillinares.com">hola@javillinares.com</a>.
-          </p>
-        </form>
+        </div>
       </div>
     </div>
   </div>
