@@ -3,6 +3,7 @@ name: "Noesis"
 slug: "noesis"
 description: "Una app para comprender mejor los libros mediante conversación guiada, notas y preguntas que acompañan la lectura."
 longDescription: "Noesis quiere ayudar a leer con más profundidad: conversar con ideas, ordenar notas y convertir una lectura en aprendizaje duradero."
+image: "/images/projects/noesis.png"
 status: "En desarrollo"
 techStack: ["TypeScript", "LLM", "UX Writing", "Lectura"]
 featured: true

@@ -23,18 +23,23 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
 
     <div class="mt-16 flex min-h-[520px] flex-col overflow-hidden rounded-[2.5rem] border border-border bg-[#102a27] md:flex-row">
       {
-        projects.map((project, index) => (
+        projects.map((project) => (
           <a
             class="group relative min-h-[360px] flex-1 overflow-hidden border-b border-white/10 p-7 text-white transition-[flex] duration-700 ease-out hover:flex-[2.2] md:border-b-0 md:border-r"
             href={`/projects/${project.data.slug}`}
           >
-            <img
-              class="absolute inset-0 h-full w-full object-cover opacity-28 grayscale contrast-125 transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-44"
-              src={`https://picsum.photos/seed/project-${index}-${project.data.slug}/1000/1200`}
-              alt=""
-              aria-hidden="true"
-            />
+            {
+              project.data.image && (
+                <img
+                  class="absolute inset-0 h-full w-full object-cover opacity-38 transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-52"
+                  src={project.data.image}
+                  alt=""
+                  aria-hidden="true"
+                />
+              )
+            }
             <div class="absolute inset-0 bg-gradient-to-t from-[#081917] via-[#081917]/58 to-transparent"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(8,25,23,0.28),transparent_52%,rgba(181,93,56,0.16))]"></div>
             <div class="relative flex h-full min-h-[360px] flex-col justify-between">
               <Badge tone="soft">{project.data.status}</Badge>
               <div>

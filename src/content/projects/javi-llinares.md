@@ -3,6 +3,7 @@ name: "Javi Llinares"
 slug: "javi-llinares"
 description: "Esta propia web como laboratorio personal de escritura, software, pensamiento y publicación estática."
 longDescription: "La web personal funciona como archivo editorial, portfolio técnico y espacio de aprendizaje público construido con Astro."
+image: "/images/projects/javi-llinares.png"
 status: "Publicado"
 techStack: ["Astro", "Tailwind CSS", "Content Collections", "Markdown"]
 featured: true

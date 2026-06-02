@@ -23,7 +23,17 @@ const posts = sortByDateDesc(Astro.props.posts).slice(0, 3);
       {
         posts[0] && (
           <a class="group relative overflow-hidden rounded-[2rem] bg-white p-7 text-[#081917] md:col-span-2 md:row-span-2" href={`/blog/${posts[0].data.slug}`}>
-            <div class="absolute inset-0 opacity-20 transition-transform duration-700 ease-out group-hover:scale-105" style="background-image: url('https://picsum.photos/seed/slow-architecture/1100/900'); background-size: cover; background-position: center;"></div>
+            {
+              posts[0].data.image && (
+                <img
+                  class="absolute inset-0 h-full w-full object-cover opacity-24 transition-transform duration-700 ease-out group-hover:scale-105"
+                  src={posts[0].data.image}
+                  alt=""
+                  aria-hidden="true"
+                />
+              )
+            }
+            <div class="absolute inset-0 bg-gradient-to-br from-white/92 via-white/82 to-[#fff7e8]/88"></div>
             <div class="relative flex min-h-[420px] flex-col justify-between">
               <div class="flex items-center justify-between gap-3">
                 <Badge tone="soft">{posts[0].data.category}</Badge>

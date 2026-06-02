@@ -25,6 +25,13 @@ const { post } = Astro.props;
         {post.data.title}
       </h1>
       <p class="mt-6 text-xl leading-8 text-muted">{post.data.excerpt}</p>
+      {
+        post.data.image && (
+          <div class="mt-10 overflow-hidden rounded-[2rem] border border-border bg-primary-soft">
+            <img class="h-auto w-full object-cover" src={post.data.image} alt={`Imagen editorial del artículo ${post.data.title}`} />
+          </div>
+        )
+      }
     </div>
 
     <div class="prose-content mx-auto mt-14">

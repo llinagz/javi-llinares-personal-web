@@ -25,6 +25,13 @@ const posts = sortByDateDesc(await getCollection("blog", ({ data }) => !data.dra
       {
         posts.map((post) => (
           <Card href={`/blog/${post.data.slug}`}>
+            {
+              post.data.image && (
+                <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-border bg-primary-soft">
+                  <img class="h-56 w-full object-cover" src={post.data.image} alt="" aria-hidden="true" />
+                </div>
+              )
+            }
             <div class="flex items-center justify-between gap-3">
               <Badge tone="soft">{post.data.category}</Badge>
               <span class="text-xs text-muted">{post.data.readingTime}</span>

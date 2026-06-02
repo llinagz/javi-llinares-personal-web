@@ -3,6 +3,7 @@ name: "ATX"
 slug: "atx"
 description: "Una app para gamificar experiencias con amigos, naturaleza y planes sociales sin convertir la vida en una lista de tareas."
 longDescription: "ATX explora cómo diseñar una experiencia social que invite a salir, compartir planes y registrar aventuras sin caer en métricas vacías."
+image: "/images/projects/atx.png"
 status: "En desarrollo"
 techStack: ["Astro", "TypeScript", "Supabase", "Producto"]
 featured: true

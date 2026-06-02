@@ -24,6 +24,13 @@ const { project } = Astro.props;
           {project.data.name}
         </h1>
         <p class="mt-6 max-w-3xl text-xl leading-8 text-muted">{project.data.longDescription}</p>
+        {
+          project.data.image && (
+            <div class="mt-10 overflow-hidden rounded-[2rem] border border-border bg-primary-soft">
+              <img class="h-[420px] w-full object-cover" src={project.data.image} alt={`Imagen editorial del proyecto ${project.data.name}`} />
+            </div>
+          )
+        }
       </div>
 
       <aside class="rounded-3xl border border-border bg-surface p-6">

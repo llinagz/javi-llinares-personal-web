@@ -25,6 +25,13 @@ const projects = sortByDateDesc(await getCollection("projects"));
       {
         projects.map((project) => (
           <Card href={`/projects/${project.data.slug}`}>
+            {
+              project.data.image && (
+                <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-border bg-primary-soft">
+                  <img class="h-56 w-full object-cover" src={project.data.image} alt="" aria-hidden="true" />
+                </div>
+              )
+            }
             <Badge tone="soft">{project.data.status}</Badge>
             <h2 class="mt-5 text-xl font-semibold leading-snug text-text group-hover:text-primary">
               {project.data.name}
