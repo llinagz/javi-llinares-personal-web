@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Este documento define la identidad visual y las reglas de diseño de la web personal de Javi Llinares para evitar incoherencias a medida que el proyecto crezca.
+Este documento define la identidad visual y las reglas base de la web personal de Javi Llinares. Debe servir como fuente de verdad para el diseño actual, no solo como referencia histórica.
 
 La web debe sentirse:
 
@@ -17,12 +17,26 @@ No es una web SaaS ni una aplicación. Es un archivo personal de ideas, proyecto
 
 ## Idea Rectora
 
-La identidad del sitio nace de una tensión equilibrada entre dos mundos:
+El sitio vive en una tensión equilibrada entre dos mundos:
 
 - El mundo técnico: claridad, estructura, precisión, utilidad
 - El mundo humano: lectura lenta, pensamiento, cultura, naturaleza, vida cotidiana
 
 Cada nueva página, componente o sección debe sostener esa dualidad sin dramatizarla. El resultado debe sentirse sobrio, cuidado y con criterio.
+
+## Dirección Visual Actual
+
+El rediseño actual da más peso a una estética editorial cálida, con contraste alto y composición más atrevida:
+
+- Header flotante, redondeado y translúcido
+- Hero asimétrico con una imagen inline dentro del titular
+- Tarjetas y superficies con aire de papel cálido
+- Un bloque de artículos más denso y contrastado
+- Proyectos presentados como piezas enlazables de laboratorio
+- Una sección de filosofía más estática y legible, sin artificios de scroll que alteren el flujo
+- CTA final oscuro y sobrio, con mucho contraste
+
+La sensación general debe ser más cercana a una revista o cuaderno de trabajo que a una landing comercial.
 
 ## Principios Visuales
 
@@ -55,11 +69,14 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `--color-primary`: `#16524e`
 - `--color-primary-dark`: `#0f3b38`
 - `--color-primary-soft`: `#e8f2f0`
-- `--color-background`: `#fbfaf7`
-- `--color-surface`: `#ffffff`
-- `--color-text`: `#17211f`
-- `--color-muted`: `#64716e`
-- `--color-border`: `#dbe5e2`
+- `--color-background`: `#f5f0e6`
+- `--color-surface`: `#fffaf0`
+- `--color-text`: `#14211f`
+- `--color-muted`: `#68736f`
+- `--color-border`: `#d8d0bf`
+- `--color-ink`: `#081917`
+- `--color-clay`: `#b55d38`
+- `--color-paper`: `#fff7e8`
 
 ### Uso del color
 
@@ -71,10 +88,12 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `text` para titulares y texto de alta prioridad.
 - `muted` para cuerpo secundario, metadatos y supporting copy.
 - `border` para separar sin endurecer la interfaz.
+- `ink` para fondos oscuros de alto contraste.
+- `paper` para superficies claras de tono editorial.
 
 ### Reglas de color
 
-- El verde petróleo es protagonista, no decorado.
+- El verde petróleo sigue siendo el ancla de marca, pero convive con fondos papel y bloques oscuros.
 - No introducir acentos nuevos sin una necesidad clara de sistema.
 - Evitar combinaciones saturadas o demasiado tecnológicas.
 - Mantener contrastes altos en texto y estados interactivos.
@@ -83,24 +102,25 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 ### Familias actuales
 
-- Sans: `Aptos, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+- Sans/display: `Cabinet Grotesk, Outfit, ui-sans-serif, system-ui, sans-serif`
 - Serif: `Georgia, Cambria, "Times New Roman", serif`
 
 ### Criterio tipográfico
 
 - La serif expresa la capa editorial y reflexiva.
-- La sans expresa claridad funcional, navegación y soporte.
+- La display sans expresa claridad funcional, navegación y soporte, especialmente en títulos grandes.
 - Los contrastes tipográficos deben ser visibles pero sobrios.
 
 ### Uso recomendado
 
-- `font-serif` para hero headlines, títulos principales, citas y momentos de énfasis narrativo.
+- `display-type` para hero headlines, títulos principales y grandes llamadas editoriales.
+- `editorial-serif` para citas, bloques de énfasis narrativo y textos de síntesis emocional.
 - `font-sans` para navegación, cuerpo base, labels, botones y UI estructural.
 - `font-mono` solo para código, fragmentos técnicos o contraste puntual con intención.
 
 ### Ritmo tipográfico
 
-- Titulares compactos, con interlineado ajustado y peso medio/semibold.
+- Titulares compactos, con interlineado ajustado y peso negro o semibold según el contexto.
 - Cuerpo con aire suficiente para lectura larga.
 - Medida de lectura ideal en contenido: alrededor de `760px`.
 
@@ -108,13 +128,13 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 ### Anchuras base
 
-- Contenedor principal: `1160px` máximo
+- Contenedor principal: `1240px` máximo
 - Contenido de lectura: `760px` máximo
 
 ### Ritmo vertical
 
-- `.section` usa un bloque generoso de separación.
-- En móvil el ritmo debe seguir sintiéndose editorial, no comprimido.
+- `.section` usa un bloque moderado de separación, más compacto que en la primera iteración del rediseño.
+- En móvil el ritmo debe seguir sintiéndose editorial, no comprimido, pero tampoco con huecos teatrales.
 - Entre secciones debe haber respiración visible, no stacking apretado de tarjetas.
 
 ### Principios de layout
@@ -129,8 +149,8 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 ### Superficies
 
 - Fondo general cálido y muy claro.
-- Tarjetas y bloques sobre `surface`.
-- El fondo puede incluir atmósfera sutil, como la actual textura radial, pero nunca protagonismo excesivo.
+- Tarjetas y bloques sobre `surface` o `paper`.
+- El fondo puede incluir atmósfera sutil, como la textura radial actual, pero nunca protagonismo excesivo.
 
 ### Bordes
 
@@ -157,6 +177,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - Mantener transiciones cortas y suaves.
 - Respetar `prefers-reduced-motion`.
 - Usar movimiento para feedback, no para entretenimiento.
+- Si un efecto de scroll o pinning complica el flujo en pantallas pequeñas, se prefiere simplificarlo o desactivarlo.
 
 ## Patrones de componentes
 
@@ -164,14 +185,22 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 - Debe ser limpio, estable y fácil de escanear.
 - Puede quedarse fijo si no compite con el contenido.
+- En la versión actual, el header es flotante, redondeado y ligeramente translúcido.
 - El CTA del header debe ser sobrio y coherente con la paleta principal.
 
 ### Hero
 
 - Debe presentar con claridad la intersección entre software, pensamiento y vida cotidiana.
-- Titular grande en serif.
+- Titular grande con `display-type`.
 - Subtítulo legible y humano.
 - La pieza visual de apoyo puede ser conceptual y editorial, no publicitaria.
+- Puede incluir una imagen inline o un bloque visual lateral, siempre que no rompa la lectura.
+
+### Bloques de contenido
+
+- Los artículos y proyectos deben sentirse enlazables y editoriales.
+- Un bloque destacado puede usar fondo oscuro si el contraste del texto es correcto.
+- Las superficies claras deben usar texto oscuro, nunca blanco por herencia accidental.
 
 ### Botones
 
@@ -190,12 +219,12 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 #### Criterios
 
 - Bordes redondeados suaves, no excesivos.
-- Peso semibold.
+- Peso semibold o bold según contexto.
 - Microinteracción ligera en hover.
 
 ### Cards
 
-- Fondo `surface`
+- Fondo `surface` o `paper`
 - Borde visible
 - Hover con elevación mínima
 - Deben parecer piezas editoriales enlazables, no widgets
@@ -270,6 +299,6 @@ La implementación visual vigente se apoya principalmente en:
 - `tailwind.config.mjs`
 - `src/components/ui/*`
 - `src/components/layout/*`
-- `src/components/sections/HeroSection.astro`
+- `src/components/sections/*`
 
 Si en el futuro el diseño evoluciona, este documento debe actualizarse junto con los tokens o patrones base.
