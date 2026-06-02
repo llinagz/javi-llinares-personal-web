@@ -90,6 +90,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `border` para separar sin endurecer la interfaz.
 - `ink` para fondos oscuros de alto contraste.
 - `paper` para superficies claras de tono editorial.
+- El favicon usa un monograma `JL` en tono `paper` sobre fondo `primary`, con trazos gruesos y composición compacta para conservar legibilidad en tamaños pequeños.
 
 ### Reglas de color
 
