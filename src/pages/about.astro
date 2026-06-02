@@ -1,0 +1,42 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import NewsletterSection from "@/components/sections/NewsletterSection.astro";
+---
+
+<BaseLayout title="Sobre mí | Javi Llinares" description="Quién es Javi Llinares y qué intenta construir con esta web personal.">
+  <section class="container section">
+    <div class="grid gap-12 lg:grid-cols-[0.75fr_1.25fr]">
+      <aside>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Sobre mí</p>
+        <h1 class="mt-4 font-serif text-4xl font-semibold tracking-tight text-text md:text-6xl">
+          Me interesa construir bien sin dejar de vivir con atención.
+        </h1>
+      </aside>
+
+      <div class="prose-content">
+        <p>
+          Soy Javi Llinares. Esta web nace como un hogar tranquilo para ordenar lo que voy
+          aprendiendo entre software, producto, lectura, cultura y vida cotidiana.
+        </p>
+        <p>
+          No quiero que funcione como una vitrina de logros ni como una marca inflada. Prefiero
+          que sea un archivo honesto: proyectos con contexto, artículos que muestren el proceso
+          de pensamiento y notas que conecten lo técnico con lo humano.
+        </p>
+        <h2>Qué encontrarás aquí</h2>
+        <p>
+          Artículos sobre programación y arquitectura, ideas de producto, lecturas que dejan
+          poso, tecnología mirada con calma y reflexiones sobre cómo construir una vida que no
+          quede absorbida por la productividad.
+        </p>
+        <h2>La brújula</h2>
+        <p>
+          Claridad antes que espectáculo. Profundidad antes que prisa. Competencia técnica sin
+          perder calidez. Y una sospecha bastante persistente: las mejores cosas se construyen
+          cuando uno aprende a sostener dos mundos a la vez.
+        </p>
+      </div>
+    </div>
+  </section>
+  <NewsletterSection />
+</BaseLayout>

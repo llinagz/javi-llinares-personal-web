@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import HeroSection from "@/components/sections/HeroSection.astro";
+import LatestArticlesSection from "@/components/sections/LatestArticlesSection.astro";
+import FeaturedProjectsSection from "@/components/sections/FeaturedProjectsSection.astro";
+import PersonalPhilosophySection from "@/components/sections/PersonalPhilosophySection.astro";
+import NewsletterSection from "@/components/sections/NewsletterSection.astro";
+
+const posts = await getCollection("blog", ({ data }) => !data.draft && data.featured);
+const projects = await getCollection("projects", ({ data }) => data.featured);
+---
+
+<BaseLayout>
+  <HeroSection />
+  <LatestArticlesSection posts={posts} />
+  <FeaturedProjectsSection projects={projects} />
+  <PersonalPhilosophySection />
+  <NewsletterSection />
+</BaseLayout>

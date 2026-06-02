@@ -1,0 +1,21 @@
+---
+interface Props {
+  href?: string;
+}
+
+const { href } = Astro.props;
+const className =
+  "group block h-full rounded-3xl border border-border bg-surface p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-quiet";
+---
+
+{
+  href ? (
+    <a class={className} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <article class={className}>
+      <slot />
+    </article>
+  )
+}

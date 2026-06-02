@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Card from "@/components/ui/Card.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { sortByDateDesc } from "@/lib/content";
+
+const projects = sortByDateDesc(await getCollection("projects"));
+---
+
+<BaseLayout title="Proyectos | Javi Llinares" description="Archivo de proyectos de software de Javi Llinares.">
+  <section class="container section">
+    <div class="max-w-3xl">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Proyectos</p>
+      <h1 class="mt-4 font-serif text-4xl font-semibold tracking-tight text-text md:text-6xl">
+        Ideas convertidas en productos pequeños.
+      </h1>
+      <p class="mt-6 text-lg leading-8 text-muted">
+        Un archivo de software en distintas fases: publicado, prototipo, investigación o simple
+        idea con suficiente tracción interior como para merecer una página.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        projects.map((project) => (
+          <Card href={`/projects/${project.data.slug}`}>
+            <Badge tone="soft">{project.data.status}</Badge>
+            <h2 class="mt-5 text-xl font-semibold leading-snug text-text group-hover:text-primary">
+              {project.data.name}
+            </h2>
+            <p class="mt-3 text-sm leading-6 text-muted">{project.data.description}</p>
+            <div class="mt-6 flex flex-wrap gap-2">
+              {project.data.techStack.slice(0, 5).map((tech) => <Badge>{tech}</Badge>)}
+            </div>
+            <p class="mt-6 text-sm font-semibold text-primary">Ver detalle →</p>
+          </Card>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

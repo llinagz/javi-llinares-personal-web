@@ -1,0 +1,51 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { formatDate } from "@/lib/content";
+import type { Project } from "@/lib/content";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<BaseLayout title={`${project.data.name} | Proyectos | Javi Llinares`} description={project.data.description}>
+  <article class="container section">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div>
+        <a class="text-sm font-semibold text-primary hover:underline" href="/projects">← Proyectos</a>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <Badge tone="soft">{project.data.status}</Badge>
+          <span class="text-sm text-muted">{formatDate(project.data.date)}</span>
+        </div>
+        <h1 class="mt-6 font-serif text-4xl font-semibold leading-tight tracking-tight text-text md:text-6xl">
+          {project.data.name}
+        </h1>
+        <p class="mt-6 max-w-3xl text-xl leading-8 text-muted">{project.data.longDescription}</p>
+      </div>
+
+      <aside class="rounded-3xl border border-border bg-surface p-6">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-muted">Stack</h2>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {project.data.techStack.map((tech) => <Badge>{tech}</Badge>)}
+        </div>
+        <h2 class="mt-8 text-sm font-semibold uppercase tracking-[0.18em] text-muted">Enlaces</h2>
+        <div class="mt-4 grid gap-2">
+          {
+            project.data.links.map((link) => (
+              <a class="text-sm font-semibold text-primary hover:underline" href={link.url}>
+                {link.label} →
+              </a>
+            ))
+          }
+        </div>
+      </aside>
+    </div>
+
+    <div class="prose-content mt-14">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

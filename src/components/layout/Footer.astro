@@ -1,0 +1,35 @@
+---
+const links = [
+  { href: "/blog", label: "Blog" },
+  { href: "/projects", label: "Proyectos" },
+  { href: "/about", label: "Sobre mí" },
+  { href: "/rss.xml", label: "RSS" },
+  { href: "https://github.com/", label: "GitHub" },
+  { href: "https://www.linkedin.com/", label: "LinkedIn" }
+];
+---
+
+<footer class="border-t border-border bg-surface">
+  <div class="container grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-end">
+    <div>
+      <p class="font-serif text-xl font-semibold text-text">Javi Llinares</p>
+      <p class="mt-2 max-w-xl text-sm text-muted">
+        Un archivo personal sobre código, pensamiento y la vida que queda entre medias.
+      </p>
+    </div>
+
+    <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" aria-label="Enlaces de pie de página">
+      {
+        links.map((link) => (
+          <a class="transition hover:text-primary" href={link.href}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <p class="text-sm text-muted md:col-span-2">
+      © {new Date().getFullYear()} Javi Llinares. Hecho con calma, Astro y muchas notas.
+    </p>
+  </div>
+</footer>
