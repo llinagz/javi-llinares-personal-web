@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import HeroSection from "@/components/sections/HeroSection.astro";
+import WebDesignServicesSection from "@/components/sections/WebDesignServicesSection.astro";
 import LatestArticlesSection from "@/components/sections/LatestArticlesSection.astro";
 import FeaturedProjectsSection from "@/components/sections/FeaturedProjectsSection.astro";
 import PersonalPhilosophySection from "@/components/sections/PersonalPhilosophySection.astro";
@@ -13,6 +14,7 @@ const projects = await getCollection("projects", ({ data }) => data.featured);
 
 <BaseLayout>
   <HeroSection />
+  <WebDesignServicesSection />
   <LatestArticlesSection posts={posts} />
   <FeaturedProjectsSection projects={projects} />
   <PersonalPhilosophySection />
