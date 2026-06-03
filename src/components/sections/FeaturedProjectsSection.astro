@@ -27,6 +27,8 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
           <a
             class="group relative min-h-[360px] flex-1 overflow-hidden border-b border-white/10 p-7 text-white transition-[flex] duration-700 ease-out hover:flex-[2.2] md:border-b-0 md:border-r"
             href={`/projects/${project.data.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {
               project.data.image && (
