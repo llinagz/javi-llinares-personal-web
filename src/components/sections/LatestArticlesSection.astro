@@ -26,22 +26,24 @@ const posts = sortByDateDesc(Astro.props.posts).slice(0, 3);
             {
               posts[0].data.image && (
                 <img
-                  class="absolute inset-0 h-full w-full object-cover opacity-24 transition-transform duration-700 ease-out group-hover:scale-105"
+                  class="absolute inset-0 h-full w-full object-cover opacity-14 transition-transform duration-700 ease-out group-hover:scale-105"
                   src={posts[0].data.image}
                   alt=""
                   aria-hidden="true"
                 />
               )
             }
-            <div class="absolute inset-0 bg-gradient-to-br from-white/92 via-white/82 to-[#fff7e8]/88"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,253,248,0.96)_0%,rgba(255,250,239,0.92)_38%,rgba(245,240,230,0.98)_100%)]"></div>
             <div class="relative flex min-h-[420px] flex-col justify-between">
               <div class="flex items-center justify-between gap-3">
                 <Badge tone="soft">{posts[0].data.category}</Badge>
                 <span class="text-xs text-muted">{posts[0].data.readingTime}</span>
               </div>
               <div>
-                <h3 class="display-type text-4xl font-black leading-[0.95] md:text-6xl">{posts[0].data.title}</h3>
-                <p class="mt-5 max-w-xl text-base leading-7 text-muted">{posts[0].data.excerpt}</p>
+                <h3 class="display-type text-4xl font-black leading-[0.95] text-[#0f3c39] drop-shadow-[0_1px_0_rgba(255,255,255,0.55)] md:text-6xl">
+                  {posts[0].data.title}
+                </h3>
+                <p class="mt-5 max-w-xl text-base leading-7 text-[#4f5e5c]">{posts[0].data.excerpt}</p>
                 <p class="mt-7 text-sm font-bold text-primary">Leer artículo</p>
               </div>
             </div>
