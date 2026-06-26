@@ -9,42 +9,49 @@ const posts = sortByDateDesc(await getCollection("blog", ({ data }) => !data.dra
 ---
 
 <BaseLayout title="Blog | Javi Llinares" description="Artículos de Javi Llinares sobre programación, producto, lectura, cultura digital y pensamiento.">
-  <section class="container section">
-    <div class="max-w-3xl">
-      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Blog</p>
-      <h1 class="mt-4 font-serif text-4xl font-semibold tracking-tight text-text md:text-6xl">
-        Artículos, ensayos y notas de trabajo.
-      </h1>
-      <p class="mt-6 text-lg leading-8 text-muted">
-        Un archivo vivo para escribir sobre lo que voy aprendiendo: código, producto,
-        lectura, cultura digital y algunas preguntas que se resisten a quedar cerradas.
-      </p>
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">./blog</p>
+        <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-[#fff7e8] md:text-7xl">
+          Artículos, ensayos y notas de trabajo.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-[rgba(247,239,223,0.72)]">
+          Un archivo vivo para escribir sobre lo que voy aprendiendo: código, producto,
+          lectura, cultura digital y algunas preguntas que se resisten a quedar cerradas.
+        </p>
+      </div>
     </div>
+  </section>
 
-    <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {
-        posts.map((post) => (
-          <Card href={`/blog/${post.data.slug}`}>
-            {
-              post.data.image && (
-                <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-border bg-primary-soft">
-                  <img class="h-56 w-full object-cover" src={post.data.image} alt="" aria-hidden="true" />
-                </div>
-              )
-            }
-            <div class="flex items-center justify-between gap-3">
-              <Badge tone="soft">{post.data.category}</Badge>
-              <span class="text-xs text-muted">{post.data.readingTime}</span>
-            </div>
-            <h2 class="mt-5 text-xl font-semibold leading-snug text-text group-hover:text-primary">
-              {post.data.title}
-            </h2>
-            <p class="mt-3 text-sm leading-6 text-muted">{post.data.excerpt}</p>
-            <p class="mt-6 text-sm text-muted">{formatDate(post.data.date)}</p>
-            <p class="mt-4 text-sm font-semibold text-primary">Leer artículo →</p>
-          </Card>
-        ))
-      }
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {
+          posts.map((post) => (
+            <Card href={`/blog/${post.data.slug}`}>
+              {
+                post.data.image && (
+                  <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-primary/10 bg-primary-soft">
+                    <img class="h-56 w-full object-cover grayscale-[0.15]" src={post.data.image} alt="" aria-hidden="true" />
+                  </div>
+                )
+              }
+              <div class="flex items-center justify-between gap-3">
+                <Badge tone="soft">{post.data.category}</Badge>
+                <span class="font-mono text-xs text-muted">{post.data.readingTime}</span>
+              </div>
+              <p class="mt-5 font-mono text-sm leading-6 text-muted">$ open {post.data.slug}.md</p>
+              <h2 class="mt-4 text-xl font-semibold leading-snug text-text group-hover:text-primary">
+                {post.data.title}
+              </h2>
+              <p class="mt-3 text-sm leading-6 text-muted">{post.data.excerpt}</p>
+              <p class="mt-6 font-mono text-xs text-muted">{formatDate(post.data.date)}</p>
+              <p class="mt-4 text-sm font-semibold text-primary">Leer artículo →</p>
+            </Card>
+          ))
+        }
+      </div>
     </div>
   </section>
 </BaseLayout>

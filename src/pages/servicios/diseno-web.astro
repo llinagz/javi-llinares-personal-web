@@ -75,41 +75,41 @@ const faqs = [
   title="Diseño web con criterio | Javi Llinares"
   description="Diseño y desarrollo de webs rápidas, cuidadas y mantenibles para profesionales, pymes y proyectos personales."
 >
-  <section class="noise-field relative overflow-hidden pt-28 md:pt-36">
-    <div class="absolute inset-x-0 top-0 h-[44rem] bg-[radial-gradient(circle_at_78%_18%,rgba(22,82,78,0.22),transparent_28rem),radial-gradient(circle_at_24%_22%,rgba(181,93,56,0.16),transparent_24rem)]"></div>
-    <div class="container relative grid gap-10 pb-16 md:pb-20 lg:grid-cols-[1.06fr_0.74fr] lg:items-end">
+  <section class="matrix-page page-hero">
+    <div class="container relative grid gap-10 pb-8 lg:grid-cols-[1.06fr_0.74fr] lg:items-end">
       <div>
-        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Diseño web</p>
-        <h1 class="mt-5 display-type max-w-5xl text-[clamp(3.2rem,7vw,6.7rem)] font-black leading-[0.9] text-text">
+        <p class="terminal-label">servicios/diseno-web</p>
+        <h1 class="mt-5 display-type max-w-5xl text-[clamp(3rem,7vw,6.7rem)] font-black leading-[0.9] text-[#fff7e8]">
           Diseño webs con calma, criterio y oficio técnico.
         </h1>
-        <p class="mt-8 max-w-3xl text-xl leading-9 text-muted md:text-2xl">
+        <p class="mt-8 max-w-3xl text-xl leading-9 text-[rgba(247,239,223,0.72)] md:text-2xl">
           Ayudo a profesionales, pymes y proyectos personales a tener una presencia digital clara,
           rápida y humana. Una web que explique bien lo que haces y no te obligue a pelearte con la tecnología.
         </p>
-        <div class="mt-10 flex flex-wrap gap-4">
+        <div class="hero-matrix__actions mt-10 flex flex-wrap gap-4">
           <Button href="mailto:hola@javillinares.com">Cuéntame tu proyecto</Button>
-          <Button href="#proceso" variant="secondary">Ver el proceso</Button>
+          <div class="hero-matrix__secondary-action">
+            <Button href="#proceso" variant="secondary">Ver el proceso</Button>
+          </div>
         </div>
       </div>
 
-      <aside class="relative overflow-hidden rounded-[2.5rem] border border-white/40 bg-[#081917] p-7 text-white shadow-[0_36px_100px_rgba(8,25,23,0.22)] md:p-9">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_18%,rgba(181,93,56,0.35),transparent_18rem),radial-gradient(circle_at_90%_4%,rgba(22,82,78,0.62),transparent_20rem)]"></div>
+      <aside class="matrix-panel rounded-[2rem] p-7 md:p-9">
         <div class="relative">
           <p class="editorial-serif text-3xl leading-tight md:text-4xl">
             Una buena web no empieza por una plantilla. Empieza por entender qué merece ser dicho.
           </p>
           <div class="mt-10 grid gap-3 text-sm text-white/74">
-            <span class="rounded-2xl border border-white/15 bg-white/8 px-4 py-3">Estructura de contenidos</span>
-            <span class="rounded-2xl border border-white/15 bg-white/8 px-4 py-3">Diseño visual y responsive</span>
-            <span class="rounded-2xl border border-white/15 bg-white/8 px-4 py-3">Publicación y acompañamiento</span>
+            <span class="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3">Estructura de contenidos</span>
+            <span class="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3">Diseño visual y responsive</span>
+            <span class="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3">Publicación y acompañamiento</span>
           </div>
         </div>
       </aside>
     </div>
   </section>
 
-  <section class="section">
+  <section class="paper-band section">
     <div class="container grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
       <div>
         <h2 class="display-type text-4xl font-black leading-[0.96] text-text md:text-6xl">
@@ -124,7 +124,7 @@ const faqs = [
       <div class="grid gap-5 md:grid-cols-2">
         {
           principles.map((item) => (
-            <article class="rounded-[2rem] border border-border bg-surface p-7 shadow-quiet">
+            <article class="paper-panel rounded-[1.5rem] p-7">
               <h3 class="text-xl font-semibold leading-snug text-text">{item.title}</h3>
               <p class="mt-4 text-sm leading-6 text-muted">{item.text}</p>
             </article>
@@ -134,11 +134,11 @@ const faqs = [
     </div>
   </section>
 
-  <section id="proceso" class="bg-[#f8f1e3] py-16 md:py-20 lg:py-24">
-    <div class="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+  <section id="proceso" class="matrix-section py-16 md:py-20 lg:py-24">
+    <div class="container relative grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
       <div>
         <Badge tone="soft">Proceso</Badge>
-        <h2 class="mt-5 display-type text-4xl font-black leading-[0.96] text-text md:text-6xl">
+        <h2 class="mt-5 display-type text-4xl font-black leading-[0.96] text-[#fff7e8] md:text-6xl">
           Construir primero el sentido, después la pantalla.
         </h2>
       </div>
@@ -146,8 +146,8 @@ const faqs = [
       <ol class="grid gap-4">
         {
           process.map((step, index) => (
-            <li class="grid gap-4 rounded-[1.75rem] border border-primary/10 bg-background p-6 md:grid-cols-[4rem_1fr] md:items-center">
-              <span class="display-type text-4xl font-black leading-none text-primary/45">
+            <li class="paper-panel grid gap-4 rounded-[1.5rem] p-6 md:grid-cols-[4rem_1fr] md:items-center">
+              <span class="display-type text-4xl font-black leading-none text-primary/55">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <p class="text-base leading-7 text-muted">{step}</p>
@@ -158,11 +158,11 @@ const faqs = [
     </div>
   </section>
 
-  <section class="section">
+  <section class="paper-band section">
     <div class="container">
       <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Algunos trabajos</p>
+          <p class="terminal-label">work.log</p>
           <h2 class="mt-4 display-type text-4xl font-black leading-[0.96] text-text md:text-6xl">
             Proyectos donde la web tenía que explicar, acompañar y convencer.
           </h2>
@@ -177,7 +177,7 @@ const faqs = [
         {
           cases.map((project) => (
             <a
-              class="group flex min-h-[280px] flex-col justify-between rounded-[2rem] border border-border bg-surface p-7 shadow-quiet transition duration-200 hover:-translate-y-1 hover:border-primary/35"
+              class="paper-panel group flex min-h-[280px] flex-col justify-between rounded-[1.5rem] p-7 transition duration-200 hover:-translate-y-1 hover:border-primary/35"
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -197,13 +197,13 @@ const faqs = [
     </div>
   </section>
 
-  <section class="bg-[#f8f1e3] py-16 md:py-20 lg:py-24">
-    <div class="container grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+  <section class="matrix-section py-16 md:py-20 lg:py-24">
+    <div class="container relative grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
       <div>
-        <h2 class="display-type text-4xl font-black leading-[0.96] text-text md:text-6xl">
+        <h2 class="display-type text-4xl font-black leading-[0.96] text-[#fff7e8] md:text-6xl">
           Dudas razonables antes de empezar.
         </h2>
-        <p class="mt-6 max-w-md text-lg leading-8 text-muted">
+        <p class="mt-6 max-w-md text-lg leading-8 text-[rgba(247,239,223,0.72)]">
           Un proyecto web funciona mejor cuando las expectativas están claras desde el principio.
         </p>
       </div>
@@ -211,7 +211,7 @@ const faqs = [
       <div class="grid gap-4">
         {
           faqs.map((item) => (
-            <article class="rounded-[1.75rem] border border-primary/10 bg-background p-6">
+            <article class="paper-panel rounded-[1.5rem] p-6">
               <h3 class="text-lg font-semibold text-text">{item.question}</h3>
               <p class="mt-3 text-sm leading-6 text-muted">{item.answer}</p>
             </article>
@@ -221,13 +221,12 @@ const faqs = [
     </div>
   </section>
 
-  <section class="section">
+  <section class="paper-band section">
     <div class="container">
-      <div class="relative overflow-hidden rounded-[3rem] border border-white/30 bg-[#081917] p-8 text-white shadow-[0_36px_100px_rgba(8,25,23,0.22)] md:p-12">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(181,93,56,0.32),transparent_22rem),radial-gradient(circle_at_90%_0%,rgba(22,82,78,0.58),transparent_24rem)]"></div>
+      <div class="matrix-panel rounded-[2rem] p-8 md:p-12">
         <div class="relative grid gap-10 lg:grid-cols-[1fr_360px] lg:items-end">
           <div>
-            <h2 class="display-type text-5xl font-black leading-[0.92] md:text-7xl">
+            <h2 class="display-type text-5xl font-black leading-[0.92] text-[#fff7e8] md:text-7xl">
               Si tu proyecto necesita una web, podemos pensarlo juntos.
             </h2>
             <p class="mt-6 max-w-2xl text-lg leading-8 text-white/72">
@@ -236,7 +235,7 @@ const faqs = [
             </p>
           </div>
 
-          <div class="rounded-[1.75rem] bg-white p-6 shadow-quiet md:p-7">
+          <div class="paper-panel rounded-[1.5rem] p-6 md:p-7">
             <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
               Empezar una conversación
             </p>

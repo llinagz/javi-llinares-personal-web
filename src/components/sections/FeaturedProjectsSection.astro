@@ -9,12 +9,12 @@ interface Props {
 const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
 ---
 
-<section class="bg-[#f3ead8] pt-20 pb-14 md:pt-24 md:pb-16 lg:pt-32 lg:pb-20">
+<section class="paper-band pt-20 pb-14 md:pt-24 md:pb-16 lg:pt-32 lg:pb-20">
   <div class="container">
     <div class="grid gap-8 lg:grid-cols-[0.75fr_1fr] lg:items-end">
       <div>
         <p class="terminal-label">~/projects</p>
-        <h2 class="display-type mt-4 text-5xl font-black leading-[0.94] md:text-7xl">
+        <h2 class="display-type mt-4 text-5xl font-black leading-[0.94] text-text md:text-7xl">
           Software como laboratorio personal.
         </h2>
       </div>
@@ -30,8 +30,6 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
           <a
             class="group relative min-h-[360px] flex-1 overflow-hidden border-b border-white/10 p-7 text-white transition-[flex] duration-700 ease-out hover:flex-[2.2] md:border-b-0 md:border-r"
             href={`/projects/${project.data.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             {
               project.data.image && (

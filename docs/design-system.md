@@ -49,6 +49,16 @@ La Home puede usar una estética inspirada en terminal de comandos siempre que s
 - Preferir HTML/CSS sobre imágenes generadas cuando el motivo terminal pueda resolverse de forma nativa y accesible.
 - La variante actual del hero puede apoyarse en un fondo oscuro verde tinta con grid, scanlines y lluvia de caracteres muy tenue, siempre en baja opacidad y al servicio de la legibilidad.
 
+## Patrón Matrix + Papel
+
+La evolución actual extiende el lenguaje terminal a todo el sitio con un balance oscuro + papel:
+
+- Usar fondos `matrix-page` o `matrix-section` para cabeceras, índices, CTAs, footer y bloques de navegación editorial.
+- Usar `paper-band`, `paper-panel` y `prose-shell` para lectura larga, tarjetas principales y contenidos que necesitan calma visual.
+- Mantener la lluvia de caracteres, grid y scanlines como atmósfera, nunca como protagonista.
+- No poner cuerpos largos directamente sobre fondo oscuro salvo textos breves de hero, CTA o metadatos.
+- Alternar bandas oscuras y cálidas para que el sitio se sienta técnico sin perder respiración editorial.
+
 ## Principios Visuales
 
 ### 1. Calma antes que impacto
