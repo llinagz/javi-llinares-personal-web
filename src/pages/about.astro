@@ -4,16 +4,26 @@ import NewsletterSection from "@/components/sections/NewsletterSection.astro";
 ---
 
 <BaseLayout title="Sobre mí | Javi Llinares" description="Quién es Javi Llinares y qué intenta construir con esta web personal.">
-  <section class="container section">
-    <div class="grid gap-12 lg:grid-cols-[0.75fr_1.25fr]">
+  <section class="matrix-page page-hero">
+    <div class="container relative grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
       <aside>
-        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Sobre mí</p>
-        <h1 class="mt-4 font-serif text-4xl font-semibold tracking-tight text-text md:text-6xl">
+        <p class="terminal-label">~/about</p>
+        <h1 class="mt-4 font-serif text-4xl font-semibold leading-tight tracking-tight text-[#fff7e8] md:text-6xl">
           Me interesa construir bien sin dejar de vivir con atención.
         </h1>
       </aside>
 
-      <div class="prose-content">
+      <div class="matrix-panel rounded-[1.75rem] p-7">
+        <p class="editorial-serif relative text-2xl leading-tight text-[#fff7e8] md:text-4xl">
+          Claridad antes que espectáculo. Profundidad antes que prisa.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      <div class="prose-content prose-shell mx-auto">
         <p>
           Soy Javi Llinares. Esta web nace como un hogar tranquilo para ordenar lo que voy
           aprendiendo entre software, producto, lectura, cultura y vida cotidiana.

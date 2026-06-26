@@ -12,30 +12,36 @@ const { post } = Astro.props;
 ---
 
 <BaseLayout title={`${post.data.title} | Javi Llinares`} description={post.data.excerpt}>
-  <article class="container section">
-    <div class="mx-auto max-w-3xl">
-      <a class="text-sm font-semibold text-primary hover:underline" href="/blog">← Blog</a>
-      <div class="mt-8 flex flex-wrap items-center gap-3">
-        <Badge tone="soft">{post.data.category}</Badge>
-        <span class="text-sm text-muted">{formatDate(post.data.date)}</span>
-        <span class="text-sm text-muted">·</span>
-        <span class="text-sm text-muted">{post.data.readingTime}</span>
+  <article>
+    <header class="matrix-page page-hero">
+      <div class="container relative">
+        <a class="terminal-link" href="/blog">← Blog</a>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <Badge tone="soft">{post.data.category}</Badge>
+          <span class="font-mono text-sm text-[rgba(247,239,223,0.62)]">{formatDate(post.data.date)}</span>
+          <span class="font-mono text-sm text-[rgba(247,239,223,0.34)]">/</span>
+          <span class="font-mono text-sm text-[rgba(247,239,223,0.62)]">{post.data.readingTime}</span>
+        </div>
+        <h1 class="mt-6 max-w-4xl font-serif text-4xl font-semibold leading-tight tracking-tight text-[#fff7e8] md:text-6xl">
+          {post.data.title}
+        </h1>
+        <p class="mt-6 max-w-3xl text-xl leading-8 text-[rgba(247,239,223,0.72)]">{post.data.excerpt}</p>
+        {
+          post.data.image && (
+            <div class="paper-panel mt-10 overflow-hidden rounded-[2rem]">
+              <img class="h-auto w-full object-cover" src={post.data.image} alt={`Imagen editorial del artículo ${post.data.title}`} />
+            </div>
+          )
+        }
       </div>
-      <h1 class="mt-6 font-serif text-4xl font-semibold leading-tight tracking-tight text-text md:text-6xl">
-        {post.data.title}
-      </h1>
-      <p class="mt-6 text-xl leading-8 text-muted">{post.data.excerpt}</p>
-      {
-        post.data.image && (
-          <div class="mt-10 overflow-hidden rounded-[2rem] border border-border bg-primary-soft">
-            <img class="h-auto w-full object-cover" src={post.data.image} alt={`Imagen editorial del artículo ${post.data.title}`} />
-          </div>
-        )
-      }
-    </div>
+    </header>
 
-    <div class="prose-content mx-auto mt-14">
-      <slot />
-    </div>
+    <section class="paper-band py-14 md:py-20">
+      <div class="container">
+        <div class="prose-content prose-shell mx-auto">
+          <slot />
+        </div>
+      </div>
+    </section>
   </article>
 </BaseLayout>

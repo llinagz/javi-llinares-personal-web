@@ -9,41 +9,51 @@ const projects = sortByDateDesc(await getCollection("projects"));
 ---
 
 <BaseLayout title="Proyectos | Javi Llinares" description="Archivo de proyectos de software de Javi Llinares.">
-  <section class="container section">
-    <div class="max-w-3xl">
-      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Proyectos</p>
-      <h1 class="mt-4 font-serif text-4xl font-semibold tracking-tight text-text md:text-6xl">
-        Ideas convertidas en productos pequeños.
-      </h1>
-      <p class="mt-6 text-lg leading-8 text-muted">
-        Un archivo de software en distintas fases: publicado, prototipo, investigación o simple
-        idea con suficiente tracción interior como para merecer una página.
-      </p>
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">~/projects</p>
+        <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-[#fff7e8] md:text-7xl">
+          Ideas convertidas en productos pequeños.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-[rgba(247,239,223,0.72)]">
+          Un archivo de software en distintas fases: publicado, prototipo, investigación o simple
+          idea con suficiente tracción interior como para merecer una página.
+        </p>
+      </div>
     </div>
+  </section>
 
-    <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {
-        projects.map((project) => (
-          <Card href={`/projects/${project.data.slug}`}>
-            {
-              project.data.image && (
-                <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-border bg-primary-soft">
-                  <img class="h-56 w-full object-cover" src={project.data.image} alt="" aria-hidden="true" />
-                </div>
-              )
-            }
-            <Badge tone="soft">{project.data.status}</Badge>
-            <h2 class="mt-5 text-xl font-semibold leading-snug text-text group-hover:text-primary">
-              {project.data.name}
-            </h2>
-            <p class="mt-3 text-sm leading-6 text-muted">{project.data.description}</p>
-            <div class="mt-6 flex flex-wrap gap-2">
-              {project.data.techStack.slice(0, 5).map((tech) => <Badge>{tech}</Badge>)}
-            </div>
-            <p class="mt-6 text-sm font-semibold text-primary">Ver detalle →</p>
-          </Card>
-        ))
-      }
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {
+          projects.map((project) => (
+            <Card href={`/projects/${project.data.slug}`}>
+              {
+                project.data.image && (
+                  <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-primary/10 bg-primary-soft">
+                    <img class="h-56 w-full object-cover grayscale-[0.12]" src={project.data.image} alt="" aria-hidden="true" />
+                  </div>
+                )
+              }
+              <div class="flex items-center justify-between gap-3">
+                <Badge tone="soft">{project.data.status}</Badge>
+                <span class="font-mono text-xs text-muted">{project.data.slug}</span>
+              </div>
+              <p class="mt-5 font-mono text-sm leading-6 text-muted">$ run project --name {project.data.slug}</p>
+              <h2 class="mt-4 text-xl font-semibold leading-snug text-text group-hover:text-primary">
+                {project.data.name}
+              </h2>
+              <p class="mt-3 text-sm leading-6 text-muted">{project.data.description}</p>
+              <div class="mt-6 flex flex-wrap gap-2">
+                {project.data.techStack.slice(0, 5).map((tech) => <Badge>{tech}</Badge>)}
+              </div>
+              <p class="mt-6 text-sm font-semibold text-primary">Ver detalle →</p>
+            </Card>
+          ))
+        }
+      </div>
     </div>
   </section>
 </BaseLayout>

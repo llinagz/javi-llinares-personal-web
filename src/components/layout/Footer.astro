@@ -5,30 +5,31 @@ const links = [
   { href: "/servicios/diseno-web/", label: "Diseño web" },
   { href: "/about", label: "Sobre mí" },
   { href: "https://github.com/llinagz", label: "GitHub", target: "_blank", rel: "noopener" },
-  { href: "https://www.linkedin.com/in/javierllinaresbarral", label: "LinkedIn", target: "_blank", rel: "noopener" },
+  { href: "https://www.linkedin.com/in/javierllinaresbarral", label: "LinkedIn", target: "_blank", rel: "noopener" }
 ];
 ---
 
-<footer class="border-t border-border bg-surface">
-  <div class="container grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-end">
+<footer class="matrix-section border-t border-[#fff7e8]/10">
+  <div class="container relative grid gap-8 py-12 md:grid-cols-[1fr_auto] md:items-end">
     <div>
-      <p class="font-serif text-xl font-semibold text-text">Javi Llinares</p>
-      <p class="mt-2 max-w-xl text-sm text-muted">
+      <p class="terminal-label">~/footer</p>
+      <p class="editorial-serif mt-3 text-2xl font-semibold text-[#fff7e8]">Javi Llinares</p>
+      <p class="mt-3 max-w-xl text-sm leading-6 text-[rgba(247,239,223,0.68)]">
         Un archivo personal sobre código, pensamiento y la vida que queda entre medias.
       </p>
     </div>
 
-    <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" aria-label="Enlaces de pie de página">
+    <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-[rgba(247,239,223,0.66)]" aria-label="Enlaces de pie de página">
       {
         links.map((link) => (
-          <a class="transition hover:text-primary" href={link.href}>
+          <a class="transition hover:text-[#fff7e8]" href={link.href} target={link.target} rel={link.rel}>
             {link.label}
           </a>
         ))
       }
     </nav>
 
-    <p class="text-sm text-muted md:col-span-2">
+    <p class="font-mono text-xs text-[rgba(247,239,223,0.52)] md:col-span-2">
       © {new Date().getFullYear()} Javi Llinares. Hecho con calma desde Galicia, Astro y muchas notas.
     </p>
   </div>

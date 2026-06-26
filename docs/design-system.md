@@ -29,14 +29,35 @@ Cada nueva página, componente o sección debe sostener esa dualidad sin dramati
 El rediseño actual da más peso a una estética editorial cálida, con contraste alto y composición más atrevida:
 
 - Header flotante, redondeado y translúcido
-- Hero asimétrico con una imagen inline dentro del titular
-- Tarjetas y superficies con aire de papel cálido
-- Un bloque de artículos más denso y contrastado
-- Proyectos presentados como piezas enlazables de laboratorio
+- Landing principal con lenguaje Editorial CLI: ventanas tipo terminal, rutas, prompts, outputs y labels monoespaciados
+- Tarjetas y superficies con aire de papel cálido dentro de marcos oscuros de trabajo
+- Un bloque de artículos más denso y contrastado, tratado como archivo/log editorial
+- Proyectos presentados como piezas enlazables de laboratorio y workspace personal
 - Una sección de filosofía más estática y legible, sin artificios de scroll que alteren el flujo
 - CTA final oscuro y sobrio, con mucho contraste
 
 La sensación general debe ser más cercana a una revista o cuaderno de trabajo que a una landing comercial.
+
+## Patrón Editorial CLI
+
+La Home puede usar una estética inspirada en terminal de comandos siempre que siga siendo editorial y humana:
+
+- Usar prompts, rutas, cursores, topbars y pequeños outputs como estructura visual, no como simulación literal de una app.
+- Mantener `#16524e` como ancla de marca y combinarlo con ink, papel cálido y clay en detalles puntuales.
+- Reservar la monoespaciada para labels, comandos y metadatos; los titulares siguen viviendo en `display-type` y las frases de síntesis en serif.
+- Evitar neón, dashboards, exceso de microcopy técnica y comandos que dificulten leer los textos principales.
+- Preferir HTML/CSS sobre imágenes generadas cuando el motivo terminal pueda resolverse de forma nativa y accesible.
+- La variante actual del hero puede apoyarse en un fondo oscuro verde tinta con grid, scanlines y lluvia de caracteres muy tenue, siempre en baja opacidad y al servicio de la legibilidad.
+
+## Patrón Matrix + Papel
+
+La evolución actual extiende el lenguaje terminal a todo el sitio con un balance oscuro + papel:
+
+- Usar fondos `matrix-page` o `matrix-section` para cabeceras, índices, CTAs, footer y bloques de navegación editorial.
+- Usar `paper-band`, `paper-panel` y `prose-shell` para lectura larga, tarjetas principales y contenidos que necesitan calma visual.
+- Mantener la lluvia de caracteres, grid y scanlines como atmósfera, nunca como protagonista.
+- No poner cuerpos largos directamente sobre fondo oscuro salvo textos breves de hero, CTA o metadatos.
+- Alternar bandas oscuras y cálidas para que el sitio se sienta técnico sin perder respiración editorial.
 
 ## Principios Visuales
 
