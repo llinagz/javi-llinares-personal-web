@@ -9,19 +9,22 @@ interface Props {
 const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
 ---
 
-<section class="pt-20 pb-14 md:pt-24 md:pb-16 lg:pt-32 lg:pb-20">
+<section class="bg-[#f3ead8] pt-20 pb-14 md:pt-24 md:pb-16 lg:pt-32 lg:pb-20">
   <div class="container">
     <div class="grid gap-8 lg:grid-cols-[0.75fr_1fr] lg:items-end">
-      <h2 class="display-type text-5xl font-black leading-[0.94] md:text-7xl">
-        Software como laboratorio personal.
-      </h2>
+      <div>
+        <p class="terminal-label">~/projects</p>
+        <h2 class="display-type mt-4 text-5xl font-black leading-[0.94] md:text-7xl">
+          Software como laboratorio personal.
+        </h2>
+      </div>
       <p class="max-w-2xl text-xl leading-9 text-muted">
         Proyectos que mezclan oficio, curiosidad y utilidad real. Nada de vitrinas perfectas:
         piezas vivas, hechas para aprender algo mientras sirven.
       </p>
     </div>
 
-    <div class="mt-16 flex min-h-[520px] flex-col overflow-hidden rounded-[2.5rem] border border-border bg-[#102a27] md:flex-row">
+    <div class="terminal-shell mt-16 flex min-h-[520px] flex-col rounded-[1.75rem] md:flex-row md:rounded-[2.25rem]">
       {
         projects.map((project) => (
           <a
@@ -33,7 +36,7 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
             {
               project.data.image && (
                 <img
-                  class="absolute inset-0 h-full w-full object-cover opacity-38 transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-52"
+                  class="absolute inset-0 h-full w-full object-cover opacity-[0.38] transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-[0.52]"
                   src={project.data.image}
                   alt=""
                   aria-hidden="true"
@@ -43,8 +46,12 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
             <div class="absolute inset-0 bg-gradient-to-t from-[#081917] via-[#081917]/58 to-transparent"></div>
             <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(8,25,23,0.28),transparent_52%,rgba(181,93,56,0.16))]"></div>
             <div class="relative flex h-full min-h-[360px] flex-col justify-between">
-              <Badge tone="soft">{project.data.status}</Badge>
+              <div class="flex items-center justify-between gap-3">
+                <Badge tone="soft">{project.data.status}</Badge>
+                <span class="font-mono text-xs text-white/58">{project.data.slug}</span>
+              </div>
               <div>
+                <p class="terminal-command mb-4">run project --name {project.data.slug}</p>
                 <h3 class="display-type text-4xl font-black leading-none md:text-5xl">
                   {project.data.name}
                 </h3>
@@ -59,6 +66,6 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
       }
     </div>
 
-    <a class="mt-8 inline-flex rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition hover:bg-primary-dark" href="/projects">Ver proyectos</a>
+    <a class="mt-8 inline-flex rounded-xl bg-primary px-6 py-3 font-mono text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary-dark" href="/projects">Ver proyectos</a>
   </div>
 </section>

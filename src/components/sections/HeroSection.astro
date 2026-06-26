@@ -1,24 +1,14 @@
 ---
-import heroEditorialStudio from "@/assets/hero/hero-editorial-studio.png";
-import heroInlinePanorama from "@/assets/hero/hero-inline-panorama.png";
 import Button from "@/components/ui/Button.astro";
 ---
 
-<section class="noise-field relative overflow-hidden pt-28 md:pt-36">
-  <div class="absolute inset-x-0 top-0 h-[48rem] bg-[radial-gradient(circle_at_78%_18%,rgba(22,82,78,0.28),transparent_28rem),radial-gradient(circle_at_24%_22%,rgba(181,93,56,0.22),transparent_24rem)]"></div>
-  <div class="container relative grid items-end gap-12 pb-16 md:pb-20 lg:grid-cols-[1fr_0.68fr]">
-    <div class="max-w-6xl" data-reveal>
-      <h1 class="display-type max-w-6xl text-[clamp(3.4rem,7vw,6.8rem)] font-black leading-[0.9] text-text">
-        Pensar software
-        <span class="mx-2 inline-flex h-12 w-28 overflow-hidden rounded-full align-middle md:h-16 md:w-40">
-          <img
-            class="h-full w-full object-cover grayscale contrast-125"
-            src={heroInlinePanorama.src}
-            alt=""
-            aria-hidden="true"
-          />
-        </span>
-        como quien aprende a vivir.
+<section class="noise-field relative overflow-hidden bg-[#f3ead8] pt-28 md:pt-36">
+  <div class="absolute inset-x-0 top-0 h-[48rem] bg-[radial-gradient(circle_at_74%_16%,rgba(22,82,78,0.22),transparent_27rem),radial-gradient(circle_at_18%_12%,rgba(181,93,56,0.16),transparent_24rem)]"></div>
+  <div class="container relative grid items-end gap-10 pb-14 md:pb-20 lg:grid-cols-[1.04fr_0.86fr]">
+    <div class="max-w-5xl" data-reveal>
+      <p class="terminal-label">~/javi/home</p>
+      <h1 class="display-type mt-5 max-w-5xl text-[clamp(3.2rem,7vw,6.7rem)] font-black leading-[0.9] text-text">
+        Pensar software como quien aprende a vivir<span class="terminal-cursor text-primary">.</span>
       </h1>
       <p class="mt-8 max-w-3xl text-xl leading-9 text-muted md:text-2xl">
         Un rincón para código, lectura, producto y esas preguntas lentas que no caben
@@ -30,20 +20,47 @@ import Button from "@/components/ui/Button.astro";
       </div>
     </div>
 
-    <div class="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/40 bg-[#081917] shadow-[0_36px_100px_rgba(8,25,23,0.22)]" data-reveal>
-      <img
-        class="h-full min-h-[520px] w-full object-cover opacity-95 grayscale contrast-110 transition-transform duration-700 ease-out group-hover:scale-105"
-        src={heroEditorialStudio.src}
-        alt="Escritorio de trabajo sereno con cuadernos, libros y código frente a un paisaje natural"
-      />
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_52%_16%,transparent_12%,rgba(8,25,23,0.32)_72%),linear-gradient(180deg,rgba(8,25,23,0.08)_0%,rgba(8,25,23,0.18)_48%,rgba(8,25,23,0.72)_100%)]"></div>
-      <div class="absolute bottom-0 left-0 right-0 p-7 text-white md:p-9">
-        <p class="editorial-serif text-3xl leading-tight">
-          Claridad técnica con temperatura humana.
-        </p>
-        <div class="mt-8 grid grid-cols-2 border-t border-white/25 pt-5 text-sm text-white/76">
-          <span>Código con sentidiño</span>
-          <span class="text-right">Ensayo personal</span>
+    <div class="terminal-shell rounded-[1.75rem] md:rounded-[2.25rem]" data-reveal>
+      <div class="terminal-topbar relative">
+        <span class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>vida-entredosmundos.sh</span>
+      </div>
+
+      <div class="relative p-5 md:p-8">
+        <div class="grid gap-4">
+          <p class="terminal-command">cat manifiesto.txt</p>
+          <div class="rounded-2xl border border-white/10 bg-[#fff7e8] p-6 text-[#081917] md:p-7">
+            <p class="editorial-serif text-3xl leading-tight md:text-4xl">
+              Claridad técnica con temperatura humana.
+            </p>
+            <p class="mt-5 text-sm leading-6 text-muted">
+              Código con sentidiño, ensayo personal y una forma lenta de volver al teclado.
+            </p>
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-5">
+              <p class="terminal-label">input</p>
+              <p class="mt-3 text-sm leading-6 text-white/72">
+                Software, sistemas, lectura, cultura y producto.
+              </p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-5">
+              <p class="terminal-label">output</p>
+              <p class="mt-3 text-sm leading-6 text-white/72">
+                Ideas trabajadas para entender mejor lo que estoy construyendo.
+              </p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-[#0c211e] p-5">
+            <p class="terminal-command">grep -R "preguntas lentas" ./blog ./projects</p>
+            <div class="mt-4 space-y-3 text-sm leading-6 text-white/68">
+              <p><span class="text-[#d08762]">./blog</span> lectura, oficio y tecnología sin prisa.</p>
+              <p><span class="text-[#d08762]">./projects</span> piezas vivas para aprender mientras sirven.</p>
+              <p><span class="text-[#d08762]">./about</span> técnica y vida en el mismo prompt.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -2,27 +2,33 @@
 import Button from "@/components/ui/Button.astro";
 ---
 
-<section class="section bg-[#f8f1e3]">
+<section class="section bg-[#f3ead8]">
   <div class="container">
-    <div class="grid gap-8 rounded-[2.5rem] border border-primary/10 bg-surface p-7 shadow-quiet md:p-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-          Diseño web
-        </p>
-        <h2 class="mt-4 display-type text-4xl font-black leading-[0.96] text-text md:text-6xl">
-          Webs con criterio para proyectos que necesitan hacerse entender.
-        </h2>
+    <div class="terminal-shell rounded-[1.75rem] md:rounded-[2.25rem]">
+      <div class="terminal-topbar relative">
+        <span class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>servicios/diseno-web.config</span>
       </div>
 
-      <div>
-        <p class="max-w-2xl text-lg leading-8 text-muted">
-          También acompaño a profesionales, pymes y proyectos personales que necesitan una web
-          clara, rápida y mantenible. Diseño, estructura, presencia digital y una forma sencilla
-          de publicar sin pelearse con la tecnología.
-        </p>
-        <div class="mt-7 flex flex-wrap gap-4">
-          <Button href="/servicios/diseno-web/">Ver servicio</Button>
-          <Button href="mailto:hola@javillinares.com" variant="secondary">Cuéntame tu proyecto</Button>
+      <div class="relative grid gap-8 p-7 md:p-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+        <div>
+          <p class="terminal-label">command</p>
+          <p class="terminal-command mt-4">open servicio --tipo web</p>
+          <h2 class="mt-5 display-type text-4xl font-black leading-[0.96] text-white md:text-6xl">
+            Webs con criterio para proyectos que necesitan hacerse entender.
+          </h2>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-[#fff7e8] p-6 md:p-7">
+          <p class="max-w-2xl text-lg leading-8 text-muted">
+            También acompaño a profesionales, pymes y proyectos personales que necesitan una web
+            clara, rápida y mantenible. Diseño, estructura, presencia digital y una forma sencilla
+            de publicar sin pelearse con la tecnología.
+          </p>
+          <div class="mt-7 flex flex-wrap gap-4">
+            <Button href="/servicios/diseno-web/">Ver servicio</Button>
+            <Button href="mailto:hola@javillinares.com" variant="secondary">Cuéntame tu proyecto</Button>
+          </div>
         </div>
       </div>
     </div>

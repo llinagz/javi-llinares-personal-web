@@ -29,14 +29,24 @@ Cada nueva página, componente o sección debe sostener esa dualidad sin dramati
 El rediseño actual da más peso a una estética editorial cálida, con contraste alto y composición más atrevida:
 
 - Header flotante, redondeado y translúcido
-- Hero asimétrico con una imagen inline dentro del titular
-- Tarjetas y superficies con aire de papel cálido
-- Un bloque de artículos más denso y contrastado
-- Proyectos presentados como piezas enlazables de laboratorio
+- Landing principal con lenguaje Editorial CLI: ventanas tipo terminal, rutas, prompts, outputs y labels monoespaciados
+- Tarjetas y superficies con aire de papel cálido dentro de marcos oscuros de trabajo
+- Un bloque de artículos más denso y contrastado, tratado como archivo/log editorial
+- Proyectos presentados como piezas enlazables de laboratorio y workspace personal
 - Una sección de filosofía más estática y legible, sin artificios de scroll que alteren el flujo
 - CTA final oscuro y sobrio, con mucho contraste
 
 La sensación general debe ser más cercana a una revista o cuaderno de trabajo que a una landing comercial.
+
+## Patrón Editorial CLI
+
+La Home puede usar una estética inspirada en terminal de comandos siempre que siga siendo editorial y humana:
+
+- Usar prompts, rutas, cursores, topbars y pequeños outputs como estructura visual, no como simulación literal de una app.
+- Mantener `#16524e` como ancla de marca y combinarlo con ink, papel cálido y clay en detalles puntuales.
+- Reservar la monoespaciada para labels, comandos y metadatos; los titulares siguen viviendo en `display-type` y las frases de síntesis en serif.
+- Evitar neón, dashboards, exceso de microcopy técnica y comandos que dificulten leer los textos principales.
+- Preferir HTML/CSS sobre imágenes generadas cuando el motivo terminal pueda resolverse de forma nativa y accesible.
 
 ## Principios Visuales
 
