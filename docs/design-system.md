@@ -47,6 +47,7 @@ La Home puede usar una estética inspirada en terminal de comandos siempre que s
 - Reservar la monoespaciada para labels, comandos y metadatos; los titulares siguen viviendo en `display-type` y las frases de síntesis en serif.
 - Evitar neón, dashboards, exceso de microcopy técnica y comandos que dificulten leer los textos principales.
 - Preferir HTML/CSS sobre imágenes generadas cuando el motivo terminal pueda resolverse de forma nativa y accesible.
+- La variante actual del hero puede apoyarse en un fondo oscuro verde tinta con grid, scanlines y lluvia de caracteres muy tenue, siempre en baja opacidad y al servicio de la legibilidad.
 
 ## Principios Visuales
 

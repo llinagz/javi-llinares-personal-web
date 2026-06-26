@@ -171,6 +171,86 @@ svg {
   color: var(--color-clay);
 }
 
+.hero-matrix {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(22, 82, 78, 0.34), transparent 28rem),
+    radial-gradient(circle at 82% 16%, rgba(11, 44, 41, 0.84), transparent 24rem),
+    linear-gradient(180deg, #071513 0%, #081917 54%, #0b201d 100%);
+}
+
+.hero-matrix__glow {
+  background:
+    radial-gradient(circle at 14% 14%, rgba(22, 82, 78, 0.28), transparent 18rem),
+    radial-gradient(circle at 74% 18%, rgba(181, 93, 56, 0.12), transparent 19rem),
+    radial-gradient(circle at 50% 100%, rgba(11, 44, 41, 0.5), transparent 28rem);
+}
+
+.hero-matrix__scanlines {
+  opacity: 0.14;
+  background-image: linear-gradient(180deg, rgba(247, 239, 223, 0.08) 0, transparent 2px, transparent 6px);
+  background-size: 100% 7px;
+  mix-blend-mode: screen;
+}
+
+.hero-matrix__grid {
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(247, 239, 223, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 239, 223, 0.04) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.88), transparent 94%);
+}
+
+.hero-matrix__rain {
+  overflow: hidden;
+  opacity: 0.2;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.25) 72%, transparent);
+}
+
+.hero-matrix__column {
+  position: absolute;
+  top: -18%;
+  left: calc(6% + (var(--column-index) * 11.5%));
+  width: 5rem;
+  color: rgba(167, 214, 207, 0.4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  animation: matrix-drift var(--column-speed) linear infinite;
+}
+
+.hero-matrix__lede {
+  color: rgba(247, 239, 223, 0.78);
+}
+
+.hero-matrix__actions a:first-child {
+  box-shadow: 0 18px 40px rgba(4, 13, 12, 0.28);
+}
+
+.hero-matrix__secondary-action a {
+  border-color: rgba(247, 239, 223, 0.18);
+  background: rgba(247, 239, 223, 0.03);
+  color: rgba(247, 239, 223, 0.9);
+}
+
+.hero-matrix__secondary-action a:hover {
+  border-color: rgba(167, 214, 207, 0.4);
+  background: rgba(247, 239, 223, 0.08);
+  color: #fff7e8;
+}
+
+.hero-matrix__terminal {
+  border-color: rgba(247, 239, 223, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 247, 232, 0.075), rgba(255, 247, 232, 0.02)),
+    linear-gradient(180deg, rgba(10, 31, 28, 0.94), rgba(6, 19, 17, 0.98));
+  box-shadow: 0 36px 120px rgba(3, 9, 9, 0.42);
+}
+
 .noise-field {
   position: relative;
 }
@@ -252,7 +332,21 @@ svg {
   }
 }
 
+@keyframes matrix-drift {
+  from {
+    transform: translate3d(0, -10%, 0);
+  }
+
+  to {
+    transform: translate3d(0, 125%, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .hero-matrix__column {
+    animation: none;
+  }
+
   *,
   *::before,
   *::after {

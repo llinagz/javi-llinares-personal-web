@@ -1,26 +1,51 @@
 ---
 import Button from "@/components/ui/Button.astro";
+
+const matrixColumns = [
+  "010010 ./notes ./ideas ./build",
+  "grep thought process architecture",
+  "ls ./blog ./projects ./reading",
+  "ship less but mean more",
+  "cat humane-systems.md",
+  "echo clarity > noise",
+  "find ./work -name questions",
+  "tail -f quiet-iteration.log"
+];
 ---
 
-<section class="noise-field relative overflow-hidden bg-[#f3ead8] pt-28 md:pt-36">
-  <div class="absolute inset-x-0 top-0 h-[48rem] bg-[radial-gradient(circle_at_74%_16%,rgba(22,82,78,0.22),transparent_27rem),radial-gradient(circle_at_18%_12%,rgba(181,93,56,0.16),transparent_24rem)]"></div>
-  <div class="container relative grid items-end gap-10 pb-14 md:pb-20 lg:grid-cols-[1.04fr_0.86fr]">
-    <div class="max-w-5xl" data-reveal>
+<section class="hero-matrix noise-field relative overflow-hidden pt-28 md:pt-36">
+  <div class="hero-matrix__glow absolute inset-0" aria-hidden="true"></div>
+  <div class="hero-matrix__scanlines absolute inset-0" aria-hidden="true"></div>
+  <div class="hero-matrix__grid absolute inset-0" aria-hidden="true"></div>
+  <div class="hero-matrix__rain absolute inset-0" aria-hidden="true">
+    {
+      matrixColumns.map((column, index) => (
+        <span class="hero-matrix__column" style={`--column-index:${index}; --column-speed:${18 + index * 2}s;`}>
+          {column}
+        </span>
+      ))
+    }
+  </div>
+
+  <div class="container relative grid grid-cols-1 items-end gap-10 pb-14 md:pb-20 lg:grid-cols-[1.04fr_0.86fr]">
+    <div class="min-w-0 max-w-5xl" data-reveal>
       <p class="terminal-label">~/javi/home</p>
-      <h1 class="display-type mt-5 max-w-5xl text-[clamp(3.2rem,7vw,6.7rem)] font-black leading-[0.9] text-text">
+      <h1 class="display-type mt-5 max-w-[7.4ch] text-[clamp(2.35rem,11vw,4rem)] font-black leading-[0.9] text-[#f7efdf] sm:max-w-[8.2ch] md:max-w-5xl md:text-[clamp(3.2rem,7vw,6.7rem)]">
         Pensar software como quien aprende a vivir<span class="terminal-cursor text-primary">.</span>
       </h1>
-      <p class="mt-8 max-w-3xl text-xl leading-9 text-muted md:text-2xl">
-        Un rincón para código, lectura, producto y esas preguntas lentas que no caben
-        en un sprint pero terminan cambiando la forma de construir.
+      <p class="hero-matrix__lede mt-8 max-w-3xl text-xl leading-9 md:text-2xl">
+        Un rincón para código, lectura, producto y esas preguntas lentas que no caben en un
+        sprint pero terminan cambiando la forma de construir.
       </p>
-      <div class="mt-10 flex flex-wrap gap-4">
+      <div class="hero-matrix__actions mt-10 flex flex-wrap gap-4">
         <Button href="/blog">Leer el blog</Button>
-        <Button href="/projects" variant="secondary">Explorar proyectos</Button>
+        <div class="hero-matrix__secondary-action">
+          <Button href="/projects" variant="secondary">Explorar proyectos</Button>
+        </div>
       </div>
     </div>
 
-    <div class="terminal-shell rounded-[1.75rem] md:rounded-[2.25rem]" data-reveal>
+    <div class="terminal-shell hero-matrix__terminal min-w-0 rounded-[1.75rem] md:rounded-[2.25rem]" data-reveal>
       <div class="terminal-topbar relative">
         <span class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
         <span>vida-entredosmundos.sh</span>
@@ -39,13 +64,13 @@ import Button from "@/components/ui/Button.astro";
           </div>
 
           <div class="grid gap-3 md:grid-cols-2">
-            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-5">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-5 backdrop-blur-[1px]">
               <p class="terminal-label">input</p>
               <p class="mt-3 text-sm leading-6 text-white/72">
                 Software, sistemas, lectura, cultura y producto.
               </p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-5">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.045] p-5 backdrop-blur-[1px]">
               <p class="terminal-label">output</p>
               <p class="mt-3 text-sm leading-6 text-white/72">
                 Ideas trabajadas para entender mejor lo que estoy construyendo.
