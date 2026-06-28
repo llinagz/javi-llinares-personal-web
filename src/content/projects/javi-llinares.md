@@ -26,4 +26,4 @@ Esta web combina artículos, proyectos y una página personal con una arquitectu
 
 ## Estado actual
 
-Primera versión lista para reemplazar contenido de ejemplo por textos y proyectos reales.
+En producción con mis proyectos reales.
