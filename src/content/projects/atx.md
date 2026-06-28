@@ -4,12 +4,12 @@ slug: "atx"
 description: "Una app para gamificar experiencias con amigos, naturaleza y planes sociales sin convertir la vida en una lista de tareas."
 longDescription: "ATX explora cómo diseñar una experiencia social que invite a salir, compartir planes y registrar aventuras sin caer en métricas vacías."
 image: "/images/projects/atx.png"
-status: "En desarrollo"
+status: "Publicado"
 techStack: ["Astro", "TypeScript", "Supabase", "Producto"]
 featured: true
 links:
-  - label: "Notas del proyecto"
-    url: "#"
+  - label: "Ver proyecto"
+    url: "https://atx-mvp.vercel.app/"
 date: 2026-03-01
 problem: "Muchos planes sociales se dispersan entre chats, ideas sueltas y poca memoria compartida."
 solution: "Crear un espacio ligero para proponer experiencias, cerrar planes y recordar lo vivido con una capa lúdica moderada."
@@ -26,4 +26,4 @@ La idea es una app social pequeña, con retos y experiencias compartidas, donde 
 
 ## Estado actual
 
-El proyecto está en fase de definición. La prioridad es encontrar un equilibrio sano entre juego, amistad y naturaleza.
+El proyecto está en producción como un prototipo. La prioridad es encontrar un equilibrio sano entre juego, amistad y naturaleza.
