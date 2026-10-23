@@ -15,6 +15,12 @@ function takenOn(value) {
   return match ? `${match[1]}-${match[2]}-${match[3]}` : undefined;
 }
 
+// "2026:10:23 10:05:00" → "2026-10-23T10:05:00" (hora local de la cámara, sin zona).
+function takenAt(value) {
+  const match = typeof value === "string" && value.match(/^(\d{4}):(\d{2}):(\d{2}) (\d{2}:\d{2}:\d{2})/);
+  return match ? `${match[1]}-${match[2]}-${match[3]}T${match[4]}` : undefined;
+}
+
 async function readCard(buffer) {
   try {
     const tags = await exifr.parse(buffer, {
@@ -31,7 +37,8 @@ async function readCard(buffer) {
       aperture: tags.FNumber ? `f/${Number(tags.FNumber.toFixed(1))}` : undefined,
       shutterSpeed: shutter(tags.ExposureTime),
       iso: typeof tags.ISO === "number" ? tags.ISO : undefined,
-      takenOn: takenOn(tags.DateTimeOriginal)
+      takenOn: takenOn(tags.DateTimeOriginal),
+      takenAt: takenAt(tags.DateTimeOriginal)
     };
   } catch {
     return {};

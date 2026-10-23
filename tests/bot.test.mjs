@@ -7,7 +7,7 @@ import { createGithub } from "../bot/github.mjs";
 import { buildGardenEntry, buildPhotoEntry } from "../bot/entrada.mjs";
 import { processPhoto } from "../bot/foto.mjs";
 import { parseMessage } from "../bot/mensaje.mjs";
-import { handleUpdate } from "../bot/procesar.mjs";
+import { handleUpdate, madridToIso } from "../bot/procesar.mjs";
 
 describe("parseMessage", () => {
   test("texto sin foto → jardín", () => {
@@ -150,6 +150,19 @@ describe("processPhoto", () => {
   });
 });
 
+describe("madridToIso", () => {
+  test("hora de pared de Madrid → UTC, en verano (+2) y en invierno (+1)", () => {
+    assert.equal(madridToIso("2026-10-23T10:05:00"), "2026-10-23T08:05:00Z");
+    assert.equal(madridToIso("2026-12-01T10:05:00"), "2026-12-01T09:05:00Z");
+  });
+
+  test("cerca de medianoche el día de Madrid se conserva al ir y volver", () => {
+    const iso = madridToIso("2026-10-23T00:30:00");
+    assert.equal(iso, "2026-10-22T22:30:00Z");
+    assert.equal(new Date(iso).toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" }), "2026-10-23");
+  });
+});
+
 describe("handleUpdate", () => {
   function setup({ trips = ["asturias-2026"], processed = false } = {}) {
     const calls = { commits: [], replies: [] };
@@ -227,7 +240,18 @@ describe("handleUpdate", () => {
       "src/content/carrete/faro.md",
       "src/assets/images/carrete/faro.jpg"
     ]);
-    assert.match(calls.commits[0].files[0].content, /date: 2026-10-20/);
+    assert.match(calls.commits[0].files[0].content, /date: 2026-10-20\n/);
+  });
+
+  test("foto sin EXIF: la fecha lleva la hora del mensaje; con hora EXIF, esa hora (Madrid)", async () => {
+    const { calls, deps } = setup();
+    deps.processPhoto = async () => ({ image: Buffer.from("jpg"), exif: {} });
+    await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Sin exif" }), deps);
+    assert.match(calls.commits[0].files[0].content, /date: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\n/);
+
+    deps.processPhoto = async () => ({ image: Buffer.from("jpg"), exif: { takenOn: "2026-10-20", takenAt: "2026-10-20T10:05:00" } });
+    await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Con exif" }), deps);
+    assert.match(calls.commits[1].files[0].content, /date: 2026-10-20T08:05:00Z\n/);
   });
 });
 

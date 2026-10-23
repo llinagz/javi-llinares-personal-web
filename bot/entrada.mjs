@@ -69,7 +69,8 @@ export function buildTripEntry({ slug, date }) {
 }
 
 // Foto del carrete: título = primera línea del pie; el resto de líneas es el `caption`.
-export function buildPhotoEntry({ text, date, exif = {}, viaje, topics = [], slugs, image }) {
+// `dateTime` (ISO con hora) desempata fotos del mismo día en la portada; sin él, se escribe solo la fecha.
+export function buildPhotoEntry({ text, date, dateTime, exif = {}, viaje, topics = [], slugs, image }) {
   const { first, rest } = splitLines(text);
   const title = first ? shorten(first) : `Foto del ${longDate(date)}`;
   const slug = uniqueSlug(title, slugs, `foto-${date}`);
@@ -78,7 +79,7 @@ export function buildPhotoEntry({ text, date, exif = {}, viaje, topics = [], slu
   const content = frontmatter([
     ["title", title],
     ["slug", slug],
-    ["date", raw(date)],
+    ["date", raw(dateTime ?? date)],
     ["image", `../../assets/images/carrete/${imageName}`],
     ["caption", rest],
     ["trip", viaje],

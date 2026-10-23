@@ -4,6 +4,29 @@ import { parseMessage } from "./mensaje.mjs";
 
 const madridDate = (unixSeconds) => new Date(unixSeconds * 1000).toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
 
+const isoSeconds = (date) => date.toISOString().replace(/\.\d{3}Z$/, "Z");
+
+// "2026-10-23T10:05:00" (hora de pared de Madrid) → instante UTC en ISO. Se muestra luego en Madrid, así que el día no se mueve.
+export function madridToIso(wallTime) {
+  const guess = new Date(`${wallTime}Z`);
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "Europe/Madrid",
+      hourCycle: "h23",
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric"
+    })
+      .formatToParts(guess)
+      .map(({ type, value }) => [type, Number(value)])
+  );
+  const asMadrid = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  return isoSeconds(new Date(guess.getTime() - (asMadrid - guess.getTime())));
+}
+
 export async function handleUpdate(update, { allowedUsers, github, telegram, processPhoto, siteUrl }) {
   const message = update.message;
   if (!message || !allowedUsers.includes(message.from?.id)) return; // los desconocidos se ignoran en silencio
@@ -29,7 +52,7 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
       entry = buildGardenEntry({
         text,
         date: today,
-        createdAt: new Date(message.date * 1000).toISOString().replace(/\.\d{3}Z$/, "Z"),
+        createdAt: isoSeconds(new Date(message.date * 1000)),
         borrador: tags.borrador,
         stage: tags.stage,
         topics: tags.topics,
@@ -38,9 +61,12 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
     } else {
       const { image, exif } = await processPhoto(await telegram.downloadFile(parsed.fileId));
       const photoDate = exif.takenOn ?? today;
+      // Con EXIF, la hora de la cámara; sin él, la del mensaje. Si el EXIF solo trae día, se queda en día.
+      const dateTime = exif.takenAt ? madridToIso(exif.takenAt) : exif.takenOn ? undefined : isoSeconds(new Date(message.date * 1000));
       entry = buildPhotoEntry({
         text,
         date: photoDate,
+        dateTime,
         exif,
         viaje: tags.viaje,
         topics: tags.topics,
