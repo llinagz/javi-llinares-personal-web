@@ -233,8 +233,16 @@ describe("temas", () => {
     }
   });
 
+  test("/temas/ enlaza todos los temas publicados", () => {
+    const index = allPages.find(({ route }) => route === "/temas/");
+    assert.ok(index, "Falta /temas/");
+    for (const slug of topics.keys()) {
+      assert.ok(index.html.includes(`href="/temas/${slug}"`), `/temas/ no enlaza ${slug}`);
+    }
+  });
+
   test("no hay páginas de tema sin contenido publicado", () => {
-    const routes = allPages.filter(({ route }) => route.startsWith("/temas/")).map(({ route }) => route);
+    const routes = allPages.filter(({ route }) => route.startsWith("/temas/") && route !== "/temas/").map(({ route }) => route);
     assert.deepEqual(routes.sort(), [...topics.keys()].map((slug) => `/temas/${slug}/`).sort());
   });
 });

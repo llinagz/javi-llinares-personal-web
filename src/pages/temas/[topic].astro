@@ -31,7 +31,8 @@ const total = topic.entries.length + topic.photos.length;
   <section class="matrix-page page-hero">
     <div class="container relative">
       <div class="section-heading">
-        <p class="terminal-label">./temas/{topic.slug}</p>
+        <a class="terminal-link" href="/temas">← Temas</a>
+        <p class="terminal-label mt-8">./temas/{topic.slug}</p>
         <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-paper md:text-7xl">#{topic.label}</h1>
         <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
           {total} {total === 1 ? "cosa" : "cosas"} con este tema, entre el jardín y el carrete.
