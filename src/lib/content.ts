@@ -4,6 +4,7 @@ export type GardenEntry = CollectionEntry<"jardin">;
 export type Trip = CollectionEntry<"viajes">;
 export type Photo = CollectionEntry<"carrete">;
 export type Project = CollectionEntry<"projects">;
+export type Now = CollectionEntry<"now">;
 
 export type GardenType = GardenEntry["data"]["type"];
 export type GardenStage = GardenEntry["data"]["stage"];
@@ -44,6 +45,18 @@ export function sortByTendedDesc(items: GardenEntry[]): GardenEntry[] {
   return [...items].sort((a, b) => lastTended(b).getTime() - lastTended(a).getTime());
 }
 
+// Filas de "ahora" con contenido, en orden de visualización. Las vacías no se pintan.
+export function nowRows(now: Now | undefined): { label: string; items: string[] }[] {
+  const { reading = [], playing = [], listening = [], building = [] } = now?.data ?? {};
+
+  return [
+    { label: "leyendo", items: reading },
+    { label: "jugando", items: playing },
+    { label: "escuchando", items: listening },
+    { label: "construyendo", items: building }
+  ].filter((row) => row.items.length > 0);
+}
+
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("es", {
     day: "2-digit",
@@ -70,6 +83,7 @@ export function excerpt(entry: GardenEntry, maxLength = 160): string {
     .map((block) => block.trim())
     .find((block) => block && !/^(#|>|[-*]\s|\d+\.\s|```|!\[)/.test(block));
   const text = (firstParagraph ?? entry.data.title)
+    .replace(/\[\^[^\]]+\]/g, "")
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/[*_`]/g, "")
     .replace(/\s+/g, " ");

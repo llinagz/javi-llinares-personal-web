@@ -39,7 +39,9 @@ function entries(collection) {
         name,
         // El slug puede ir con o sin comillas: el bot de publicación no tiene por qué entrecomillarlo.
         slug: raw.match(/^slug:\s*["']?([^"'\r\n]+?)["']?\s*$/m)?.[1],
-        draft: /^draft:\s*true/m.test(raw)
+        draft: /^draft:\s*true/m.test(raw),
+        // Fecha del último riego (`updated ?? created`); solo aplica al jardín.
+        tended: raw.match(/^updated:\s*(\S+)/m)?.[1] ?? raw.match(/^created:\s*(\S+)/m)?.[1]
       };
     });
 }
@@ -90,6 +92,16 @@ describe("contenido", () => {
     for (const project of entries("projects")) {
       assert.ok(existsSync(join(dist, "projects", project.slug, "index.html")), `Falta /projects/${project.slug}/`);
     }
+  });
+});
+
+describe("portada", () => {
+  test("enlaza la entrada del jardín regada más recientemente", () => {
+    const published = entries("jardin").filter((entry) => !entry.draft);
+    const latest = published.map((entry) => entry.tended).sort().at(-1);
+    const slugs = published.filter((entry) => entry.tended === latest).map((entry) => entry.slug);
+    const home = pages.find(({ route }) => route === "/");
+    assert.ok(slugs.some((slug) => home.html.includes(`href="/jardin/${slug}"`)), `La portada no enlaza ninguna de: ${slugs}`);
   });
 });
 
@@ -152,6 +164,13 @@ describe("integridad del build", () => {
         assert.match(tag, /width="\d+"/, `${route}: <img> sin width`);
         assert.match(tag, /height="\d+"/, `${route}: <img> sin height`);
       }
+    }
+  });
+
+  // La serif de lectura (Literata) va autoalojada: ninguna página debe pedir fuentes a Google.
+  test("no se cargan fuentes de Google", () => {
+    for (const { route, html } of pages) {
+      assert.ok(!/fonts\.(googleapis|gstatic)\.com/.test(html), `${route} carga fuentes de Google`);
     }
   });
 

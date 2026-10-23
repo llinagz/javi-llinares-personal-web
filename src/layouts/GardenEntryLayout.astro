@@ -1,4 +1,6 @@
 ---
+import "@fontsource-variable/literata";
+import "@fontsource-variable/literata/wght-italic.css";
 import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Badge from "@/components/ui/Badge.astro";
@@ -23,76 +25,73 @@ const watered = data.updated && data.updated.getTime() !== data.created.getTime(
 ---
 
 <BaseLayout title={`${data.title} | Javi Llinares`} description={summary} image={data.image} type="article">
-  <article>
-    <header class="matrix-page page-hero">
-      <div class="container relative">
-        <a class="terminal-link" href="/jardin">← Jardín</a>
-        <div class="mt-8 flex flex-wrap items-center gap-3">
-          <Badge tone="soft">{gardenTypes[data.type]}</Badge>
-          <Badge>{stage.icon} {stage.label}</Badge>
-          <span class="font-mono text-sm text-terminal-text/[0.62]">{formatDate(data.created)}</span>
+  <article class="reading-page pb-24 pt-28 md:pt-36">
+    <div class="container">
+      <div class="reading-shell">
+        <header>
+          <a class="font-mono text-sm font-bold text-primary transition-colors hover:text-primary-dark" href="/jardin">← Jardín</a>
+          <div class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <Badge tone="soft">{gardenTypes[data.type]}</Badge>
+            <Badge>{stage.icon} {stage.label}</Badge>
+            <span class="font-mono text-sm text-muted">{formatDate(data.created)}</span>
+            {
+              watered && (
+                <>
+                  <span class="font-mono text-sm text-muted" aria-hidden="true">/</span>
+                  <span class="font-mono text-sm text-muted">regado el {formatDate(watered)}</span>
+                </>
+              )
+            }
+            <span class="font-mono text-sm text-muted" aria-hidden="true">/</span>
+            <span class="font-mono text-sm text-muted">{readingTime(entry.body)}</span>
+          </div>
+          <h1 class="reading-title mt-6 text-4xl font-semibold leading-tight tracking-tight text-text md:text-5xl">
+            {data.title}
+          </h1>
+          {data.description && <p class="reading-title mt-6 text-xl leading-8 text-prose">{data.description}</p>}
           {
-            watered && (
-              <>
-                <span class="font-mono text-sm text-terminal-text/[0.34]">/</span>
-                <span class="font-mono text-sm text-terminal-text/[0.62]">regado el {formatDate(watered)}</span>
-              </>
+            data.work && (
+              <dl class="mt-8 grid max-w-xl gap-1 rounded-2xl border border-border bg-surface p-5 font-mono text-sm text-prose">
+                <div class="flex gap-3">
+                  <dt class="text-muted">obra</dt>
+                  <dd>{data.work.title}</dd>
+                </div>
+                <div class="flex gap-3">
+                  <dt class="text-muted">{data.work.kind === "libro" ? "autor" : "estudio"}</dt>
+                  <dd>{data.work.creator}</dd>
+                </div>
+                <div class="flex gap-3">
+                  <dt class="text-muted">formato</dt>
+                  <dd>
+                    {data.work.kind}
+                    {data.work.platform && ` · ${data.work.platform}`}
+                    {data.work.year && ` · ${data.work.year}`}
+                  </dd>
+                </div>
+              </dl>
             )
           }
-          <span class="font-mono text-sm text-terminal-text/[0.34]">/</span>
-          <span class="font-mono text-sm text-terminal-text/[0.62]">{readingTime(entry.body)}</span>
-        </div>
-        <h1 class="mt-6 max-w-4xl font-serif text-4xl font-semibold leading-tight tracking-tight text-paper md:text-6xl">
-          {data.title}
-        </h1>
-        {data.description && <p class="mt-6 max-w-3xl text-xl leading-8 text-terminal-text/[0.72]">{data.description}</p>}
-        {
-          data.work && (
-            <dl class="mt-8 grid max-w-xl gap-1 rounded-2xl border border-paper/15 bg-paper/[0.05] p-5 font-mono text-sm text-terminal-text/[0.78]">
-              <div class="flex gap-3">
-                <dt class="text-terminal-text/[0.52]">obra</dt>
-                <dd>{data.work.title}</dd>
-              </div>
-              <div class="flex gap-3">
-                <dt class="text-terminal-text/[0.52]">{data.work.kind === "libro" ? "autor" : "estudio"}</dt>
-                <dd>{data.work.creator}</dd>
-              </div>
-              <div class="flex gap-3">
-                <dt class="text-terminal-text/[0.52]">formato</dt>
-                <dd>
-                  {data.work.kind}
-                  {data.work.platform && ` · ${data.work.platform}`}
-                  {data.work.year && ` · ${data.work.year}`}
-                </dd>
-              </div>
-            </dl>
-          )
-        }
-        {
-          data.image && (
-            <div class="paper-panel mt-10 overflow-hidden rounded-[2rem]">
+          {
+            data.image && (
               <Image
-                class="h-auto w-full object-cover"
+                class="mt-10 h-auto w-full rounded-2xl border border-border"
                 src={data.image}
                 alt={`Imagen editorial de ${data.title}`}
                 widths={[640, 960, 1280]}
-                sizes="(min-width: 1240px) 1200px, 100vw"
+                sizes="(min-width: 1024px) 936px, 100vw"
                 loading="eager"
               />
-            </div>
-          )
-        }
-      </div>
-    </header>
+            )
+          }
+        </header>
 
-    <section class="paper-band py-14 md:py-20">
-      <div class="container">
-        <div class="prose-content prose-shell mx-auto">
+        <div class="reading-column mt-12">
           <slot />
         </div>
+
         {
           data.topics.length > 0 && (
-            <ul class="prose-shell mx-auto mt-10 flex flex-wrap gap-2" aria-label="Temas">
+            <ul class="mt-12 flex flex-wrap gap-2 border-t border-border pt-6" aria-label="Temas">
               {data.topics.map((topic) => (
                 <li>
                   <Badge>{topic}</Badge>
@@ -102,6 +101,6 @@ const watered = data.updated && data.updated.getTime() !== data.created.getTime(
           )
         }
       </div>
-    </section>
+    </div>
   </article>
 </BaseLayout>

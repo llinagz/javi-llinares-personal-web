@@ -1,5 +1,6 @@
 ---
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
+import Lightbox from "@/components/ui/Lightbox.astro";
 import { photoAlt, photoMeta, type Photo } from "@/lib/content";
 
 interface Props {
@@ -7,20 +8,43 @@ interface Props {
 }
 
 const { photos } = Astro.props;
+
+// Versión grande para el visor: se guarda en data-* y la crea el script bajo demanda.
+const items = await Promise.all(
+  photos.map(async (photo) => {
+    const full = Math.min(1920, photo.data.image.width);
+    const large = await getImage({
+      src: photo.data.image,
+      width: full,
+      widths: [...new Set([Math.min(1280, full), full])]
+    });
+    return { photo, large };
+  })
+);
 ---
 
-<ul class="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
+<ul class="columns-1 gap-6 sm:columns-2 lg:columns-3">
   {
-    photos.map((photo) => (
-      <li>
-        <a class="group block" href={`/carrete/${photo.data.slug}`}>
-          <div class="paper-panel overflow-hidden rounded-[1.25rem]">
+    items.map(({ photo, large }) => (
+      <li class="mb-8 break-inside-avoid">
+        <a
+          class="group block"
+          href={`/carrete/${photo.data.slug}`}
+          data-lightbox
+          data-src={large.src}
+          data-srcset={large.srcSet.attribute}
+          data-width={large.attributes.width}
+          data-height={large.attributes.height}
+          data-alt={photoAlt(photo)}
+          data-meta={photoMeta(photo)}
+        >
+          <div class="overflow-hidden rounded-xl border border-border bg-surface">
             <Image
               class="h-auto w-full transition duration-500 group-hover:scale-[1.02]"
               src={photo.data.image}
               alt={photoAlt(photo)}
               widths={[400, 640, 960]}
-              sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
             />
           </div>
           <p class="mt-3 font-mono text-xs leading-5 text-muted">{photoMeta(photo)}</p>
@@ -29,3 +53,5 @@ const { photos } = Astro.props;
     ))
   }
 </ul>
+
+<Lightbox />
