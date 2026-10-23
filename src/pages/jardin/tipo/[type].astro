@@ -1,0 +1,18 @@
+---
+import { getCollection } from "astro:content";
+import GardenListing from "@/components/sections/GardenListing.astro";
+import { gardenTypes, isPublished, sortByTendedDesc, type GardenType } from "@/lib/content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("jardin", isPublished);
+
+  return (Object.keys(gardenTypes) as GardenType[]).map((type) => ({
+    params: { type },
+    props: { type, entries: sortByTendedDesc(entries.filter((entry) => entry.data.type === type)) }
+  }));
+}
+
+const { type, entries } = Astro.props;
+---
+
+<GardenListing entries={entries} activeType={type} />

@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button.astro";
 const matrixColumns = [
   "010010 ./notes ./ideas ./build",
   "grep thought process architecture",
-  "ls ./blog ./projects ./reading",
+  "ls ./jardin ./carrete ./projects",
   "ship less but mean more",
   "cat humane-systems.md",
   "echo clarity > noise",
@@ -38,7 +38,7 @@ const matrixColumns = [
         sprint pero terminan cambiando la forma de construir.
       </p>
       <div class="hero-matrix__actions mt-10 flex flex-wrap gap-4">
-        <Button href="/blog">Leer el blog</Button>
+        <Button href="/jardin">Entrar al jardín</Button>
         <div class="hero-matrix__secondary-action">
           <Button href="/projects" variant="secondary">Explorar proyectos</Button>
         </div>
@@ -79,9 +79,10 @@ const matrixColumns = [
           </div>
 
           <div class="rounded-2xl border border-white/10 bg-terminal-soft p-5">
-            <p class="terminal-command">grep -R "preguntas lentas" ./blog ./projects</p>
+            <p class="terminal-command">grep -R "preguntas lentas" ./jardin ./projects</p>
             <div class="mt-4 space-y-3 text-sm leading-6 text-white/68">
-              <p><span class="text-clay-light">./blog</span> lectura, oficio y tecnología sin prisa.</p>
+              <p><span class="text-clay-light">./jardin</span> ideas que crecen: semillas, notas y ensayos.</p>
+              <p><span class="text-clay-light">./carrete</span> fotografías de viajes y paseos.</p>
               <p><span class="text-clay-light">./projects</span> piezas vivas para aprender mientras sirven.</p>
               <p><span class="text-clay-light">./about</span> técnica y vida en el mismo prompt.</p>
             </div>

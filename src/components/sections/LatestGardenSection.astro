@@ -1,36 +1,46 @@
 ---
 import { Image } from "astro:assets";
 import Badge from "@/components/ui/Badge.astro";
-import { formatDate, sortByDateDesc, type BlogPost } from "@/lib/content";
+import {
+  excerpt,
+  formatDate,
+  gardenStages,
+  gardenTypes,
+  lastTended,
+  readingTime,
+  sortByTendedDesc,
+  type GardenEntry
+} from "@/lib/content";
 
 interface Props {
-  posts: BlogPost[];
+  entries: GardenEntry[];
 }
 
-const posts = sortByDateDesc(Astro.props.posts).slice(0, 3);
+const entries = sortByTendedDesc(Astro.props.entries).slice(0, 3);
+const [first] = entries;
 ---
 
 <section class="matrix-section section">
   <div class="container relative">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <p class="terminal-label">./blog</p>
+        <p class="terminal-label">./jardin</p>
         <h2 class="display-type mt-4 max-w-4xl text-5xl font-black leading-[0.94] text-paper md:text-7xl">
-          Escritura que funciona como taller abierto.
+          Un jardín de ideas en distintas estaciones.
         </h2>
       </div>
-      <a class="rounded-xl border border-white/20 px-5 py-3 font-mono text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white hover:text-ink" href="/blog">Ver todo el blog</a>
+      <a class="rounded-xl border border-white/20 px-5 py-3 font-mono text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-white hover:text-ink" href="/jardin">Ver todo el jardín</a>
     </div>
 
     <div class="mt-14 grid auto-rows-[minmax(220px,auto)] grid-flow-dense gap-4 md:grid-cols-4 md:grid-rows-2">
       {
-        posts[0] && (
-          <a class="group terminal-shell rounded-[1.5rem] p-0 md:col-span-2 md:row-span-2" href={`/blog/${posts[0].data.slug}`}>
+        first && (
+          <a class="group terminal-shell rounded-[1.5rem] p-0 md:col-span-2 md:row-span-2" href={`/jardin/${first.data.slug}`}>
             {
-              posts[0].data.image && (
+              first.data.image && (
                 <Image
                   class="absolute inset-0 h-full w-full object-cover opacity-[0.18] grayscale transition-transform duration-700 ease-out group-hover:scale-105"
-                  src={posts[0].data.image}
+                  src={first.data.image}
                   alt=""
                   aria-hidden="true"
                   widths={[480, 800, 1200]}
@@ -41,39 +51,43 @@ const posts = sortByDateDesc(Astro.props.posts).slice(0, 3);
             <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,19,17,0.94)_0%,rgba(6,19,17,0.9)_42%,rgba(6,19,17,0.98)_100%)]"></div>
             <div class="terminal-topbar relative">
               <span class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-              <span>{posts[0].data.slug}.md</span>
+              <span>{first.data.slug}.md</span>
             </div>
             <div class="relative flex min-h-[420px] flex-col justify-between p-7">
               <div class="flex items-center justify-between gap-3">
-                <Badge tone="soft">{posts[0].data.category}</Badge>
-                <span class="font-mono text-xs text-white/58">{posts[0].data.readingTime}</span>
+                <Badge tone="soft">{gardenTypes[first.data.type]}</Badge>
+                <span class="font-mono text-xs text-white/58">
+                  {gardenStages[first.data.stage].icon} {gardenStages[first.data.stage].label}
+                </span>
               </div>
               <div>
                 <p class="terminal-command mb-4">read featured</p>
                 <h3 class="display-type text-4xl font-black leading-[0.95] text-paper md:text-6xl">
-                  {posts[0].data.title}
+                  {first.data.title}
                 </h3>
-                <p class="mt-5 max-w-xl text-base leading-7 text-white/68">{posts[0].data.excerpt}</p>
-                <p class="mt-7 font-mono text-sm font-bold text-clay-light">Leer artículo</p>
+                <p class="mt-5 max-w-xl text-base leading-7 text-white/68">{excerpt(first)}</p>
+                <p class="mt-7 font-mono text-sm font-bold text-clay-light">Leer entrada</p>
               </div>
             </div>
           </a>
         )
       }
       {
-        posts.slice(1, 3).map((post) => (
-          <a class="paper-panel group block h-full overflow-hidden rounded-[1.5rem] p-6 transition duration-500 hover:-translate-y-1 hover:border-clay-light/40" href={`/blog/${post.data.slug}`}>
+        entries.slice(1, 3).map((entry) => (
+          <a class="paper-panel group block h-full overflow-hidden rounded-[1.5rem] p-6 transition duration-500 hover:-translate-y-1 hover:border-clay-light/40" href={`/jardin/${entry.data.slug}`}>
             <div class="flex items-center justify-between gap-3">
-              <Badge tone="soft">{post.data.category}</Badge>
-              <span class="font-mono text-xs text-muted">{post.data.readingTime}</span>
+              <Badge tone="soft">{gardenTypes[entry.data.type]}</Badge>
+              <span class="font-mono text-xs text-muted">
+                {gardenStages[entry.data.stage].icon} {gardenStages[entry.data.stage].label}
+              </span>
             </div>
-            <p class="mt-5 font-mono text-sm leading-6 text-muted">$ open {post.data.slug}.md</p>
+            <p class="mt-5 font-mono text-sm leading-6 text-muted">$ open {entry.data.slug}.md</p>
             <h3 class="mt-4 text-xl font-semibold leading-snug text-ink group-hover:text-primary">
-              {post.data.title}
+              {entry.data.title}
             </h3>
-            <p class="mt-3 text-sm leading-6 text-muted">{post.data.excerpt}</p>
-            <p class="mt-6 font-mono text-xs text-muted">{formatDate(post.data.date)}</p>
-            <p class="mt-4 text-sm font-semibold text-primary">Leer artículo</p>
+            <p class="mt-3 text-sm leading-6 text-muted">{excerpt(entry)}</p>
+            <p class="mt-6 font-mono text-xs text-muted">{formatDate(lastTended(entry))} · {readingTime(entry.body)}</p>
+            <p class="mt-4 text-sm font-semibold text-primary">Leer entrada</p>
           </a>
         ))
       }

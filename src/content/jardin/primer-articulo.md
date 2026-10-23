@@ -1,13 +1,13 @@
 ---
 title: "Por qué escribir mientras construyo"
 slug: "por-que-escribir-mientras-construyo"
-excerpt: "Una nota inicial sobre escribir como forma de ordenar pensamiento, tomar mejores decisiones y dejar rastro del proceso."
-date: 2026-01-18
-readingTime: "4 min"
-category: "Cultura digital"
-tags: ["escritura", "producto", "aprendizaje"]
-draft: false
+description: "Una nota inicial sobre escribir como forma de ordenar pensamiento, tomar mejores decisiones y dejar rastro del proceso."
+type: "articulo"
+stage: "perenne"
+created: 2026-01-18
+topics: ["cultura digital", "escritura", "producto", "aprendizaje"]
 featured: true
+draft: false
 ---
 
 Escribir no es solo comunicar una conclusión. Muchas veces es el modo más honesto de llegar a ella.

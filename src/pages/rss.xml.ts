@@ -1,22 +1,22 @@
 import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 import { getCollection } from "astro:content";
-import { sortByDateDesc } from "@/lib/content";
+import { excerpt, gardenTypes, isPublished, sortByTendedDesc } from "@/lib/content";
 
 export async function GET(context: APIContext) {
-  const posts = sortByDateDesc(await getCollection("blog", ({ data }) => !data.draft));
+  const entries = sortByTendedDesc(await getCollection("jardin", isPublished));
 
   return rss({
-    title: "Javi Llinares | Blog",
-    description: "Artículos, ensayos y notas de trabajo sobre código, producto, lectura y cultura digital.",
+    title: "Javi Llinares | Jardín",
+    description: "Pensamientos, reflexiones, artículos y análisis de libros y videojuegos: el jardín digital de Javi Llinares.",
     site: context.site!,
     customData: "<language>es-es</language>",
-    items: posts.map((post) => ({
-      title: post.data.title,
-      description: post.data.excerpt,
-      pubDate: post.data.date,
-      link: `/blog/${post.data.slug}/`,
-      categories: [post.data.category, ...post.data.tags]
+    items: entries.map((entry) => ({
+      title: entry.data.title,
+      description: excerpt(entry),
+      pubDate: entry.data.created,
+      link: `/jardin/${entry.data.slug}/`,
+      categories: [gardenTypes[entry.data.type], ...entry.data.topics]
     }))
   });
 }

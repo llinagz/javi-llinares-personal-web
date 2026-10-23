@@ -13,7 +13,8 @@ La intención del sitio es sostener dos mundos al mismo tiempo:
 
 ## Qué incluye 📚
 
-- Blog con artículos largos y enfoque editorial
+- Jardín digital: pensamientos, reflexiones, artículos y análisis, con estado de madurez (🌱 semilla, 🌿 creciendo, 🌳 perenne)
+- Carrete fotográfico y viajes, sin métricas
 - Página de proyectos con fichas de trabajo destacadas
 - Página "Sobre mí" con una voz más personal
 - Sistema visual documentado para mantener coherencia conforme el sitio crezca
@@ -24,7 +25,7 @@ La intención del sitio es sostener dos mundos al mismo tiempo:
 - `Astro`
 - `TypeScript`
 - `Tailwind CSS`
-- Colecciones de contenido para `blog` y `projects`
+- Colecciones de contenido para `jardin`, `viajes`, `carrete` y `projects`
 - `astro:assets` para imágenes optimizadas, `@astrojs/sitemap` y `@astrojs/rss`
 
 ## Dirección visual 🎨
@@ -48,7 +49,9 @@ src/
     sections/
     ui/
   content/
-    blog/
+    jardin/
+    viajes/
+    carrete/
     projects/
   layouts/
   pages/
@@ -56,6 +59,7 @@ src/
 tests/
 docs/
   design-system.md
+  superpowers/specs/   # diseños del rediseño "jardín digital" (P1 hecho; P2–P4 pendientes)
 ```
 
 ## Scripts disponibles ⚙️
@@ -86,7 +90,7 @@ Prioridades del proyecto:
 El sitio ya cuenta con:
 
 - home editorial
-- blog
+- jardín digital y carrete
 - proyectos
 - página sobre mí
 - componentes reutilizables

@@ -1,0 +1,31 @@
+---
+import { Image } from "astro:assets";
+import { photoAlt, photoMeta, type Photo } from "@/lib/content";
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+---
+
+<ul class="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
+  {
+    photos.map((photo) => (
+      <li>
+        <a class="group block" href={`/carrete/${photo.data.slug}`}>
+          <div class="paper-panel overflow-hidden rounded-[1.25rem]">
+            <Image
+              class="h-auto w-full transition duration-500 group-hover:scale-[1.02]"
+              src={photo.data.image}
+              alt={photoAlt(photo)}
+              widths={[400, 640, 960]}
+              sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+            />
+          </div>
+          <p class="mt-3 font-mono text-xs leading-5 text-muted">{photoMeta(photo)}</p>
+        </a>
+      </li>
+    ))
+  }
+</ul>
