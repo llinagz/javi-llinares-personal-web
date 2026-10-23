@@ -1,6 +1,6 @@
 # Diseño — Proyecto 2: Nuevo aspecto del jardín
 
-> **Estado: borrador.** Recoge lo que propone el plan maestro y lo decidido hasta ahora. Las decisiones marcadas como "abiertas" hay que conversarlas con Javi antes de construir (usar `superpowers:brainstorming` al arrancar este proyecto).
+> **Estado: implementado.** Las preguntas abiertas del borrador las resolvió Claude por su cuenta, a petición de Javi de saltarse la ronda de preguntas. Están en la sección "Decisiones tomadas" y son **revisables**: son decisiones de Claude, no acuerdos con Javi.
 
 ## Contexto
 
@@ -15,10 +15,10 @@ Es el segundo de cuatro proyectos del rediseño "Jardín digital" (ver [P1 — c
    - `RecentPhoto.astro`: la última foto del carrete, a tamaño generoso y sin recortes artificiales.
    - Enlaces discretos a Proyectos y Servicios (siguen en segundo plano).
 2. **Modo lectura "papel cálido"**: al abrir una entrada del jardín que lo pida, la página pasa a fondo papel y tipografía serif, con transición suave.
-   - Tokens `warm-paper` en `global.css` (el plan maestro propone `#f7f4ed`, `#2d5a43`, etc.; hay que cruzarlos con los tokens actuales, ver preguntas abiertas).
+   - Tokens de papel: se reutilizan los actuales (ver "Decisiones tomadas").
    - Layout de ensayo: ancho de lectura de unos 680 px, `line-height` ≈ 1.75.
-   - `Sidenote.astro`: notas al margen en `lg`; en móvil, desplegables discretos tras el párrafo.
-   - View Transitions (`ClientRouter`) para que el cambio de tema no parpadee. **Ojo**: choca con la restricción actual de "JS de cliente mínimo"; es una excepción deliberada y hay que reflejarla en `CLAUDE.md`.
+   - Notas al margen en `lg`; en móvil, desplegables discretos (ver "Desviaciones": notas al pie + plugin rehype, no `Sidenote.astro`).
+   - Transición suave entre páginas para que el cambio de tema no parpadee (ver "Desviaciones": View Transitions por CSS, no `ClientRouter`).
 3. **Mesa de luz del carrete** (`/carrete/`): disposición masonry que respeta cada proporción (columnas CSS), micro-metadatos en mono, lightbox minimalista a pantalla completa. Sin métricas de ningún tipo.
 
 ## No-objetivos
@@ -27,15 +27,27 @@ Es el segundo de cuatro proyectos del rediseño "Jardín digital" (ver [P1 — c
 - No se tocan las páginas de proyectos ni de servicios más allá de ajustar tokens.
 - Sin contadores, likes ni comentarios.
 
-## Preguntas abiertas (hay que decidirlas con Javi)
+## Decisiones tomadas (por Claude, revisables)
 
-1. **Dirección visual**: la web ya tiene un lenguaje propio ("Editorial CLI / Matrix + Papel", documentado en `docs/design-system.md`, color de marca `#16524e`). El plan maestro propone otro punto de partida (taller oscuro `#0c0d0e`, acento verde `#4ade80`). ¿Se evoluciona el lenguaje actual hacia algo más calmado o se parte del plan maestro? ¿Se quita la lluvia de texto "matrix" del hero, que es lo menos "jardín" de la web?
-2. **Fuente serif** para la lectura: el plan maestro sugiere Literata, Newsreader o Charter. Hoy se usa Georgia del sistema y Cabinet Grotesk (Fontshare) como display. ¿Se autoalojan fuentes (recomendable: sin terceros) o se mantiene Georgia?
-3. **Secciones actuales de la portada** (servicios de diseño web, newsletter, filosofía personal): ¿se eliminan, se mueven a una página propia o quedan como una tarjeta del bento? ¿Se mantiene la newsletter (hoy no hay backend)?
-4. **Tema claro/oscuro**: ¿el modo papel cálido solo se activa en entradas concretas (`paperTheme` en el frontmatter, como propone el plan) o en todas las del jardín? ¿Y hay interruptor para el lector?
-5. **`now.md`**: ¿qué campos? ¿Quién lo actualiza (a mano, o más adelante el bot de P3)?
-6. **Lightbox**: ¿con navegación entre fotos (flechas, teclado)? Requiere JS propio, sin librerías de terceros (hay un test que lo impide).
-7. **Accesibilidad y movimiento**: respetar `prefers-reduced-motion` en las transiciones.
+1. **Dirección visual**: se evoluciona "Matrix + Papel" (marca `#16524e`) hacia algo más calmado; no se adopta la paleta del plan maestro (taller oscuro `#0c0d0e` + acento `#4ade80`), que es el neón que el design system evita. Se retiran la lluvia de caracteres del hero, las scanlines y el texto vertical decorativo; se conserva el grid tenue.
+2. **Serif de lectura**: Literata autoalojada con `@fontsource-variable/literata`, importada solo en el layout de entrada del jardín. Cabinet Grotesk sigue en Fontshare (fuera de alcance).
+3. **Secciones de la portada**: se eliminan del home `HeroSection`, `WebDesignServicesSection`, `PersonalPhilosophySection`, `FeaturedProjectsSection` y `LatestGardenSection`. La newsletter (un enlace a Substack) sigue en `/about` y en la home queda como enlace discreto, junto a Proyectos, Diseño web y Sobre mí.
+4. **Modo papel**: todas las entradas del jardín, sin campo `paperTheme` ni interruptor. El cuerpo largo nunca va sobre oscuro.
+5. **`now.md`**: un fichero, `src/content/now.md`, con `updated` y las listas `reading`, `playing`, `listening` y `building` (las vacías se ocultan). A mano por ahora; esquema plano para que lo escriba el bot de P3. El último viaje se calcula, no se escribe.
+6. **Lightbox**: con navegación (botones, flechas, Esc, deslizar en táctil), `<dialog>` nativo y JS propio.
+7. **Movimiento**: todo respeta `prefers-reduced-motion`.
+
+### Desviaciones respecto al borrador
+
+- **`Sidenote.astro` → notas al pie de Markdown.** El contenido es `.md`, no MDX, así que un componente no se puede invocar desde él. Las notas `[^1]` las convierte en notas al margen el plugin rehype `src/lib/rehype-sidenotes.mjs`. Sin JS.
+- **`ClientRouter` → View Transitions entre documentos por CSS** (`@view-transition`). No hay JS nuevo para esto, así que no hace falta la excepción a "JS de cliente mínimo" que el borrador anticipaba. En navegadores sin soporte, navegación normal.
+- **Token `warm-paper` no creado**: se reutilizan `background` y `paper`. Sí se añade `prose` (#34352f) y se oscurece `muted` (#68736f → #5c6763) porque no llegaba a AA sobre el papel (4,33:1).
+
+## Pendiente de Javi
+
+- Reescribir los textos provisionales de `HomeIntro` (tomados de la antigua portada y de `/about`).
+- Rellenar `now.md` (hoy solo `building: Noesis`).
+- Revisar las decisiones de arriba.
 
 ## Restricciones heredadas
 

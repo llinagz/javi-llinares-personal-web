@@ -1,23 +1,55 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import HeroSection from "@/components/sections/HeroSection.astro";
-import WebDesignServicesSection from "@/components/sections/WebDesignServicesSection.astro";
-import LatestGardenSection from "@/components/sections/LatestGardenSection.astro";
-import FeaturedProjectsSection from "@/components/sections/FeaturedProjectsSection.astro";
-import PersonalPhilosophySection from "@/components/sections/PersonalPhilosophySection.astro";
-import NewsletterSection from "@/components/sections/NewsletterSection.astro";
-import { isPublished } from "@/lib/content";
+import HomeIntro from "@/components/sections/HomeIntro.astro";
+import NowWidget from "@/components/sections/NowWidget.astro";
+import RecentGardenEntry from "@/components/sections/RecentGardenEntry.astro";
+import RecentPhoto from "@/components/sections/RecentPhoto.astro";
+import StartHere from "@/components/sections/StartHere.astro";
+import { isPublished, nowRows, sortByDateDesc, sortByTendedDesc } from "@/lib/content";
 
-const entries = await getCollection("jardin", (entry) => isPublished(entry) && entry.data.featured);
-const projects = await getCollection("projects", ({ data }) => data.featured);
+const entries = sortByTendedDesc(await getCollection("jardin", isPublished));
+const [recent] = entries;
+const startHere = entries.filter((entry) => entry.data.featured && entry.id !== recent?.id).slice(0, 3);
+
+const [photo] = sortByDateDesc(await getCollection("carrete", isPublished));
+const [trip] = (await getCollection("viajes", isPublished)).sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+const [now] = await getCollection("now");
+const hasNow = nowRows(now).length > 0 || Boolean(trip);
+
+const links = [
+  { href: "/projects", label: "Proyectos" },
+  { href: "/servicios/diseno-web/", label: "Diseño web" },
+  { href: "/about", label: "Sobre mí" },
+  { href: "https://vidaentredosmundos.substack.com/", label: "Newsletter", external: true }
+];
 ---
 
 <BaseLayout>
-  <HeroSection />
-  <WebDesignServicesSection />
-  <LatestGardenSection entries={entries} />
-  <FeaturedProjectsSection projects={projects} />
-  <PersonalPhilosophySection />
-  <NewsletterSection />
+  <section class="paper-band pb-16 pt-28 md:pb-24 md:pt-36">
+    <div class="container grid gap-5 lg:grid-cols-12">
+      <HomeIntro class={hasNow ? "lg:col-span-8" : "lg:col-span-12"} />
+      <NowWidget class="lg:col-span-4 lg:self-start" now={now} trip={trip} />
+
+      {recent && <RecentGardenEntry class={photo ? "lg:col-span-7" : "lg:col-span-12"} entry={recent} />}
+      {photo && <RecentPhoto class="lg:col-span-5 lg:self-start" photo={photo} />}
+
+      <StartHere class="mt-6 lg:col-span-12" entries={startHere} />
+
+      <nav class="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-6 font-mono text-sm lg:col-span-12" aria-label="Más sitios">
+        {
+          links.map((link) => (
+            <a
+              class="font-bold text-primary underline decoration-border underline-offset-4 transition-colors hover:text-primary-dark hover:decoration-primary"
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </section>
 </BaseLayout>

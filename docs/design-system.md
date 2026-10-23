@@ -29,14 +29,14 @@ Cada nueva página, componente o sección debe sostener esa dualidad sin dramati
 El rediseño actual da más peso a una estética editorial cálida, con contraste alto y composición más atrevida:
 
 - Header flotante, redondeado y translúcido
-- Landing principal con lenguaje Editorial CLI: ventanas tipo terminal, rutas, prompts, outputs y labels monoespaciados
+- Portada "mesa de trabajo": rejilla bento asimétrica sobre papel, con una tarjeta oscura tipo terminal (`ahora.md`) como único contrapunto
+- Lenguaje Editorial CLI contenido: topbars, rutas y labels monoespaciados como estructura, no como simulación de una app
 - Tarjetas y superficies con aire de papel cálido dentro de marcos oscuros de trabajo
-- Un bloque de artículos más denso y contrastado, tratado como archivo/log editorial
+- Lectura del jardín en papel cálido y serif (ver "Lectura en papel")
 - Proyectos presentados como piezas enlazables de laboratorio y workspace personal
-- Una sección de filosofía más estática y legible, sin artificios de scroll que alteren el flujo
-- CTA final oscuro y sobrio, con mucho contraste
+- Una sensación calmada: sin lluvia de caracteres, scanlines ni texto decorativo
 
-La sensación general debe ser más cercana a una revista o cuaderno de trabajo que a una landing comercial.
+La sensación general debe ser más cercana a una revista o cuaderno de trabajo que a una landing comercial. La dirección actual **evoluciona** el lenguaje "Matrix + Papel" hacia algo más sereno; no se adopta la paleta de taller oscuro con acento verde neón del plan maestro, porque es justo el neón que este documento evita.
 
 ## Patrón Editorial CLI
 
@@ -47,7 +47,8 @@ La Home puede usar una estética inspirada en terminal de comandos siempre que s
 - Reservar la monoespaciada para labels, comandos y metadatos; los titulares siguen viviendo en `display-type` y las frases de síntesis en serif.
 - Evitar neón, dashboards, exceso de microcopy técnica y comandos que dificulten leer los textos principales.
 - Preferir HTML/CSS sobre imágenes generadas cuando el motivo terminal pueda resolverse de forma nativa y accesible.
-- La variante actual del hero puede apoyarse en un fondo oscuro verde tinta con grid, scanlines y lluvia de caracteres muy tenue, siempre en baja opacidad y al servicio de la legibilidad.
+- La atmósfera de las bandas oscuras se limita a un grid muy tenue. Se retiraron la lluvia de caracteres, las scanlines y el texto vertical decorativo: no volver a introducirlos.
+- Las clases `terminal-label` y `terminal-link` están pensadas para fondos oscuros (su color es clay y su hover es claro). Sobre papel usar utilidades propias (`font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary`).
 
 ## Patrón Matrix + Papel
 
@@ -55,7 +56,7 @@ La evolución actual extiende el lenguaje terminal a todo el sitio con un balanc
 
 - Usar fondos `matrix-page` o `matrix-section` para cabeceras, índices, CTAs, footer y bloques de navegación editorial.
 - Usar `paper-band`, `paper-panel` y `prose-shell` para lectura larga, tarjetas principales y contenidos que necesitan calma visual.
-- Mantener la lluvia de caracteres, grid y scanlines como atmósfera, nunca como protagonista.
+- Mantener solo el grid tenue como atmósfera, nunca como protagonista.
 - No poner cuerpos largos directamente sobre fondo oscuro salvo textos breves de hero, CTA o metadatos.
 - Alternar bandas oscuras y cálidas para que el sitio se sienta técnico sin perder respiración editorial.
 
@@ -93,7 +94,8 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `--color-background`: `#f5f0e6`
 - `--color-surface`: `#fffaf0`
 - `--color-text`: `#14211f`
-- `--color-muted`: `#68736f`
+- `--color-muted`: `#5c6763` (oscurecido desde `#68736f`, que daba 4,33:1 sobre `background` y no llegaba a AA; ahora 5,17:1)
+- `--color-prose`: `#34352f` (texto largo de lectura sobre papel, 10,9:1 sobre `background`)
 - `--color-border`: `#d8d0bf`
 - `--color-ink`: `#081917`
 - `--color-clay`: `#b55d38`
@@ -109,6 +111,8 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `surface` para tarjetas y contenedores elevados.
 - `text` para titulares y texto de alta prioridad.
 - `muted` para cuerpo secundario, metadatos y supporting copy.
+- `prose` para el cuerpo de lectura larga (`reading-column`). `prose` y `muted` son hex, no canales RGB: no admiten modificadores de opacidad.
+- `clay` (#b55d38) sobre papel da solo ~4:1: usarlo en fondos oscuros (como `clay-light`) o en texto grande, no en texto pequeño sobre papel.
 - `border` para separar sin endurecer la interfaz.
 - `ink` para fondos oscuros de alto contraste.
 - `paper` para superficies claras de tono editorial.
@@ -128,6 +132,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 - Sans/display: `Cabinet Grotesk, Outfit, ui-sans-serif, system-ui, sans-serif`
 - Serif: `Georgia, Cambria, "Times New Roman", serif`
+- Serif de lectura (solo entradas del jardín): `"Literata Variable", Georgia, …`, autoalojada con `@fontsource-variable/literata` (sin peticiones a terceros) e importada únicamente en `GardenEntryLayout`.
 
 ### Criterio tipográfico
 
@@ -146,7 +151,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 - Titulares compactos, con interlineado ajustado y peso negro o semibold según el contexto.
 - Cuerpo con aire suficiente para lectura larga.
-- Medida de lectura ideal en contenido: alrededor de `760px`.
+- Medida de lectura ideal en contenido: alrededor de `760px` (`prose-content`); en las entradas del jardín, `680px` con `line-height` 1.75 (`reading-column`).
 
 ## Espaciado y composición
 
@@ -202,6 +207,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - Respetar `prefers-reduced-motion`.
 - Usar movimiento para feedback, no para entretenimiento.
 - Si un efecto de scroll o pinning complica el flujo en pantallas pequeñas, se prefiere simplificarlo o desactivarlo.
+- Entre páginas hay una transición suave con View Transitions entre documentos, solo CSS (`@view-transition { navigation: auto; }` en `global.css`), activa únicamente con `prefers-reduced-motion: no-preference`. El header lleva `view-transition-name` para no parpadear. No hay `ClientRouter` ni JS para esto.
 
 ## Patrones de componentes
 
@@ -212,13 +218,26 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - En la versión actual, el header es flotante, redondeado y ligeramente translúcido.
 - El CTA del header debe ser sobrio y coherente con la paleta principal.
 
-### Hero
+### Portada "mesa de trabajo"
 
-- Debe presentar con claridad la intersección entre software, pensamiento y vida cotidiana.
-- Titular grande con `display-type`.
-- Subtítulo legible y humano.
-- La pieza visual de apoyo puede ser conceptual y editorial, no publicitaria.
-- Puede incluir una imagen inline o un bloque visual lateral, siempre que no rompa la lectura.
+- Rejilla de 12 columnas en `lg` (una columna en móvil) sobre `paper-band`: intro (8) + `ahora.md` (4); última entrada regada (7) + última foto (5); "Para empezar" (12) y una fila de enlaces discretos.
+- `HomeIntro`: titular `display-type` y una frase en serif con la voz del autor. Sin imagen ni terminal decorativos.
+- `NowWidget`: única tarjeta oscura de la portada. Solo pinta las filas con contenido (`nowRows`), más el último viaje publicado. Se alimenta de `src/content/now.md`.
+- `RecentGardenEntry`: la entrada con `updated ?? created` más reciente, con su estado (🌱 🌿 🌳).
+- `RecentPhoto`: última foto del carrete en sus proporciones reales, sin recortes. Si no hay fotos publicadas, no se pinta y la entrada reciente ocupa todo el ancho.
+- `StartHere`: hasta 3 entradas `featured`. Es lo que da sentido al campo `featured`.
+- Proyectos, diseño web, sobre mí y newsletter quedan como enlaces discretos, en segundo plano.
+
+### Lectura en papel
+
+- Todas las entradas del jardín (`GardenEntryLayout`) usan `reading-page`: fondo `background`, sin bandas oscuras salvo el footer, cabecera en papel y cuerpo en `reading-column` (Literata, `prose`).
+- No hay interruptor de tema: el cuerpo largo nunca va sobre oscuro.
+- **Notas al margen**: se escriben como notas al pie de Markdown (`[^1]`); `src/lib/rehype-sidenotes.mjs` las convierte en checkbox + etiqueta + `span.sidenote`. En `lg` flotan en el margen derecho (14rem); en móvil el número las despliega en el sitio. Sin JS y accesibles con teclado (checkbox visualmente oculto pero enfocable).
+
+### Mesa de luz (carrete)
+
+- `PhotoGrid`: masonry con columnas CSS (1/2/3), cada foto en su proporción, borde fino en lugar de sombra y micro-metadatos en mono. Sin métricas de ningún tipo.
+- `Lightbox`: `<dialog>` nativo a pantalla completa con JS propio (botones, flechas, Esc, deslizar en táctil). Es mejora progresiva: sin JS cada foto enlaza a su página. El `<img>` del visor se crea desde el script.
 
 ### Bloques de contenido
 

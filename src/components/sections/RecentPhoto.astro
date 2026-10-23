@@ -1,0 +1,27 @@
+---
+import { Image } from "astro:assets";
+import { photoAlt, photoMeta, type Photo } from "@/lib/content";
+
+interface Props {
+  photo: Photo;
+  class?: string;
+}
+
+const { photo, class: customClass = "" } = Astro.props;
+---
+
+<a class:list={["group block", customClass]} href={`/carrete/${photo.data.slug}`} data-reveal style="--reveal-index:3">
+  <figure class="paper-panel overflow-hidden rounded-[1.75rem]">
+    <Image
+      class="h-auto w-full transition duration-700 group-hover:scale-[1.015]"
+      src={photo.data.image}
+      alt={photoAlt(photo)}
+      widths={[480, 720, 960, 1280]}
+      sizes="(min-width: 1024px) 480px, 100vw"
+    />
+    <figcaption class="p-5">
+      <p class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary">Lo último del carrete</p>
+      <p class="mt-2 font-mono text-xs leading-5 text-muted">{photoMeta(photo)}</p>
+    </figcaption>
+  </figure>
+</a>

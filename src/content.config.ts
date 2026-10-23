@@ -94,4 +94,17 @@ const projects = defineCollection({
   })
 });
 
-export const collections = { jardin, viajes, carrete, projects };
+// Ahora: estado vital actual, un único fichero `src/content/now.md` editado a mano (o por el bot de P3).
+// Las listas vacías ocultan su fila en la portada.
+const now = defineCollection({
+  loader: glob({ pattern: "now.md", base: "./src/content" }),
+  schema: z.object({
+    updated: z.coerce.date(),
+    reading: z.array(z.string()).default([]),
+    playing: z.array(z.string()).default([]),
+    listening: z.array(z.string()).default([]),
+    building: z.array(z.string()).default([])
+  })
+});
+
+export const collections = { jardin, viajes, carrete, projects, now };
