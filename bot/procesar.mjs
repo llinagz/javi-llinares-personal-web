@@ -1,5 +1,5 @@
 // Orquestador: de un update de Telegram a un commit en el repo. Las dependencias se inyectan (ver api/telegram.mjs).
-import { buildGardenEntry, buildPhotoEntry } from "./entrada.mjs";
+import { buildGardenEntry, buildPhotoEntry, buildTripEntry } from "./entrada.mjs";
 import { parseMessage } from "./mensaje.mjs";
 
 const madridDate = (unixSeconds) => new Date(unixSeconds * 1000).toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
@@ -20,13 +20,11 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
     if (parsed.kind === "carrete" && tags.borrador) {
       return await say("#borrador no vale con fotos: el repositorio es público y la imagen quedaría accesible. Envíala sin la etiqueta.");
     }
-    if (tags.viaje && !(await github.tripExists(tags.viaje))) {
-      return await say(`No existe ningún viaje con el slug "${tags.viaje}".`);
-    }
     if (await github.alreadyProcessed(update.update_id)) return;
 
     const today = madridDate(message.date);
     let entry;
+    let newTrip;
     if (parsed.kind === "jardin") {
       entry = buildGardenEntry({
         text,
@@ -38,14 +36,20 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
       });
     } else {
       const { image, exif } = await processPhoto(await telegram.downloadFile(parsed.fileId));
+      const photoDate = exif.takenOn ?? today;
       entry = buildPhotoEntry({
         text,
-        date: exif.takenOn ?? today,
+        date: photoDate,
         exif,
         viaje: tags.viaje,
         slugs: await github.readSlugs("carrete"),
         image
       });
+      // Un `#viaje` desconocido crea el viaje en el mismo commit, con la fecha de la primera foto.
+      if (tags.viaje && !(await github.tripExists(tags.viaje))) {
+        newTrip = buildTripEntry({ slug: tags.viaje, date: photoDate });
+        entry.files.push(newTrip.file);
+      }
     }
 
     await github.commitFiles({
@@ -54,7 +58,8 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
     });
 
     const url = `${siteUrl}/${entry.section}/${entry.slug}/`;
-    await say(entry.draft ? `Guardado como borrador: ${entry.slug}` : `Publicado (visible en ~1 min): ${url}`);
+    const created = newTrip ? `\nHe creado el viaje "${newTrip.title}" (edita ${newTrip.file.path} para ponerle lugar, resumen y relato).` : "";
+    await say((entry.draft ? `Guardado como borrador: ${entry.slug}` : `Publicado (visible en ~1 min): ${url}`) + created);
   } catch (error) {
     console.error(error);
     await say(`No he podido publicarlo: ${error.message}`).catch(() => {});

@@ -50,6 +50,23 @@ export function buildGardenEntry({ text, date, createdAt, borrador = false, stag
   return { slug, title, section: "jardin", draft: borrador, files: [{ path: `src/content/jardin/${slug}.md`, content }] };
 }
 
+// Viaje mínimo creado al vuelo por `#viaje <slug>`: publicado (la foto enlaza a su página) y con datos
+// provisionales (título derivado del slug, lugar = título) que se pulen a mano después.
+export function buildTripEntry({ slug, date }) {
+  const title = slug.replace(/-/g, " ").replace(/^./, (letter) => letter.toUpperCase());
+  const content =
+    frontmatter([
+      ["title", title],
+      ["slug", slug],
+      ["place", title],
+      ["startDate", raw(date)],
+      ["summary", `Fotos de ${title}.`],
+      ["draft", undefined]
+    ]) + `\nEscribe aquí el relato del viaje.\n`;
+
+  return { title, file: { path: `src/content/viajes/${slug}.md`, content } };
+}
+
 // Foto del carrete: título = primera línea del pie; el resto de líneas es el `caption`.
 export function buildPhotoEntry({ text, date, exif = {}, viaje, slugs, image }) {
   const { first, rest } = splitLines(text);

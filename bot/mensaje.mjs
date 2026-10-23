@@ -5,7 +5,7 @@ export const HELP = [
   "• Texto sin foto → pensamiento del jardín. La primera línea es el título; el resto, el cuerpo (con una sola línea, sirve de ambos).",
   "• #semilla, #creciendo o #perenne → etapa de la entrada (por defecto, semilla).",
   "• Foto con pie → foto del carrete. La primera línea del pie es el título; el resto, el pie.",
-  "• #viaje <slug> → asocia la foto a un viaje existente.",
+  "• #viaje <slug> → asocia la foto a ese viaje; si no existe, lo crea (título derivado del slug, editable después).",
   "• #borrador → deja el texto sin publicar (no vale con fotos: el repo es público).",
   "Puedes enviar la foto como documento para conservar la calidad original y la ficha técnica."
 ].join("\n");

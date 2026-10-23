@@ -317,7 +317,7 @@ Para publicar en el momento sin tocar el portátil. Preparación y variables: [b
 | Texto | Pensamiento del jardín (`semilla` por defecto). La primera línea es el título; el resto, el cuerpo (con una sola línea, sirve de ambos) |
 | `#semilla`, `#creciendo` o `#perenne` en un texto | Fija la etapa (`stage`) de la entrada |
 | Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption`. Sin pie: "Foto del <fecha>" |
-| `#viaje <slug>` en el texto o el pie | Asocia la foto a un viaje que ya exista |
+| `#viaje <slug>` en el pie | Asocia la foto a ese viaje. Si no existe, el bot lo crea publicado, con título derivado del slug (`cadiz-2026` → "Cadiz 2026"), lugar igual al título, inicio en la fecha de la foto y un resumen provisional. Edita `src/content/viajes/<slug>.md` para pulirlo |
 | `#borrador` en un texto | Se guarda con `draft: true`. **No vale con fotos** (repo público) |
 
 - La foto se reduce a 2560 px y se le quitan **todos** los metadatos, GPS incluido. Si la mandas como documento, se aprovecha el EXIF para rellenar cámara, focal, apertura, velocidad e ISO y la fecha.

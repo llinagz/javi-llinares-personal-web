@@ -167,12 +167,30 @@ describe("handleUpdate", () => {
     assert.equal(calls.commits.length, 0);
   });
 
-  test("#borrador con foto y #viaje inexistente: respuesta de error sin commit", async () => {
+  test("#borrador con foto: respuesta de error sin commit", async () => {
     const { calls, deps } = setup();
     await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "x #borrador" }), deps);
-    await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "x #viaje no-existe" }), deps);
     assert.equal(calls.commits.length, 0);
-    assert.equal(calls.replies.length, 2);
+    assert.equal(calls.replies.length, 1);
+  });
+
+  test("#viaje inexistente: crea el viaje en el mismo commit que la foto", async () => {
+    const { calls, deps } = setup();
+    await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Playa #viaje cadiz-2026" }), deps);
+    assert.equal(calls.commits.length, 1);
+    const trip = calls.commits[0].files.find((file) => file.path === "src/content/viajes/cadiz-2026.md");
+    assert.ok(trip);
+    assert.match(trip.content, /title: "Cadiz 2026"/);
+    assert.match(trip.content, /startDate: 2026-10-20/);
+    assert.doesNotMatch(trip.content, /draft/);
+    assert.match(calls.replies[0], /He creado el viaje "Cadiz 2026"/);
+  });
+
+  test("#viaje existente: no vuelve a crearlo", async () => {
+    const { calls, deps } = setup();
+    await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Faro #viaje asturias-2026" }), deps);
+    assert.ok(!calls.commits[0].files.some((file) => file.path.includes("/viajes/")));
+    assert.doesNotMatch(calls.replies[0], /He creado/);
   });
 
   test("texto: un commit con el .md y respuesta con la URL", async () => {
