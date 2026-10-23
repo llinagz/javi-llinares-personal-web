@@ -5,6 +5,7 @@ import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } fr
 import { extname, join, relative } from "node:path";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
+import { date, frontmatter, slugFrom, slugify } from "./lib/frontmatter.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const content = join(root, "src", "content");
@@ -78,21 +79,13 @@ function isDate(text) {
 }
 const dateError = (text) => (isDate(text) ? null : "Usa el formato AAAA-MM-DD, por ejemplo 2026-10-24.");
 
-const slugify = (text) =>
-  text
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
 // Slugs ya usados en una colección (el nombre del fichero no tiene por qué coincidir).
 function slugsOf(collection) {
   const dir = join(content, collection);
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
     .filter((name) => name.endsWith(".md"))
-    .map((name) => readFileSync(join(dir, name), "utf8").match(/^slug:\s*["']?([^"'\r\n]+?)["']?\s*$/m)?.[1])
+    .map((name) => slugFrom(readFileSync(join(dir, name), "utf8")))
     .filter(Boolean);
 }
 
@@ -125,29 +118,6 @@ async function askImage(question, { required }) {
     { required }
   );
   return answer && answer.replace(/^["']|["']$/g, "");
-}
-
-// --- Serialización del frontmatter -------------------------------------------------------------
-
-const date = (text) => ({ raw: text });
-
-function format(value) {
-  if (value && typeof value === "object" && !Array.isArray(value)) {
-    if ("raw" in value) return value.raw;
-    const entries = Object.entries(value).filter(([, inner]) => inner !== undefined && inner !== "");
-    return `\n${entries.map(([key, inner]) => `  ${key}: ${format(inner)}`).join("\n")}`;
-  }
-  return typeof value === "string" || Array.isArray(value) ? JSON.stringify(value) : String(value);
-}
-
-function frontmatter(fields) {
-  const lines = fields
-    .filter(([, value]) => value !== undefined && value !== "" && !(Array.isArray(value) && value.length === 0))
-    .map(([key, value]) => {
-      const text = format(value);
-      return text.startsWith("\n") ? `${key}:${text}` : `${key}: ${text}`;
-    });
-  return `---\n${lines.join("\n")}\n---\n`;
 }
 
 // --- Un asistente por colección ----------------------------------------------------------------

@@ -1,6 +1,7 @@
 # Diseño — Proyecto 3: Publicar desde el móvil, en el momento
 
-> **Estado: borrador.** Recoge lo que propone el plan maestro adaptado a Vercel y lo decidido hasta ahora. Las decisiones marcadas como "abiertas" hay que conversarlas con Javi antes de construir (usar `superpowers:brainstorming` al arrancar este proyecto).
+> **Estado: implementado (ver `docs/bot-telegram.md`).** Decisiones: solo Telegram; commit directo; se conserva la ficha técnica del EXIF y se elimina todo lo demás (GPS incluido); `#borrador` solo con texto (repo público); fotos como foto o documento, una entrada por foto; endpoint en `api/` sin adapter. Texto original del borrador:
+> Recoge lo que propone el plan maestro adaptado a Vercel y lo decidido hasta ahora. Las decisiones marcadas como "abiertas" hay que conversarlas con Javi antes de construir (usar `superpowers:brainstorming` al arrancar este proyecto).
 
 ## Contexto
 

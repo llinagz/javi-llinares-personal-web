@@ -307,3 +307,19 @@ currentStage: "Dónde está ahora."
 - [ ] Revisado en `npm run dev`
 - [ ] `npm test` en verde
 - [ ] Commit y push
+
+## 12. Desde el móvil (bot de Telegram)
+
+Para publicar en el momento sin tocar el portátil. Preparación y variables: [bot-telegram.md](bot-telegram.md).
+
+| Envías | Resultado |
+|---|---|
+| Texto | Pensamiento del jardín (`semilla`). La primera línea es el título; el resto, el cuerpo |
+| Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption`. Sin pie: "Foto del <fecha>" |
+| `#viaje <slug>` en el texto o el pie | Asocia la foto a un viaje que ya exista |
+| `#borrador` en un texto | Se guarda con `draft: true`. **No vale con fotos** (repo público) |
+
+- La foto se reduce a 2560 px y se le quitan **todos** los metadatos, GPS incluido. Si la mandas como documento, se aprovecha el EXIF para rellenar cámara, focal, apertura, velocidad e ISO y la fecha.
+- Una entrada por foto: en un álbum solo la primera lleva pie.
+- El bot responde con el enlace (visible en ~1 minuto) o con el motivo del fallo. Commitea directo a la rama configurada.
+- El bot no toca `now.md`, viajes ni artículos largos: eso sigue siendo a mano.
