@@ -3,7 +3,7 @@ name: "Backlog Pixel"
 slug: "backlog-pixel"
 description: "Una PWA local-first para registrar películas, series, videojuegos, libros, cómics y música sin depender de una cuenta ni de una plataforma ajena."
 longDescription: "Backlog Pixel convierte el seguimiento del ocio en una herramienta pequeña, privada y agradable de usar: un catálogo personal para recordar qué vimos, jugamos, leímos o escuchamos."
-image: "/images/projects/backlog-pixel.png"
+image: "../../assets/images/projects/backlog-pixel.png"
 status: "Publicado"
 techStack: ["PWA", "TypeScript", "Local-first", "Producto"]
 featured: true

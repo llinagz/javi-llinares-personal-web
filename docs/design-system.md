@@ -97,6 +97,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `--color-border`: `#d8d0bf`
 - `--color-ink`: `#081917`
 - `--color-clay`: `#b55d38`
+- `--color-clay-light`: `#d08762` (clay sobre fondos oscuros: comandos, rutas y enlaces de acento)
 - `--color-paper`: `#fff7e8`
 
 ### Uso del color
@@ -111,6 +112,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `border` para separar sin endurecer la interfaz.
 - `ink` para fondos oscuros de alto contraste.
 - `paper` para superficies claras de tono editorial.
+- Los tokens `ink`, `paper`, `terminal`, `terminal-text` y `clay-light` están definidos como canales RGB (`--color-*-rgb`) y expuestos en Tailwind (`text-paper`, `bg-terminal/[0.76]`…). Usar estos nombres en lugar de hex o `rgba()` arbitrarios.
 - El favicon usa un monograma `JL` en tono `paper` sobre fondo `primary`, con trazos gruesos y composición compacta para conservar legibilidad en tamaños pequeños.
 
 ### Reglas de color

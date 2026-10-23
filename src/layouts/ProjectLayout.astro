@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { formatDate } from "@/lib/content";
@@ -11,7 +12,7 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<BaseLayout title={`${project.data.name} | Proyectos | Javi Llinares`} description={project.data.description}>
+<BaseLayout title={`${project.data.name} | Proyectos | Javi Llinares`} description={project.data.description} image={project.data.image}>
   <article>
     <header class="matrix-page page-hero">
       <div class="container relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -19,16 +20,23 @@ const { project } = Astro.props;
           <a class="terminal-link" href="/projects">← Proyectos</a>
           <div class="mt-8 flex flex-wrap items-center gap-3">
             <Badge tone="soft">{project.data.status}</Badge>
-            <span class="font-mono text-sm text-[rgba(247,239,223,0.62)]">{formatDate(project.data.date)}</span>
+            <span class="font-mono text-sm text-terminal-text/[0.62]">{formatDate(project.data.date)}</span>
           </div>
-          <h1 class="mt-6 max-w-4xl font-serif text-4xl font-semibold leading-tight tracking-tight text-[#fff7e8] md:text-6xl">
+          <h1 class="mt-6 max-w-4xl font-serif text-4xl font-semibold leading-tight tracking-tight text-paper md:text-6xl">
             {project.data.name}
           </h1>
-          <p class="mt-6 max-w-3xl text-xl leading-8 text-[rgba(247,239,223,0.72)]">{project.data.longDescription}</p>
+          <p class="mt-6 max-w-3xl text-xl leading-8 text-terminal-text/[0.72]">{project.data.longDescription}</p>
           {
             project.data.image && (
               <div class="paper-panel mt-10 overflow-hidden rounded-[2rem]">
-                <img class="h-[420px] w-full object-cover" src={project.data.image} alt={`Imagen editorial del proyecto ${project.data.name}`} />
+                <Image
+                  class="h-[420px] w-full object-cover"
+                  src={project.data.image}
+                  alt={`Imagen editorial del proyecto ${project.data.name}`}
+                  widths={[640, 960, 1280]}
+                  sizes="(min-width: 1024px) 800px, 100vw"
+                  loading="eager"
+                />
               </div>
             )
           }
