@@ -224,7 +224,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `HomeIntro`: titular `display-type` y una frase en serif con la voz del autor. Sin imagen ni terminal decorativos.
 - `NowWidget`: única tarjeta oscura de la portada. Solo pinta las filas con contenido (`nowRows`), más el último viaje publicado. Se alimenta de `src/content/now.md`.
 - `RecentGardenEntry`: la entrada con `updated ?? created` más reciente, con su estado (🌱 🌿 🌳).
-- `RecentPhoto`: última foto del carrete en sus proporciones reales, sin recortes. Si no hay fotos publicadas, no se pinta y la entrada reciente ocupa todo el ancho.
+- `RecentPhoto`: última foto del carrete en sus proporciones reales, sin recortes. El pie lleva el título, la línea de metadatos y los temas como `#tema` (mono, color primario); igual en `PhotoGrid`. Si no hay fotos publicadas, no se pinta y la entrada reciente ocupa todo el ancho.
 - `StartHere`: hasta 3 entradas `featured`. Es lo que da sentido al campo `featured`.
 - Proyectos, diseño web, sobre mí y newsletter quedan como enlaces discretos, en segundo plano.
 
