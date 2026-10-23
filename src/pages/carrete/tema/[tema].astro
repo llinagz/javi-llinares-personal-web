@@ -1,0 +1,17 @@
+---
+import PhotoListing from "@/components/sections/PhotoListing.astro";
+import { getTopicIndex } from "@/lib/content";
+
+export async function getStaticPaths() {
+  return [...(await getTopicIndex()).values()]
+    .filter((topic) => topic.photos.length > 0)
+    .map((topic) => ({
+      params: { tema: topic.slug },
+      props: { topic: { slug: topic.slug, label: topic.label }, photos: topic.photos }
+    }));
+}
+
+const { topic, photos } = Astro.props;
+---
+
+<PhotoListing photos={photos} activeTopic={topic} />

@@ -5,6 +5,7 @@ import HomeIntro from "@/components/sections/HomeIntro.astro";
 import NowWidget from "@/components/sections/NowWidget.astro";
 import RecentGardenEntry from "@/components/sections/RecentGardenEntry.astro";
 import RecentPhoto from "@/components/sections/RecentPhoto.astro";
+import RecentTrip from "@/components/sections/RecentTrip.astro";
 import StartHere from "@/components/sections/StartHere.astro";
 import { isPublished, nowRows, sortByDateDesc, sortByTendedDesc } from "@/lib/content";
 
@@ -15,7 +16,14 @@ const startHere = entries.filter((entry) => entry.data.featured && entry.id !== 
 const [photo] = sortByDateDesc(await getCollection("carrete", isPublished));
 const [trip] = (await getCollection("viajes", isPublished)).sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
 const [now] = await getCollection("now");
-const hasNow = nowRows(now).length > 0 || Boolean(trip);
+const hasNow = nowRows(now).length > 0 || Boolean(now?.body?.trim());
+
+// La rejilla se reacomoda según qué piezas existan: Ahora (3) · entrada (resto) · foto y viaje (4).
+const hasRight = Boolean(photo || trip);
+const entryClass = hasNow
+  ? hasRight ? "lg:col-span-5" : "lg:col-span-9"
+  : hasRight ? "lg:col-span-8" : "lg:col-span-12";
+const rightRows = photo && trip ? "" : "lg:row-span-2";
 
 const links = [
   { href: "/projects", label: "Proyectos" },
@@ -26,21 +34,22 @@ const links = [
 ---
 
 <BaseLayout>
-  <section class="paper-band pb-16 pt-28 md:pb-24 md:pt-36">
-    <div class="container grid gap-5 lg:grid-cols-12">
-      <HomeIntro class={hasNow ? "lg:col-span-8" : "lg:col-span-12"} />
-      <NowWidget class="lg:col-span-4 lg:self-start" now={now} trip={trip} />
+  <section class="matrix-section pb-16 pt-28 md:pb-24 md:pt-32">
+    <div class="container relative grid gap-4 lg:grid-cols-12">
+      <HomeIntro class="mb-4 lg:col-span-12" />
 
-      {recent && <RecentGardenEntry class={photo ? "lg:col-span-7" : "lg:col-span-12"} entry={recent} />}
-      {photo && <RecentPhoto class="lg:col-span-5 lg:self-start" photo={photo} />}
+      {hasNow && <NowWidget class="lg:col-span-3 lg:row-span-2" now={now} />}
+      {recent && <RecentGardenEntry class={`${entryClass} lg:row-span-2`} entry={recent} />}
+      {photo && <RecentPhoto class={`lg:col-span-4 ${rightRows}`} photo={photo} />}
+      {trip && <RecentTrip class={`lg:col-span-4 ${rightRows}`} trip={trip} />}
 
-      <StartHere class="mt-6 lg:col-span-12" entries={startHere} />
+      <StartHere class="mt-8 lg:col-span-12" entries={startHere} />
 
-      <nav class="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-6 font-mono text-sm lg:col-span-12" aria-label="Más sitios">
+      <nav class="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-terminal-text/[0.12] pt-6 font-mono text-sm lg:col-span-12" aria-label="Más sitios">
         {
           links.map((link) => (
             <a
-              class="font-bold text-primary underline decoration-border underline-offset-4 transition-colors hover:text-primary-dark hover:decoration-primary"
+              class="text-terminal-text/[0.78] underline decoration-terminal-text/[0.3] underline-offset-4 transition-colors hover:text-paper hover:decoration-paper"
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}

@@ -1,14 +1,13 @@
 ---
 import { render } from "astro:content";
-import { formatDate, nowRows, type Now, type Trip } from "@/lib/content";
+import { formatDate, nowRows, type Now } from "@/lib/content";
 
 interface Props {
   now?: Now;
-  trip?: Trip;
   class?: string;
 }
 
-const { now, trip, class: customClass = "" } = Astro.props;
+const { now, class: customClass = "" } = Astro.props;
 
 const rows = nowRows(now);
 
@@ -16,44 +15,33 @@ const NoteContent = now?.body?.trim() ? (await render(now)).Content : undefined;
 ---
 
 {
-  (rows.length > 0 || trip) && (
-    <section class:list={["terminal-shell rounded-[1.75rem]", customClass]} aria-labelledby="now-title" data-reveal style="--reveal-index:1">
-      <div class="terminal-topbar relative">
-        <span class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-        <span id="now-title">ahora.md</span>
-      </div>
+  (rows.length > 0 || NoteContent) && (
+    <section class:list={["garden-card p-6", customClass]} aria-labelledby="now-title" data-reveal style="--reveal-index:1">
+      <h2 id="now-title" class="editorial-serif text-4xl font-normal leading-none text-terminal-text">Ahora</h2>
+      {now && <p class="mt-2 font-mono text-xs text-terminal-text/[0.6]">actualizado el {formatDate(now.data.updated)}</p>}
 
-      <div class="relative p-6 md:p-7">
-        <dl class="grid gap-5">
-          {
-            rows.map((row) => (
-              <div>
-                <dt class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-clay-light">{row.label}</dt>
-                <dd class="mt-1 text-base leading-7 text-terminal-text">{row.items.join(" · ")}</dd>
-              </div>
-            ))
-          }
-          {
-            trip && (
-              <div>
-                <dt class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-clay-light">último viaje</dt>
-                <dd class="mt-1 text-base leading-7 text-terminal-text">
-                  <a class="underline decoration-terminal-text/[0.4] underline-offset-4 transition hover:decoration-terminal-text" href={`/carrete/viajes/${trip.data.slug}`}>
-                    {trip.data.place}
-                  </a>
-                </dd>
-              </div>
-            )
-          }
-        </dl>
+      {
+        NoteContent && (
+          <div class="editorial-serif mt-6 text-xl leading-8 text-terminal-text/[0.86]">
+            <NoteContent />
+          </div>
+        )
+      }
+
+      <dl class="mt-6 grid gap-4">
         {
-          NoteContent && (
-            <div class="editorial-serif mt-6 border-t border-paper/15 pt-5 text-lg leading-7 text-terminal-text/[0.82]">
-              <NoteContent />
+          rows.map((row) => (
+            <div>
+              <dt class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-clay-light">{row.label}</dt>
+              <dd class="editorial-serif mt-1 text-lg leading-7 text-terminal-text">{row.items.join(" · ")}</dd>
             </div>
-          )
+          ))
         }
-        {now && <p class="mt-6 font-mono text-xs text-terminal-text/[0.66]">actualizado el {formatDate(now.data.updated)}</p>}
+      </dl>
+
+      <div class="mt-auto flex items-center justify-between gap-3 pt-8">
+        <span class="h-2.5 w-2.5 rounded-full bg-clay-light shadow-[0_0_10px_rgb(var(--color-clay-light-rgb))]" aria-hidden="true"></span>
+        <span class="garden-chip">estado: regando</span>
       </div>
     </section>
   )

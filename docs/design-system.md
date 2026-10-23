@@ -216,16 +216,18 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - Debe ser limpio, estable y fácil de escanear.
 - Puede quedarse fijo si no compite con el contenido.
 - En la versión actual, el header es flotante, redondeado y ligeramente translúcido.
-- El CTA del header debe ser sobrio y coherente con la paleta principal.
+- Sin CTA: la navegación va como rutas en monoespaciada (`/jardín`, `/carrete`…); la activa lleva fondo `paper/[0.08]` y `aria-current="page"`. La marca va en serif.
 
 ### Portada "mesa de trabajo"
 
-- Rejilla de 12 columnas en `lg` (una columna en móvil) sobre `paper-band`: intro (8) + `ahora.md` (4); última entrada regada (7) + última foto (5); "Para empezar" (12) y una fila de enlaces discretos.
-- `HomeIntro`: titular `display-type` y una frase en serif con la voz del autor. Sin imagen ni terminal decorativos.
-- `NowWidget`: única tarjeta oscura de la portada. Solo pinta las filas con contenido (`nowRows`), más el último viaje publicado. Se alimenta de `src/content/now.md`.
-- `RecentGardenEntry`: la entrada con `updated ?? created` más reciente, con su estado (🌱 🌿 🌳).
-- `RecentPhoto`: última foto del carrete en sus proporciones reales, sin recortes. El pie lleva el título, la línea de metadatos y los temas como `#tema` (mono, color primario); igual en `PhotoGrid`. Si no hay fotos publicadas, no se pinta y la entrada reciente ocupa todo el ancho.
-- `StartHere`: hasta 3 entradas `featured`. Es lo que da sentido al campo `featured`.
+- Banda oscura (`matrix-section`) con rejilla bento de 12 columnas en `lg` (una columna en móvil): `Ahora` (3, alta) · última entrada regada (5, alta) · foto y último viaje apiladas (4). Debajo, "Para empezar" y una fila de enlaces discretos. Si faltan piezas la rejilla se reacomoda en `index.astro`.
+- Tarjetas con `.garden-card` (borde fino, fondo terminal suave, sin sombra) y metadatos en `.garden-chip` (mono). Excepción consciente a "cuerpos largos nunca sobre oscuro": aquí solo hay extractos cortos en serif.
+- `HomeIntro`: cabecera compacta (`~/javi`, titular serif y una frase). Sin botones.
+- `NowWidget`: título "Ahora" en serif, nota y filas con contenido (`nowRows`), chip de estado al pie. Se alimenta de `src/content/now.md`.
+- `RecentGardenEntry`: la entrada con `updated ?? created` más reciente, con su estado (🌱 🌿 🌳), título serif grande y extracto.
+- `RecentPhoto`: última foto del carrete rellenando la celda (`object-cover`) con el título y el año en un chip. La foto completa está en su página.
+- `RecentTrip`: último viaje publicado, con curvas de nivel decorativas en SVG (no hay datos de ruta).
+- `StartHere`: hasta 3 entradas `featured` en lista compacta. Es lo que da sentido al campo `featured`.
 - Proyectos, diseño web, sobre mí y newsletter quedan como enlaces discretos, en segundo plano.
 
 ### Lectura en papel

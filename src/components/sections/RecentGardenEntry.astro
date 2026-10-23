@@ -1,14 +1,5 @@
 ---
-import Badge from "@/components/ui/Badge.astro";
-import {
-  excerpt,
-  formatDate,
-  gardenStages,
-  gardenTypes,
-  lastTended,
-  readingTime,
-  type GardenEntry
-} from "@/lib/content";
+import { excerpt, formatDate, gardenStages, gardenTypes, lastTended, readingTime, type GardenEntry } from "@/lib/content";
 
 interface Props {
   entry: GardenEntry;
@@ -21,25 +12,27 @@ const stage = gardenStages[data.stage];
 ---
 
 <a
-  class:list={[
-    "paper-panel group flex min-h-[20rem] flex-col justify-between rounded-[1.75rem] p-7 transition duration-500 hover:-translate-y-1 md:p-9",
-    customClass
-  ]}
+  class:list={["garden-card group p-7 md:p-8", customClass]}
   href={`/jardin/${data.slug}`}
   data-reveal
   style="--reveal-index:2"
 >
-  <div class="flex items-center justify-between gap-3">
-    <Badge tone="soft">{gardenTypes[data.type]}</Badge>
-    <span class="font-mono text-xs text-muted">{stage.icon} {stage.label}</span>
+  <div class="flex items-start justify-between gap-4">
+    <span class="garden-chip">{stage.icon} {stage.label} · {gardenTypes[data.type].toLowerCase()} · {data.created.getFullYear()}</span>
+    <svg class="h-14 w-10 shrink-0 text-clay-light/[0.8]" viewBox="0 0 40 56" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
+      <path d="M20 54V18" />
+      <path d="M20 18c-8-2-12-9-11-16 8 1 12 8 11 16Z" />
+      <path d="M20 18c8-2 12-9 11-16-8 1-12 8-11 16Z" />
+      <path d="M20 34c-6-1-9-6-8-11 6 1 9 5 8 11Z" />
+      <path d="M20 34c6-1 9-6 8-11-6 1-9 5-8 11Z" />
+    </svg>
   </div>
 
-  <div class="mt-10">
-    <p class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary">Lo último que he regado</p>
-    <h2 class="display-type mt-4 text-4xl font-black leading-[0.98] text-text transition-colors group-hover:text-primary md:text-5xl">
-      {data.title}
-    </h2>
-    <p class="editorial-serif mt-5 max-w-2xl text-lg leading-8 text-prose">{excerpt(entry)}</p>
-    <p class="mt-6 font-mono text-xs text-muted">regado el {formatDate(lastTended(entry))} · {readingTime(entry.body)}</p>
+  <h2 class="editorial-serif mt-8 text-4xl font-normal leading-[1.02] text-terminal-text md:text-5xl">{data.title}</h2>
+  <p class="editorial-serif mt-6 line-clamp-5 text-lg leading-8 text-terminal-text/[0.78]">{excerpt(entry)}</p>
+
+  <div class="mt-auto pt-8">
+    <p class="editorial-serif text-lg text-terminal-text transition-colors group-hover:text-clay-light">leer entrada →</p>
+    <p class="mt-2 font-mono text-xs text-terminal-text/[0.6]">regado el {formatDate(lastTended(entry))} · {readingTime(entry.body)}</p>
   </div>
 </a>

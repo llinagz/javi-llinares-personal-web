@@ -1,0 +1,43 @@
+---
+import { formatDate, type Trip } from "@/lib/content";
+
+interface Props {
+  trip: Trip;
+  class?: string;
+}
+
+const { trip, class: customClass = "" } = Astro.props;
+const { data } = trip;
+const dates = [data.startDate, data.endDate].filter((date): date is Date => Boolean(date)).map(formatDate).join(" – ");
+---
+
+<a
+  class:list={["garden-card group min-h-[15rem] justify-between p-6", customClass]}
+  href={`/carrete/viajes/${data.slug}`}
+  data-reveal
+  style="--reveal-index:4"
+>
+  <svg class="absolute inset-0 h-full w-full" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+    <g stroke="rgb(247 239 223 / 0.12)" stroke-width="1">
+      <path d="M-10 40C60 10 120 70 200 40S340 0 410 30" />
+      <path d="M-10 70C70 40 130 100 200 70S330 30 410 60" />
+      <path d="M-10 100C80 70 140 130 200 100S320 60 410 90" />
+      <path d="M-10 130C90 100 150 160 200 130S310 90 410 120" />
+      <path d="M-10 160C100 130 160 190 200 160S300 120 410 150" />
+      <path d="M-10 190C110 160 170 220 200 190S290 150 410 180" />
+      <path d="M-10 220C120 190 180 250 200 220S280 180 410 210" />
+    </g>
+    <path
+      class="transition-opacity group-hover:opacity-100"
+      d="M70 130C100 110 130 140 170 120S230 70 280 90 330 110 300 150 230 190 190 180 130 170 100 160 50 145 70 130Z"
+      stroke="rgb(208 135 98)"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+      opacity="0.85"
+      style="filter: drop-shadow(0 0 6px rgb(208 135 98 / 0.55))"
+    />
+  </svg>
+
+  <p class="relative font-mono text-sm text-terminal-text">viaje: {data.place}</p>
+  <p class="relative self-end font-mono text-xs text-terminal-text/[0.7]">{dates}</p>
+</a>

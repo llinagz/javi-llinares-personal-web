@@ -4,6 +4,7 @@ import { hasPublishedPhotos } from "@/lib/content";
 const links = [
   { href: "/jardin", label: "Jardín" },
   ...((await hasPublishedPhotos()) ? [{ href: "/carrete", label: "Carrete" }] : []),
+  { href: "/temas", label: "Temas" },
   { href: "/projects", label: "Proyectos" },
   { href: "/servicios/diseno-web/", label: "Diseño web" },
   { href: "/about", label: "Sobre mí" },
