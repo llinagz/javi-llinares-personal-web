@@ -94,7 +94,7 @@ const projects = defineCollection({
   })
 });
 
-// Ahora: estado vital actual, un único fichero `src/content/now.md` editado a mano (o por el bot de P3).
+// Ahora: estado vital actual, un único fichero `src/content/now.md` editado a mano.
 // Las listas vacías ocultan su fila en la portada.
 const now = defineCollection({
   loader: glob({ pattern: "now.md", base: "./src/content" }),
