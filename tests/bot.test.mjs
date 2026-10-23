@@ -11,7 +11,18 @@ import { handleUpdate } from "../bot/procesar.mjs";
 
 describe("parseMessage", () => {
   test("texto sin foto → jardín", () => {
-    assert.deepEqual(parseMessage({ text: "Una idea" }), { kind: "jardin", text: "Una idea", tags: { viaje: undefined, borrador: false, stage: undefined } });
+    assert.deepEqual(parseMessage({ text: "Una idea" }), { kind: "jardin", text: "Una idea", tags: { viaje: undefined, borrador: false, stage: undefined, topics: [] } });
+  });
+
+  test("#palabra libre → tema, fuera del texto; no pisa las etiquetas con significado", () => {
+    const parsed = parseMessage({
+      photo: [{ file_id: "a" }],
+      caption: "Hoy toca darle caña #Rutina #viaje cadiz-2026 #gym #rutina"
+    });
+    assert.equal(parsed.text, "Hoy toca darle caña");
+    assert.deepEqual(parsed.tags.topics, ["rutina", "gym"]);
+    assert.equal(parsed.tags.viaje, "cadiz-2026");
+    assert.deepEqual(parseMessage({ text: "Idea #creciendo #lectura" }).tags.topics, ["lectura"]);
   });
 
   test("#creciendo / #perenne se detectan y se quitan (en cualquier posición)", () => {
@@ -76,6 +87,13 @@ describe("entradas", () => {
   test("createdAt con hora sustituye a la fecha sola (desempata entradas del mismo día)", () => {
     const entry = buildGardenEntry({ text: "Algo", date: "2026-10-23", createdAt: "2026-10-23T20:46:56Z", slugs: [] });
     assert.match(entry.files[0].content, /created: 2026-10-23T20:46:56Z\n/);
+  });
+
+  test("los temas llegan al frontmatter del jardín y del carrete", () => {
+    const garden = buildGardenEntry({ text: "Algo", date: "2026-10-23", topics: ["rutina", "gym"], slugs: [] });
+    assert.match(garden.files[0].content, /topics: \["rutina","gym"\]/);
+    const photo = buildPhotoEntry({ text: "Foto", date: "2026-10-23", topics: ["rutina"], slugs: [], image: Buffer.from("x") });
+    assert.match(photo.files[0].content, /topics: \["rutina"\]/);
   });
 
   test("slug repetido → -2, y slug vacío → nota-fecha", () => {

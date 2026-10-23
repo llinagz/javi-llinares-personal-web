@@ -6,6 +6,7 @@ export const HELP = [
   "• #semilla, #creciendo o #perenne → etapa de la entrada (por defecto, semilla).",
   "• Foto con pie → foto del carrete. La primera línea del pie es el título; el resto, el pie.",
   "• #viaje <slug> → asocia la foto a ese viaje; si no existe, lo crea (título derivado del slug, editable después).",
+  "• Cualquier otra #palabra (p. ej. #rutina) → tema de la entrada o la foto; no queda en el título.",
   "• #borrador → deja el texto sin publicar (no vale con fotos: el repo es público).",
   "Puedes enviar la foto como documento para conservar la calidad original y la ficha técnica."
 ].join("\n");
@@ -14,7 +15,7 @@ const IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"];
 
 // Quita las etiquetas del texto y las devuelve aparte.
 function extractTags(raw = "") {
-  const tags = { viaje: undefined, borrador: false, stage: undefined };
+  const tags = { viaje: undefined, borrador: false, stage: undefined, topics: [] };
   const text = raw
     .replace(/(^|\s)#(semilla|creciendo|perenne)\b/gi, (_, space, stage) => {
       tags.stage = stage.toLowerCase();
@@ -26,6 +27,12 @@ function extractTags(raw = "") {
     })
     .replace(/(^|\s)#borrador\b/gi, (_, space) => {
       tags.borrador = true;
+      return space;
+    })
+    // Cualquier otra #palabra es un tema (`topics`). Se ejecuta la última para no pisar las etiquetas con significado.
+    .replace(/(^|\s)#([\p{L}\p{N}_-]+)/gu, (_, space, topic) => {
+      const name = topic.toLowerCase();
+      if (!tags.topics.includes(name)) tags.topics.push(name);
       return space;
     })
     .replace(/[ \t]+\n/g, "\n")

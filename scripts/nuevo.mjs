@@ -169,6 +169,7 @@ async function nuevoCarrete(title) {
   const photoDate = await askValid("Fecha de la foto", dateError, { def: today() });
   const caption = await ask("Pie de foto (Enter para omitir)");
   const location = await ask("Lugar (Enter para omitir)");
+  const topics = (await ask("Temas separados por comas (Enter para omitir)")).split(",").map((topic) => topic.trim()).filter(Boolean);
 
   const trips = slugsOf("viajes");
   const trip = trips.length > 0 ? await choose("Viaje (Enter para ninguno)", trips) : "";
@@ -185,6 +186,7 @@ async function nuevoCarrete(title) {
     ["caption", caption],
     ["location", location],
     ["trip", trip],
+    ["topics", topics],
     ["draft", draft]
   ]);
 

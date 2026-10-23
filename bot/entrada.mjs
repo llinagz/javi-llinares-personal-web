@@ -31,7 +31,7 @@ const longDate = (iso) =>
 
 // Pensamiento del jardín: título = primera línea; cuerpo = resto (o el texto entero si es una sola línea).
 // `createdAt` (ISO con hora) desempata entradas del mismo día en la portada; sin él, se escribe solo la fecha.
-export function buildGardenEntry({ text, date, createdAt, borrador = false, stage = "semilla", slugs }) {
+export function buildGardenEntry({ text, date, createdAt, borrador = false, stage = "semilla", topics = [], slugs }) {
   const { first, rest } = splitLines(text);
   const title = shorten(first);
   const slug = uniqueSlug(title, slugs, `nota-${date}`);
@@ -44,6 +44,7 @@ export function buildGardenEntry({ text, date, createdAt, borrador = false, stag
       ["type", "pensamiento"],
       ["stage", stage],
       ["created", raw(createdAt ?? date)],
+      ["topics", topics],
       ["draft", borrador ? true : undefined]
     ]) + `\n${body}\n`;
 
@@ -68,7 +69,7 @@ export function buildTripEntry({ slug, date }) {
 }
 
 // Foto del carrete: título = primera línea del pie; el resto de líneas es el `caption`.
-export function buildPhotoEntry({ text, date, exif = {}, viaje, slugs, image }) {
+export function buildPhotoEntry({ text, date, exif = {}, viaje, topics = [], slugs, image }) {
   const { first, rest } = splitLines(text);
   const title = first ? shorten(first) : `Foto del ${longDate(date)}`;
   const slug = uniqueSlug(title, slugs, `foto-${date}`);
@@ -81,6 +82,7 @@ export function buildPhotoEntry({ text, date, exif = {}, viaje, slugs, image }) 
     ["image", `../../assets/images/carrete/${imageName}`],
     ["caption", rest],
     ["trip", viaje],
+    ["topics", topics],
     ["camera", exif.camera],
     ["focalLength", exif.focalLength],
     ["aperture", exif.aperture],

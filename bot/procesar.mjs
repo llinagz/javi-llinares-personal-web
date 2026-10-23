@@ -32,6 +32,7 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
         createdAt: new Date(message.date * 1000).toISOString().replace(/\.\d{3}Z$/, "Z"),
         borrador: tags.borrador,
         stage: tags.stage,
+        topics: tags.topics,
         slugs: await github.readSlugs("jardin")
       });
     } else {
@@ -42,6 +43,7 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
         date: photoDate,
         exif,
         viaje: tags.viaje,
+        topics: tags.topics,
         slugs: await github.readSlugs("carrete"),
         image
       });

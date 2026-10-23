@@ -61,6 +61,7 @@ const carrete = defineCollection({
     caption: z.string().optional(),
     location: z.string().optional(),
     trip: reference("viajes").optional(),
+    topics: z.array(z.string()).default([]),
     camera: z.string().optional(),
     focalLength: z.string().optional(),
     aperture: z.string().optional(),

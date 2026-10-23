@@ -178,6 +178,7 @@ Solo hacen falta `title`, `slug`, `date` e `image`. El resto es opcional.
 | `alt` | no | Si falta, se usa `caption` y luego `title` |
 | `location` | no | Aparece en los metadatos de la foto |
 | `trip` | no | `slug` de un viaje existente. La foto aparece en la página de ese viaje |
+| `topics` | no | Lista de temas, como en el jardín (`["rutina"]`) |
 | `camera`, `focalLength`, `aperture`, `shutterSpeed`, `iso` | no | Metadatos técnicos. `iso` es un número, sin comillas |
 | `draft` | no | `true` → solo en `npm run dev` |
 
@@ -318,6 +319,7 @@ Para publicar en el momento sin tocar el portátil. Preparación y variables: [b
 | `#semilla`, `#creciendo` o `#perenne` en un texto | Fija la etapa (`stage`) de la entrada |
 | Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption`. Sin pie: "Foto del <fecha>" |
 | `#viaje <slug>` en el pie | Asocia la foto a ese viaje. Si no existe, el bot lo crea publicado, con título derivado del slug (`cadiz-2026` → "Cadiz 2026"), lugar igual al título, inicio en la fecha de la foto y un resumen provisional. Edita `src/content/viajes/<slug>.md` para pulirlo |
+| Cualquier otra `#palabra` (p. ej. `#rutina`) en un texto o pie | Se guarda como tema (`topics`, en minúsculas) y se quita del título y del slug |
 | `#borrador` en un texto | Se guarda con `draft: true`. **No vale con fotos** (repo público) |
 
 - La foto se reduce a 2560 px y se le quitan **todos** los metadatos, GPS incluido. Si la mandas como documento, se aprovecha el EXIF para rellenar cámara, focal, apertura, velocidad e ISO y la fecha.
