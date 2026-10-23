@@ -27,6 +27,21 @@ Código: `bot/` (lógica, con dependencias inyectadas), `api/telegram.mjs` (endp
    TELEGRAM_BOT_TOKEN=… TELEGRAM_WEBHOOK_SECRET=… npm run bot:webhook -- https://javierllinares.eu/api/telegram
    ```
 
+## Qué entiende el bot
+
+Lo mismo que responde `/ayuda` (el texto está en `HELP`, en `bot/mensaje.mjs`; si cambias las etiquetas, actualiza ambos sitios y el manual de contenido):
+
+| Envías | Resultado |
+|---|---|
+| Texto | Pensamiento del jardín. Primera línea = título; el resto = cuerpo (con una sola línea sirve de ambos) |
+| Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption` |
+| `#semilla`, `#creciendo`, `#perenne` (texto) | Etapa de la entrada; por defecto `semilla` |
+| `#viaje <slug>` (foto) | Asocia la foto al viaje. Si no existe, lo crea publicado (título del slug, lugar = título, inicio = fecha de la foto, resumen provisional) en el mismo commit |
+| Cualquier otra `#palabra` (texto o foto) | Tema (`topics`, en minúsculas y sin repetir); se quita del título y del slug. Cada tema tiene su página en `/temas/<tema>/` |
+| `#borrador` (texto) | `draft: true`. No vale con fotos |
+
+Las etiquetas pueden ir en cualquier parte y se quitan del texto. Orden en la portada: el jardín usa `created` y las fotos `date`, ambos **con hora** cuando el bot la conoce (hora del mensaje; en fotos con EXIF, la de la cámara interpretada como hora de Madrid), para que lo último enviado el mismo día sea lo que sale en la home.
+
 ## Probarlo sin tocar producción
 
 Usa un segundo bot (otro token de BotFather) y una rama de pruebas:
@@ -34,7 +49,7 @@ Usa un segundo bot (otro token de BotFather) y una rama de pruebas:
 - Crea la rama `prueba-bot` y despliega un preview con `GITHUB_BRANCH=prueba-bot` y el token del bot de pruebas (variables de entorno solo para *Preview*).
 - Si el preview tiene Deployment Protection, el webhook de Telegram no podrá llamarlo: desactívala para ese preview o usa un bypass para automatización.
 - Registra el webhook del bot de pruebas apuntando a la URL del preview.
-- Envía: un texto, una foto con `#viaje <slug>`, una imagen como documento con GPS y un mensaje desde otra cuenta. Comprueba el commit en la rama, que la imagen publicada no tiene GPS (`npx exifr` o similar) y que el mensaje ajeno no hace nada.
+- Envía: un texto, una foto con `#viaje <slug>` (con un slug nuevo, para ver que crea el viaje) y `#tema`, una imagen como documento con GPS y un mensaje desde otra cuenta. Comprueba el commit en la rama, que la imagen publicada no tiene GPS (`npx exifr` o similar) y que el mensaje ajeno no hace nada.
 
 ## Notas de seguridad y límites
 

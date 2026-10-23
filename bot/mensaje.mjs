@@ -3,12 +3,17 @@
 export const HELP = [
   "Convenciones:",
   "• Texto sin foto → pensamiento del jardín. La primera línea es el título; el resto, el cuerpo (con una sola línea, sirve de ambos).",
-  "• #semilla, #creciendo o #perenne → etapa de la entrada (por defecto, semilla).",
+  "• #semilla, #creciendo o #perenne (solo en texto) → etapa de la entrada (por defecto, semilla).",
   "• Foto con pie → foto del carrete. La primera línea del pie es el título; el resto, el pie.",
-  "• #viaje <slug> → asocia la foto a ese viaje; si no existe, lo crea (título derivado del slug, editable después).",
-  "• Cualquier otra #palabra (p. ej. #rutina) → tema de la entrada o la foto; no queda en el título.",
+  "• #viaje <slug> (solo en fotos) → asocia la foto a ese viaje; si no existe, lo crea (título derivado del slug, editable después).",
+  "• Cualquier otra #palabra (p. ej. #rutina), en texto o en fotos → tema; no queda en el título y enlaza a /temas/<tema>/.",
   "• #borrador → deja el texto sin publicar (no vale con fotos: el repo es público).",
-  "Puedes enviar la foto como documento para conservar la calidad original y la ficha técnica."
+  "Las etiquetas pueden ir en cualquier parte del mensaje o del pie y se quitan del texto.",
+  "Puedes enviar la foto como documento para conservar la calidad original y la ficha técnica.",
+  "",
+  "Ejemplos:",
+  "Leer despacio ⏎ Cuando leo con prisa no recuerdo nada. #creciendo #lectura",
+  "Entreno de piernas #rutina #viaje cadiz-2026 (como pie de una foto)"
 ].join("\n");
 
 const IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"];
