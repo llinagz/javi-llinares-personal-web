@@ -10,6 +10,7 @@ import {
   gardenStages,
   gardenTypes,
   readingTime,
+  topicSlug,
   type GardenEntry
 } from "@/lib/content";
 
@@ -94,7 +95,7 @@ const watered = data.updated && data.updated.getTime() !== data.created.getTime(
             <ul class="mt-12 flex flex-wrap gap-2 border-t border-border pt-6" aria-label="Temas">
               {data.topics.map((topic) => (
                 <li>
-                  <Badge>{topic}</Badge>
+                  <Badge href={topicSlug(topic) ? `/temas/${topicSlug(topic)}` : undefined}>{topic}</Badge>
                 </li>
               ))}
             </ul>

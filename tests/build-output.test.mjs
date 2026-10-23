@@ -204,3 +204,37 @@ describe("SEO", () => {
     }
   });
 });
+describe("temas", () => {
+  const topicSlug = (topic) =>
+    topic.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+  // Temas de lo publicado (jardín y carrete), con el slug de cada pieza que los lleva.
+  const topics = new Map();
+  for (const [collection, section] of [["jardin", "jardin"], ["carrete", "carrete"]]) {
+    for (const item of entries(collection).filter((entry) => !entry.draft)) {
+      const raw = read(join(content, collection, item.name));
+      const list = raw.match(/^topics:\s*(\[.*\])\s*$/m)?.[1];
+      for (const topic of list ? JSON.parse(list) : []) {
+        const slug = topicSlug(topic);
+        if (!topics.has(slug)) topics.set(slug, []);
+        topics.get(slug).push(`/${section}/${item.slug}`);
+      }
+    }
+  }
+
+  test("cada tema publicado tiene su página y lista todo lo que lo lleva", () => {
+    assert.ok(topics.size > 0, "No hay ningún tema publicado que comprobar");
+    for (const [slug, hrefs] of topics) {
+      const page = allPages.find(({ route }) => route === `/temas/${slug}/`);
+      assert.ok(page, `Falta la página del tema: ${slug}`);
+      for (const href of hrefs) {
+        assert.ok(page.html.includes(`href="${href}"`), `/temas/${slug}/ no enlaza ${href}`);
+      }
+    }
+  });
+
+  test("no hay páginas de tema sin contenido publicado", () => {
+    const routes = allPages.filter(({ route }) => route.startsWith("/temas/")).map(({ route }) => route);
+    assert.deepEqual(routes.sort(), [...topics.keys()].map((slug) => `/temas/${slug}/`).sort());
+  });
+});

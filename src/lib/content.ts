@@ -104,3 +104,39 @@ export function photoMeta(photo: Photo): string {
     .filter(Boolean)
     .join(" · ");
 }
+
+// Slug de un tema para su URL: "cultura digital" → "cultura-digital", "programación" → "programacion".
+export function topicSlug(topic: string): string {
+  return topic
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export interface TopicIndexEntry {
+  slug: string;
+  label: string;
+  entries: GardenEntry[];
+  photos: Photo[];
+}
+
+// Un tema por slug (los que difieren solo en mayúsculas o tildes son el mismo), con todo lo publicado que lo lleva.
+export async function getTopicIndex(): Promise<Map<string, TopicIndexEntry>> {
+  const index = new Map<string, TopicIndexEntry>();
+  const slot = (topic: string): TopicIndexEntry | undefined => {
+    const slug = topicSlug(topic);
+    if (!slug) return undefined;
+    if (!index.has(slug)) index.set(slug, { slug, label: topic, entries: [], photos: [] });
+    return index.get(slug);
+  };
+
+  for (const entry of sortByTendedDesc(await getCollection("jardin", isPublished))) {
+    for (const topic of entry.data.topics) slot(topic)?.entries.push(entry);
+  }
+  for (const photo of sortByDateDesc(await getCollection("carrete", isPublished))) {
+    for (const topic of photo.data.topics) slot(topic)?.photos.push(photo);
+  }
+  return index;
+}

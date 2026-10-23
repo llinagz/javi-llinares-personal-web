@@ -1,0 +1,74 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PhotoGrid from "@/components/sections/PhotoGrid.astro";
+import Badge from "@/components/ui/Badge.astro";
+import Card from "@/components/ui/Card.astro";
+import {
+  excerpt,
+  formatDate,
+  gardenTypes,
+  getTopicIndex,
+  lastTended,
+  readingTime,
+  type TopicIndexEntry
+} from "@/lib/content";
+
+export async function getStaticPaths() {
+  return [...(await getTopicIndex()).values()].map((topic) => ({
+    params: { topic: topic.slug },
+    props: { topic }
+  }));
+}
+
+const { topic } = Astro.props as { topic: TopicIndexEntry };
+const total = topic.entries.length + topic.photos.length;
+---
+
+<BaseLayout
+  title={`#${topic.label} | Javi Llinares`}
+  description={`Entradas del jardín y fotos del carrete con el tema «${topic.label}».`}
+>
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">./temas/{topic.slug}</p>
+        <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-paper md:text-7xl">#{topic.label}</h1>
+        <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
+          {total} {total === 1 ? "cosa" : "cosas"} con este tema, entre el jardín y el carrete.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      {
+        topic.entries.length > 0 && (
+          <div class:list={[topic.photos.length > 0 && "mb-14"]}>
+            <h2 class="terminal-label text-primary">Jardín</h2>
+            <div class="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {topic.entries.map((entry) => (
+                <Card href={`/jardin/${entry.data.slug}`}>
+                  <Badge tone="soft">{gardenTypes[entry.data.type]}</Badge>
+                  <h3 class="mt-5 text-xl font-semibold leading-snug text-text group-hover:text-primary">{entry.data.title}</h3>
+                  <p class="mt-3 text-sm leading-6 text-muted">{excerpt(entry)}</p>
+                  <p class="mt-6 font-mono text-xs text-muted">
+                    {formatDate(lastTended(entry))} · {readingTime(entry.body)}
+                  </p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )
+      }
+      {
+        topic.photos.length > 0 && (
+          <div>
+            <h2 class="terminal-label mb-5 text-primary">Carrete</h2>
+            <PhotoGrid photos={topic.photos} />
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

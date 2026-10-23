@@ -178,7 +178,7 @@ Solo hacen falta `title`, `slug`, `date` e `image`. El resto es opcional.
 | `alt` | no | Si falta, se usa `caption` y luego `title` |
 | `location` | no | Aparece en los metadatos de la foto |
 | `trip` | no | `slug` de un viaje existente. La foto aparece en la página de ese viaje |
-| `topics` | no | Lista de temas, como en el jardín (`["rutina"]`) |
+| `topics` | no | Lista de temas, como en el jardín (`["rutina"]`). Cada tema tiene su página en `/temas/<tema>/` |
 | `camera`, `focalLength`, `aperture`, `shutterSpeed`, `iso` | no | Metadatos técnicos. `iso` es un número, sin comillas |
 | `draft` | no | `true` → solo en `npm run dev` |
 
