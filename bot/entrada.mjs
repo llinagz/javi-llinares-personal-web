@@ -30,7 +30,7 @@ const longDate = (iso) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString("es", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 // Pensamiento del jardín: título = primera línea; cuerpo = resto (o el texto entero si es una sola línea).
-export function buildGardenEntry({ text, date, borrador = false, slugs }) {
+export function buildGardenEntry({ text, date, borrador = false, stage = "semilla", slugs }) {
   const { first, rest } = splitLines(text);
   const title = shorten(first);
   const slug = uniqueSlug(title, slugs, `nota-${date}`);
@@ -41,7 +41,7 @@ export function buildGardenEntry({ text, date, borrador = false, slugs }) {
       ["title", title],
       ["slug", slug],
       ["type", "pensamiento"],
-      ["stage", "semilla"],
+      ["stage", stage],
       ["created", raw(date)],
       ["draft", borrador ? true : undefined]
     ]) + `\n${body}\n`;

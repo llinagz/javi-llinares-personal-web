@@ -11,7 +11,14 @@ import { handleUpdate } from "../bot/procesar.mjs";
 
 describe("parseMessage", () => {
   test("texto sin foto → jardín", () => {
-    assert.deepEqual(parseMessage({ text: "Una idea" }), { kind: "jardin", text: "Una idea", tags: { viaje: undefined, borrador: false } });
+    assert.deepEqual(parseMessage({ text: "Una idea" }), { kind: "jardin", text: "Una idea", tags: { viaje: undefined, borrador: false, stage: undefined } });
+  });
+
+  test("#creciendo / #perenne se detectan y se quitan (en cualquier posición)", () => {
+    const parsed = parseMessage({ text: "Título\nCuerpo #Perenne" });
+    assert.equal(parsed.text, "Título\nCuerpo");
+    assert.equal(parsed.tags.stage, "perenne");
+    assert.equal(parseMessage({ text: "#creciendo Algo" }).tags.stage, "creciendo");
   });
 
   test("foto con pie y etiquetas: usa el tamaño mayor y quita las etiquetas del pie", () => {
@@ -59,6 +66,11 @@ describe("entradas", () => {
     const entry = buildGardenEntry({ text: "Título\nCuerpo largo", date: "2026-10-23", borrador: true, slugs: [] });
     assert.match(entry.files[0].content, /draft: true/);
     assert.match(entry.files[0].content, /\n\nCuerpo largo\n$/);
+  });
+
+  test("la etapa elegida llega al frontmatter", () => {
+    const entry = buildGardenEntry({ text: "Algo", date: "2026-10-23", stage: "creciendo", slugs: [] });
+    assert.match(entry.files[0].content, /stage: "creciendo"/);
   });
 
   test("slug repetido → -2, y slug vacío → nota-fecha", () => {

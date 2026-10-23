@@ -28,7 +28,7 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
     const today = madridDate(message.date);
     let entry;
     if (parsed.kind === "jardin") {
-      entry = buildGardenEntry({ text, date: today, borrador: tags.borrador, slugs: await github.readSlugs("jardin") });
+      entry = buildGardenEntry({ text, date: today, borrador: tags.borrador, stage: tags.stage, slugs: await github.readSlugs("jardin") });
     } else {
       const { image, exif } = await processPhoto(await telegram.downloadFile(parsed.fileId));
       entry = buildPhotoEntry({

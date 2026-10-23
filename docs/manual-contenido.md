@@ -314,7 +314,8 @@ Para publicar en el momento sin tocar el portátil. Preparación y variables: [b
 
 | Envías | Resultado |
 |---|---|
-| Texto | Pensamiento del jardín (`semilla`). La primera línea es el título; el resto, el cuerpo |
+| Texto | Pensamiento del jardín (`semilla` por defecto). La primera línea es el título; el resto, el cuerpo (con una sola línea, sirve de ambos) |
+| `#semilla`, `#creciendo` o `#perenne` en un texto | Fija la etapa (`stage`) de la entrada |
 | Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption`. Sin pie: "Foto del <fecha>" |
 | `#viaje <slug>` en el texto o el pie | Asocia la foto a un viaje que ya exista |
 | `#borrador` en un texto | Se guarda con `draft: true`. **No vale con fotos** (repo público) |
