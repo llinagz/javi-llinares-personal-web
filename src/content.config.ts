@@ -3,11 +3,11 @@ import { glob } from "astro/loaders";
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     slug: z.string(),
     excerpt: z.string(),
-    image: z.string().optional(),
+    image: image().optional(),
     date: z.coerce.date(),
     readingTime: z.string(),
     category: z.string(),
@@ -19,12 +19,12 @@ const blog = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     name: z.string(),
     slug: z.string(),
     description: z.string(),
     longDescription: z.string(),
-    image: z.string().optional(),
+    image: image().optional(),
     status: z.enum(["En desarrollo", "MVP", "Idea", "Publicado"]),
     techStack: z.array(z.string()),
     featured: z.boolean().default(false),

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Card from "@/components/ui/Card.astro";
 import Badge from "@/components/ui/Badge.astro";
@@ -13,10 +14,10 @@ const projects = sortByDateDesc(await getCollection("projects"));
     <div class="container relative">
       <div class="section-heading">
         <p class="terminal-label">~/projects</p>
-        <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-[#fff7e8] md:text-7xl">
+        <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-paper md:text-7xl">
           Ideas convertidas en productos pequeños.
         </h1>
-        <p class="mt-6 text-lg leading-8 text-[rgba(247,239,223,0.72)]">
+        <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
           Un archivo de software en distintas fases: publicado, prototipo, investigación o simple
           idea con suficiente tracción interior como para merecer una página.
         </p>
@@ -33,7 +34,14 @@ const projects = sortByDateDesc(await getCollection("projects"));
               {
                 project.data.image && (
                   <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-primary/10 bg-primary-soft">
-                    <img class="h-56 w-full object-cover grayscale-[0.12]" src={project.data.image} alt="" aria-hidden="true" />
+                    <Image
+                      class="h-56 w-full object-cover grayscale-[0.12]"
+                      src={project.data.image}
+                      alt=""
+                      aria-hidden="true"
+                      widths={[400, 640, 800]}
+                      sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                    />
                   </div>
                 )
               }

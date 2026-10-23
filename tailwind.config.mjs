@@ -10,7 +10,14 @@ export default {
         surface: "var(--color-surface)",
         text: "var(--color-text)",
         muted: "var(--color-muted)",
-        border: "var(--color-border)"
+        border: "var(--color-border)",
+        ink: "rgb(var(--color-ink-rgb) / <alpha-value>)",
+        paper: "rgb(var(--color-paper-rgb) / <alpha-value>)",
+        clay: "var(--color-clay)",
+        "clay-light": "rgb(var(--color-clay-light-rgb) / <alpha-value>)",
+        terminal: "rgb(var(--color-terminal-rgb) / <alpha-value>)",
+        "terminal-soft": "var(--color-terminal-soft)",
+        "terminal-text": "rgb(var(--color-terminal-text-rgb) / <alpha-value>)"
       },
       fontFamily: {
         sans: [

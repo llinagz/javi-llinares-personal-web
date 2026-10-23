@@ -11,13 +11,19 @@
   --color-text: #14211f;
   --color-muted: #68736f;
   --color-border: #d8d0bf;
-  --color-ink: #081917;
+  --color-ink-rgb: 8 25 23;
+  --color-clay-light-rgb: 208 135 98;
+  --color-paper-rgb: 255 247 232;
+  --color-terminal-rgb: 6 19 17;
+  --color-terminal-text-rgb: 247 239 223;
+  --color-ink: rgb(var(--color-ink-rgb));
   --color-clay: #b55d38;
-  --color-paper: #fff7e8;
-  --color-terminal: #061311;
+  --color-clay-light: rgb(var(--color-clay-light-rgb));
+  --color-paper: rgb(var(--color-paper-rgb));
+  --color-terminal: rgb(var(--color-terminal-rgb));
   --color-terminal-soft: #0c211e;
   --color-terminal-line: rgba(255, 247, 232, 0.14);
-  --color-terminal-text: #f7efdf;
+  --color-terminal-text: rgb(var(--color-terminal-text-rgb));
   --color-terminal-muted: rgba(247, 239, 223, 0.66);
 }
 
@@ -461,6 +467,23 @@ svg {
 
   to {
     transform: translate3d(0, 125%, 0);
+  }
+}
+
+[data-reveal] {
+  animation: reveal-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--reveal-index, 0) * 0.12s);
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 38px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

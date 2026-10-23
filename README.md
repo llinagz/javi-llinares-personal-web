@@ -25,6 +25,7 @@ La intención del sitio es sostener dos mundos al mismo tiempo:
 - `TypeScript`
 - `Tailwind CSS`
 - Colecciones de contenido para `blog` y `projects`
+- `astro:assets` para imágenes optimizadas, `@astrojs/sitemap` y `@astrojs/rss`
 
 ## Dirección visual 🎨
 
@@ -52,6 +53,7 @@ src/
   layouts/
   pages/
   styles/
+tests/
 docs/
   design-system.md
 ```
@@ -62,8 +64,11 @@ docs/
 npm run dev
 npm run build
 npm run preview
-npm run check
+npm run check   # astro check (tipos)
+npm test        # build + pruebas de humo sobre dist/ (tests/)
 ```
+
+`npm test` verifica metadatos y Open Graph, enlaces internos, imágenes optimizadas, sitemap, RSS, robots y que no se publiquen borradores. La integración continua (`.github/workflows/ci.yml`) ejecuta `check` y `test` en cada PR.
 
 ## Filosofía del proyecto 🌱
 
@@ -100,6 +105,8 @@ Después abre el entorno local que te indique Astro para navegar por el sitio.
 
 - Mantener el sitio mayoritariamente estático
 - Añadir islas de cliente solo cuando aporten valor real
+- Las imágenes de contenido viven en `src/assets/images/` y se referencian en el frontmatter con ruta relativa (`../../assets/images/...`)
+- La URL de producción se define en `site` (`astro.config.mjs`); sitemap, RSS, canonical y Open Graph dependen de ella
 - Reutilizar tokens y patrones visuales antes de introducir otros nuevos
 - Actualizar `docs/design-system.md` cuando cambie la dirección visual
 

@@ -3,7 +3,7 @@ name: "Luz Clara"
 slug: "luz-clara"
 description: "Una app para conocer el límite de electromodésticos que puedes tener activos, antes de que salte la luz en base a tu potencia contratada."
 longDescription: "Luz Clara quiere ayudar a toda la gente que se muda, o simplemente va a cambiar su potencia de la luz, para no llevarse sorpresas al encender los electrodomésticos."
-image: "/images/projects/luz-clara.png"
+image: "../../assets/images/projects/luz-clara.png"
 status: "Publicado"
 techStack: ["TypeScript", "React"]
 featured: true

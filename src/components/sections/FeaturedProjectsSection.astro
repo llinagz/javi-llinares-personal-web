@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import Badge from "@/components/ui/Badge.astro";
 import { sortByDateDesc, type Project } from "@/lib/content";
 
@@ -33,15 +34,17 @@ const projects = sortByDateDesc(Astro.props.projects).slice(0, 3);
           >
             {
               project.data.image && (
-                <img
+                <Image
                   class="absolute inset-0 h-full w-full object-cover opacity-[0.38] transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-[0.52]"
                   src={project.data.image}
                   alt=""
                   aria-hidden="true"
+                  widths={[480, 800, 1200]}
+                  sizes="(min-width: 768px) 40vw, 100vw"
                 />
               )
             }
-            <div class="absolute inset-0 bg-gradient-to-t from-[#081917] via-[#081917]/58 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/58 to-transparent"></div>
             <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(8,25,23,0.28),transparent_52%,rgba(181,93,56,0.16))]"></div>
             <div class="relative flex h-full min-h-[360px] flex-col justify-between">
               <div class="flex items-center justify-between gap-3">

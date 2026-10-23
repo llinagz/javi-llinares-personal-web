@@ -28,9 +28,9 @@ const matrixColumns = [
   </div>
 
   <div class="container relative grid grid-cols-1 items-end gap-10 pb-14 md:pb-20 lg:grid-cols-[1.04fr_0.86fr]">
-    <div class="min-w-0 max-w-5xl" data-reveal>
+    <div class="min-w-0 max-w-5xl" data-reveal style="--reveal-index:0">
       <p class="terminal-label">~/javi/home</p>
-      <h1 class="display-type mt-5 max-w-[7.4ch] text-[clamp(2.35rem,11vw,4rem)] font-black leading-[0.9] text-[#f7efdf] sm:max-w-[8.2ch] md:max-w-5xl md:text-[clamp(3.2rem,7vw,6.7rem)]">
+      <h1 class="display-type mt-5 max-w-[7.4ch] text-[clamp(2.35rem,11vw,4rem)] font-black leading-[0.9] text-terminal-text sm:max-w-[8.2ch] md:max-w-5xl md:text-[clamp(3.2rem,7vw,6.7rem)]">
         Pensar software como quien aprende a vivir<span class="terminal-cursor text-primary">.</span>
       </h1>
       <p class="hero-matrix__lede mt-8 max-w-3xl text-xl leading-9 md:text-2xl">
@@ -45,7 +45,7 @@ const matrixColumns = [
       </div>
     </div>
 
-    <div class="terminal-shell hero-matrix__terminal min-w-0 rounded-[1.75rem] md:rounded-[2.25rem]" data-reveal>
+    <div class="terminal-shell hero-matrix__terminal min-w-0 rounded-[1.75rem] md:rounded-[2.25rem]" data-reveal style="--reveal-index:1">
       <div class="terminal-topbar relative">
         <span class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
         <span>vida-entredosmundos.sh</span>
@@ -54,7 +54,7 @@ const matrixColumns = [
       <div class="relative p-5 md:p-8">
         <div class="grid gap-4">
           <p class="terminal-command">cat manifiesto.txt</p>
-          <div class="rounded-2xl border border-white/10 bg-[#fff7e8] p-6 text-[#081917] md:p-7">
+          <div class="rounded-2xl border border-white/10 bg-paper p-6 text-ink md:p-7">
             <p class="editorial-serif text-3xl leading-tight md:text-4xl">
               Claridad técnica con temperatura humana.
             </p>
@@ -78,12 +78,12 @@ const matrixColumns = [
             </div>
           </div>
 
-          <div class="rounded-2xl border border-white/10 bg-[#0c211e] p-5">
+          <div class="rounded-2xl border border-white/10 bg-terminal-soft p-5">
             <p class="terminal-command">grep -R "preguntas lentas" ./blog ./projects</p>
             <div class="mt-4 space-y-3 text-sm leading-6 text-white/68">
-              <p><span class="text-[#d08762]">./blog</span> lectura, oficio y tecnología sin prisa.</p>
-              <p><span class="text-[#d08762]">./projects</span> piezas vivas para aprender mientras sirven.</p>
-              <p><span class="text-[#d08762]">./about</span> técnica y vida en el mismo prompt.</p>
+              <p><span class="text-clay-light">./blog</span> lectura, oficio y tecnología sin prisa.</p>
+              <p><span class="text-clay-light">./projects</span> piezas vivas para aprender mientras sirven.</p>
+              <p><span class="text-clay-light">./about</span> técnica y vida en el mismo prompt.</p>
             </div>
           </div>
         </div>
@@ -91,22 +91,3 @@ const matrixColumns = [
     </div>
   </div>
 </section>
-
-<script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script is:inline>
-  window.addEventListener("load", () => {
-    if (!window.gsap || !window.ScrollTrigger || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.from("[data-reveal]", {
-      y: 38,
-      opacity: 0,
-      duration: 0.9,
-      ease: "power3.out",
-      stagger: 0.12
-    });
-  });
-</script>
