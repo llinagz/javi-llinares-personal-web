@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, jardin-digital]
   pull_request:
 
 jobs:

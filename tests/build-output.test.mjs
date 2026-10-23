@@ -20,11 +20,15 @@ const walk = (dir) =>
   );
 
 const htmlFiles = walk(dist).filter((file) => file.endsWith(".html"));
-const pages = htmlFiles.map((file) => ({
+const allPages = htmlFiles.map((file) => ({
   file,
   route: "/" + relative(dist, file).replaceAll("\\", "/").replace(/(^|\/)index\.html$/, "$1"),
   html: read(file)
 }));
+// Las páginas de redirección (/blog/...) no llevan metadatos propios ni van al sitemap.
+const isRedirect = ({ html }) => /http-equiv="refresh"/i.test(html);
+const pages = allPages.filter((page) => !isRedirect(page));
+const redirects = allPages.filter(isRedirect);
 
 function entries(collection) {
   return readdirSync(join(content, collection))
@@ -33,7 +37,8 @@ function entries(collection) {
       const raw = read(join(content, collection, name));
       return {
         name,
-        slug: raw.match(/^slug:\s*"([^"]+)"/m)?.[1],
+        // El slug puede ir con o sin comillas: el bot de publicación no tiene por qué entrecomillarlo.
+        slug: raw.match(/^slug:\s*["']?([^"'\r\n]+?)["']?\s*$/m)?.[1],
         draft: /^draft:\s*true/m.test(raw)
       };
     });
@@ -48,7 +53,7 @@ const meta = (html, attr, key) =>
   html.match(new RegExp(`<meta[^>]*${attr}="${key}"[^>]*content="([^"]*)"`))?.[1];
 
 describe("contenido", () => {
-  for (const collection of ["blog", "projects"]) {
+  for (const collection of ["jardin", "carrete", "viajes", "projects"]) {
     test(`${collection}: cada entrada tiene slug y los slugs son únicos`, () => {
       const items = entries(collection);
       assert.ok(items.every((item) => item.slug), "Hay entradas sin slug");
@@ -56,15 +61,31 @@ describe("contenido", () => {
     });
   }
 
+  const routes = { jardin: ["jardin"], carrete: ["carrete"], viajes: ["carrete", "viajes"] };
+
   test("los borradores no se publican", () => {
-    for (const post of entries("blog").filter((entry) => entry.draft)) {
-      assert.ok(!existsSync(join(dist, "blog", post.slug)), `Borrador publicado: ${post.slug}`);
+    let drafts = 0;
+    for (const [collection, base] of Object.entries(routes)) {
+      for (const entry of entries(collection).filter((item) => item.draft)) {
+        drafts++;
+        assert.ok(!existsSync(join(dist, ...base, entry.slug)), `Borrador publicado: /${base.join("/")}/${entry.slug}/`);
+      }
     }
+    assert.ok(drafts > 0, "No hay borradores de prueba: el filtro no se está comprobando");
+  });
+
+  // Astro emite a dist/_astro/ el original de toda imagen declarada con `image()`, también la de un
+  // borrador, pero sin enlazarla desde ninguna página. Por eso las fotos privadas no deben commitearse.
+  test("ninguna página referencia imágenes de borradores", () => {
+    const linked = allPages.filter(({ html }) => /\/_astro\/ejemplo-/.test(html)).map(({ route }) => route);
+    assert.deepEqual(linked, []);
   });
 
   test("hay una página por cada entrada publicada", () => {
-    for (const post of entries("blog").filter((entry) => !entry.draft)) {
-      assert.ok(existsSync(join(dist, "blog", post.slug, "index.html")), `Falta /blog/${post.slug}/`);
+    for (const [collection, base] of Object.entries(routes)) {
+      for (const entry of entries(collection).filter((item) => !item.draft)) {
+        assert.ok(existsSync(join(dist, ...base, entry.slug, "index.html")), `Falta /${base.join("/")}/${entry.slug}/`);
+      }
     }
     for (const project of entries("projects")) {
       assert.ok(existsSync(join(dist, "projects", project.slug, "index.html")), `Falta /projects/${project.slug}/`);
@@ -86,11 +107,29 @@ describe("metadatos de página", () => {
     });
   }
 
-  test("los artículos declaran og:type=article y og:image absoluta", () => {
-    const post = pages.find(({ route, html }) => route.startsWith("/blog/") && route !== "/blog/" && meta(html, "property", "og:image"));
+  test("las entradas del jardín declaran og:type=article y og:image absoluta", () => {
+    const post = pages.find(({ route, html }) => /^\/jardin\/[^/]+\/$/.test(route) && meta(html, "property", "og:image"));
     assert.ok(post, "Ningún artículo con og:image");
     assert.equal(meta(post.html, "property", "og:type"), "article");
     assert.match(meta(post.html, "property", "og:image"), new RegExp(`^${site}/_astro/.+\\.jpg$`));
+  });
+});
+
+describe("redirecciones", () => {
+  // URLs antiguas del blog que no deben romperse.
+  const legacySlugs = [
+    "arquitectura-limpia-para-proyectos-pequenos",
+    "leer-mejor-para-construir-mejor-tecnologia",
+    "por-que-escribir-mientras-construyo"
+  ];
+
+  test("/blog/ y cada /blog/<slug>/ antiguo redirigen al jardín", () => {
+    const targets = new Map(redirects.map(({ route, html }) => [route, html.match(/url=([^"]+)"/i)?.[1]]));
+    assert.equal(targets.get("/blog/"), "/jardin");
+    for (const slug of legacySlugs) {
+      assert.equal(targets.get(`/blog/${slug}/`), `/jardin/${slug}`, `/blog/${slug}/ no redirige`);
+      assert.ok(existsSync(join(dist, "jardin", slug, "index.html")), `El destino /jardin/${slug}/ no existe`);
+    }
   });
 });
 
@@ -137,12 +176,12 @@ describe("SEO", () => {
     assert.ok(!sitemap.includes("404"), "La 404 no debe estar en el sitemap");
   });
 
-  test("el RSS contiene exactamente los artículos publicados", () => {
+  test("el RSS contiene exactamente las entradas publicadas del jardín", () => {
     const feed = read(join(dist, "rss.xml"));
-    const published = entries("blog").filter((entry) => !entry.draft);
+    const published = entries("jardin").filter((entry) => !entry.draft);
     assert.equal([...feed.matchAll(/<item>/g)].length, published.length);
-    for (const post of published) {
-      assert.ok(feed.includes(`${site}/blog/${post.slug}/`), `Falta en el RSS: ${post.slug}`);
+    for (const entry of published) {
+      assert.ok(feed.includes(`${site}/jardin/${entry.slug}/`), `Falta en el RSS: ${entry.slug}`);
     }
   });
 });

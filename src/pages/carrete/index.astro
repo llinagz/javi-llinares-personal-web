@@ -1,0 +1,57 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PhotoGrid from "@/components/sections/PhotoGrid.astro";
+import Card from "@/components/ui/Card.astro";
+import { formatMonth, isPublished, sortByDateDesc } from "@/lib/content";
+
+const photos = sortByDateDesc(await getCollection("carrete", isPublished));
+const tripIds = new Set(photos.flatMap((photo) => (photo.data.trip ? [photo.data.trip.id] : [])));
+const trips = (await getCollection("viajes", isPublished))
+  .filter((trip) => tripIds.has(trip.id))
+  .sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+---
+
+<BaseLayout title="Carrete | Javi Llinares" description="El carrete de Javi Llinares: fotografías de viajes y paseos, sin métricas ni prisa.">
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">./carrete</p>
+        <h1 class="display-type mt-4 text-5xl font-black leading-[0.92] text-paper md:text-7xl">
+          Lo que miro cuando salgo.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
+          Fotografías de viajes y paseos. Sin likes, sin contadores y sin algoritmo: solo la imagen y el sitio donde estuve.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      {
+        photos.length === 0 ? (
+          <p class="editorial-serif text-2xl text-ink">El carrete está vacío por ahora. Pronto habrá algo que mirar.</p>
+        ) : (
+          <>
+            {trips.length > 0 && (
+              <div class="mb-14">
+                <h2 class="terminal-label text-primary">Viajes</h2>
+                <div class="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  {trips.map((trip) => (
+                    <Card href={`/carrete/viajes/${trip.data.slug}`}>
+                      <p class="font-mono text-xs text-muted">{trip.data.place} · {formatMonth(trip.data.startDate)}</p>
+                      <h3 class="mt-3 text-xl font-semibold leading-snug text-text group-hover:text-primary">{trip.data.title}</h3>
+                      <p class="mt-3 text-sm leading-6 text-muted">{trip.data.summary}</p>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            <PhotoGrid photos={photos} />
+          </>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

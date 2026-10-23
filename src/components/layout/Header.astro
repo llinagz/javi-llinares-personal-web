@@ -1,7 +1,10 @@
 ---
+import { hasPublishedPhotos } from "@/lib/content";
+
 const navItems = [
   { href: "/", label: "Inicio" },
-  { href: "/blog", label: "Blog" },
+  { href: "/jardin", label: "Jardín" },
+  ...((await hasPublishedPhotos()) ? [{ href: "/carrete", label: "Carrete" }] : []),
   { href: "/projects", label: "Proyectos" },
   { href: "/servicios/diseno-web/", label: "Diseño web" },
   { href: "/about", label: "Sobre mí" }
@@ -24,9 +27,9 @@ const navItems = [
       }
       <a
         class="rounded-full bg-paper px-5 py-2.5 text-sm font-bold text-ink transition hover:bg-white"
-        href="/blog"
+        href="/jardin"
       >
-        Leer artículos
+        Entrar al jardín
       </a>
     </nav>
 

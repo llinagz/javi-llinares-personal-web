@@ -3,19 +3,20 @@ import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import HeroSection from "@/components/sections/HeroSection.astro";
 import WebDesignServicesSection from "@/components/sections/WebDesignServicesSection.astro";
-import LatestArticlesSection from "@/components/sections/LatestArticlesSection.astro";
+import LatestGardenSection from "@/components/sections/LatestGardenSection.astro";
 import FeaturedProjectsSection from "@/components/sections/FeaturedProjectsSection.astro";
 import PersonalPhilosophySection from "@/components/sections/PersonalPhilosophySection.astro";
 import NewsletterSection from "@/components/sections/NewsletterSection.astro";
+import { isPublished } from "@/lib/content";
 
-const posts = await getCollection("blog", ({ data }) => !data.draft && data.featured);
+const entries = await getCollection("jardin", (entry) => isPublished(entry) && entry.data.featured);
 const projects = await getCollection("projects", ({ data }) => data.featured);
 ---
 
 <BaseLayout>
   <HeroSection />
   <WebDesignServicesSection />
-  <LatestArticlesSection posts={posts} />
+  <LatestGardenSection entries={entries} />
   <FeaturedProjectsSection projects={projects} />
   <PersonalPhilosophySection />
   <NewsletterSection />

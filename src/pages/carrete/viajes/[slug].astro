@@ -1,0 +1,71 @@
+---
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PhotoGrid from "@/components/sections/PhotoGrid.astro";
+import { formatDate, isPublished, type Photo, type Trip } from "@/lib/content";
+
+export async function getStaticPaths() {
+  const trips = await getCollection("viajes", isPublished);
+  const photos = await getCollection("carrete", isPublished);
+
+  return trips.map((trip) => ({
+    params: { slug: trip.data.slug },
+    props: {
+      trip,
+      photos: photos
+        .filter((photo) => photo.data.trip?.id === trip.id)
+        .sort((a, b) => a.data.date.getTime() - b.data.date.getTime())
+    }
+  }));
+}
+
+const { trip, photos } = Astro.props as { trip: Trip; photos: Photo[] };
+const { data } = trip;
+const { Content } = await render(trip);
+const cover = data.cover ?? photos[0]?.data.image;
+const dates = [data.startDate, data.endDate].filter((date): date is Date => Boolean(date)).map(formatDate).join(" – ");
+---
+
+<BaseLayout title={`${data.title} | Viajes | Javi Llinares`} description={data.summary} image={cover}>
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <a class="terminal-link" href="/carrete">← Carrete</a>
+      <p class="terminal-label mt-8">{data.place}</p>
+      <h1 class="mt-4 max-w-4xl font-serif text-4xl font-semibold leading-tight tracking-tight text-paper md:text-6xl">
+        {data.title}
+      </h1>
+      <p class="mt-5 font-mono text-sm text-terminal-text/[0.62]">{dates}</p>
+      <p class="mt-6 max-w-3xl text-xl leading-8 text-terminal-text/[0.72]">{data.summary}</p>
+      {
+        data.cover && (
+          <div class="paper-panel mt-10 overflow-hidden rounded-[2rem]">
+            <Image
+              class="h-auto w-full object-cover"
+              src={data.cover}
+              alt={`Portada del viaje ${data.title}`}
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 1240px) 1200px, 100vw"
+              loading="eager"
+            />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      <div class="prose-content prose-shell mx-auto">
+        <Content />
+      </div>
+      {
+        photos.length > 0 && (
+          <div class="mt-14">
+            <PhotoGrid photos={photos} />
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

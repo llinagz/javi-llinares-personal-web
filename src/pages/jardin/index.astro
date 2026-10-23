@@ -1,0 +1,9 @@
+---
+import { getCollection } from "astro:content";
+import GardenListing from "@/components/sections/GardenListing.astro";
+import { isPublished, sortByTendedDesc } from "@/lib/content";
+
+const entries = sortByTendedDesc(await getCollection("jardin", isPublished));
+---
+
+<GardenListing entries={entries} />
