@@ -61,7 +61,8 @@ export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("es", {
     day: "2-digit",
     month: "long",
-    year: "numeric"
+    year: "numeric",
+    timeZone: "Europe/Madrid"
   }).format(date);
 }
 

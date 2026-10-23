@@ -73,6 +73,11 @@ describe("entradas", () => {
     assert.match(entry.files[0].content, /stage: "creciendo"/);
   });
 
+  test("createdAt con hora sustituye a la fecha sola (desempata entradas del mismo día)", () => {
+    const entry = buildGardenEntry({ text: "Algo", date: "2026-10-23", createdAt: "2026-10-23T20:46:56Z", slugs: [] });
+    assert.match(entry.files[0].content, /created: 2026-10-23T20:46:56Z\n/);
+  });
+
   test("slug repetido → -2, y slug vacío → nota-fecha", () => {
     assert.equal(buildGardenEntry({ text: "Hola", date: "2026-10-23", slugs: ["hola"] }).slug, "hola-2");
     assert.equal(buildGardenEntry({ text: "¿¿??", date: "2026-10-23", slugs: [] }).slug, "nota-2026-10-23");
