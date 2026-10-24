@@ -11,7 +11,7 @@ import { handleUpdate, madridToIso } from "../bot/procesar.mjs";
 
 describe("parseMessage", () => {
   test("texto sin foto → jardín", () => {
-    assert.deepEqual(parseMessage({ text: "Una idea" }), { kind: "jardin", text: "Una idea", tags: { viaje: undefined, borrador: false, stage: undefined, topics: [] } });
+    assert.deepEqual(parseMessage({ text: "Una idea" }), { kind: "jardin", text: "Una idea", tags: { viaje: undefined, borrador: false, destacada: false, stage: undefined, topics: [] } });
   });
 
   test("#palabra libre → tema, fuera del texto; no pisa las etiquetas con significado", () => {
@@ -49,6 +49,13 @@ describe("parseMessage", () => {
     assert.equal(parsed.tags.borrador, true);
   });
 
+  test("#destacada se detecta y se quita", () => {
+    const parsed = parseMessage({ text: "Idea clave #destacada" });
+    assert.equal(parsed.text, "Idea clave");
+    assert.equal(parsed.tags.destacada, true);
+    assert.deepEqual(parsed.tags.topics, []);
+  });
+
   test("documento de imagen sí; HEIC y otros formatos, error", () => {
     assert.equal(parseMessage({ document: { file_id: "a", mime_type: "image/jpeg" } }).kind, "carrete");
     assert.equal(parseMessage({ document: { file_id: "a", mime_type: "image/heic" } }).kind, "error");
@@ -82,6 +89,12 @@ describe("entradas", () => {
   test("la etapa elegida llega al frontmatter", () => {
     const entry = buildGardenEntry({ text: "Algo", date: "2026-10-23", stage: "creciendo", slugs: [] });
     assert.match(entry.files[0].content, /stage: "creciendo"/);
+  });
+
+  test("destacada escribe featured: true en el frontmatter", () => {
+    const entry = buildGardenEntry({ text: "Algo", date: "2026-10-23", destacada: true, slugs: [] });
+    assert.match(entry.files[0].content, /featured: true\n/);
+    assert.doesNotMatch(buildGardenEntry({ text: "Algo", date: "2026-10-23", slugs: [] }).files[0].content, /featured/);
   });
 
   test("createdAt con hora sustituye a la fecha sola (desempata entradas del mismo día)", () => {

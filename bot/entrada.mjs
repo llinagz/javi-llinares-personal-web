@@ -31,7 +31,7 @@ const longDate = (iso) =>
 
 // Pensamiento del jardín: título = primera línea; cuerpo = resto (o el texto entero si es una sola línea).
 // `createdAt` (ISO con hora) desempata entradas del mismo día en la portada; sin él, se escribe solo la fecha.
-export function buildGardenEntry({ text, date, createdAt, borrador = false, stage = "semilla", topics = [], slugs }) {
+export function buildGardenEntry({ text, date, createdAt, borrador = false, destacada = false, stage = "semilla", topics = [], slugs }) {
   const { first, rest } = splitLines(text);
   const title = shorten(first);
   const slug = uniqueSlug(title, slugs, `nota-${date}`);
@@ -45,6 +45,7 @@ export function buildGardenEntry({ text, date, createdAt, borrador = false, stag
       ["stage", stage],
       ["created", raw(createdAt ?? date)],
       ["topics", topics],
+      ["featured", destacada ? true : undefined],
       ["draft", borrador ? true : undefined]
     ]) + `\n${body}\n`;
 

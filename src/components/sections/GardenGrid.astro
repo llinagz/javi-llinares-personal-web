@@ -1,0 +1,44 @@
+---
+import { excerpt, formatDate, gardenStages, gardenTypes, lastTended, type GardenEntry } from "@/lib/content";
+
+interface Props {
+  entries: GardenEntry[];
+  class?: string;
+}
+
+const { entries, class: customClass = "" } = Astro.props;
+---
+
+{
+  entries.length > 0 && (
+    <section class={customClass} aria-labelledby="garden-grid-title">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 id="garden-grid-title" class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-clay-light">El jardín</h2>
+        <a class="font-mono text-xs text-terminal-text/[0.78] underline decoration-terminal-text/[0.3] underline-offset-4 transition-colors hover:text-paper hover:decoration-paper" href="/jardin/">
+          ver todo el jardín →
+        </a>
+      </div>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {entries.map((entry, index) => (
+          <li class="flex">
+            <a
+              class="garden-card group w-full p-5"
+              href={`/jardin/${entry.data.slug}`}
+              data-reveal
+              style={`--reveal-index:${Math.min(index + 3, 9)}`}
+            >
+              <span class="garden-chip self-start">
+                {gardenStages[entry.data.stage].icon} {gardenStages[entry.data.stage].label} · {gardenTypes[entry.data.type].toLowerCase()}
+              </span>
+              <h3 class="editorial-serif mt-4 text-2xl leading-tight text-terminal-text transition-colors group-hover:text-clay-light">
+                {entry.data.title}
+              </h3>
+              <p class="editorial-serif mt-3 line-clamp-3 text-base leading-7 text-terminal-text/[0.72]">{excerpt(entry)}</p>
+              <p class="mt-auto pt-5 font-mono text-xs text-terminal-text/[0.6]">regado el {formatDate(lastTended(entry))}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
