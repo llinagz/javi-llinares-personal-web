@@ -4,6 +4,7 @@ import exifr from "exifr";
 import sharp from "sharp";
 import { POST } from "../api/telegram.mjs";
 import { createGithub } from "../bot/github.mjs";
+import { applyNow, buildNow, emptyNow, parseNow } from "../bot/ahora.mjs";
 import { buildGardenEntry, buildPhotoEntry } from "../bot/entrada.mjs";
 import { processPhoto } from "../bot/foto.mjs";
 import { parseMessage } from "../bot/mensaje.mjs";
@@ -65,6 +66,71 @@ describe("parseMessage", () => {
   test("/start devuelve la ayuda y un mensaje vacío se ignora", () => {
     assert.equal(parseMessage({ text: "/start" }).kind, "comando");
     assert.equal(parseMessage({}).kind, "ignorar");
+  });
+});
+
+describe("/ahora: mensaje", () => {
+  const action = (text) => parseMessage({ text }).action;
+
+  test("las formas del comando", () => {
+    assert.deepEqual(action("/ahora"), { op: "ver" });
+    assert.deepEqual(action("/ahora leyendo Dune, Ubik"), { op: "añadir", list: "reading", items: ["Dune", "Ubik"] });
+    assert.deepEqual(action("/ahora Escuchando Café Tacvba"), { op: "añadir", list: "listening", items: ["Café Tacvba"] });
+    assert.deepEqual(action("/ahora quitar leyendo Dune"), { op: "quitar", list: "reading", items: ["Dune"] });
+    assert.deepEqual(action("/ahora vaciar jugando"), { op: "vaciar", list: "playing" });
+    assert.deepEqual(action("/ahora nota Mucho trabajo\ny poco sueño"), { op: "nota", text: "Mucho trabajo\ny poco sueño" });
+    assert.deepEqual(action("/ahora nota"), { op: "nota", text: "" });
+    assert.deepEqual(action("/ahora@mi_bot leyendo Dune"), { op: "añadir", list: "reading", items: ["Dune"] });
+  });
+
+  test("uso incorrecto → error con el uso, sin acción", () => {
+    for (const text of ["/ahora comiendo pizza", "/ahora leyendo", "/ahora quitar", "/ahora quitar leyendo", "/ahora vaciar", "/ahora vaciar leyendo Dune"]) {
+      const parsed = parseMessage({ text });
+      assert.equal(parsed.kind, "error", text);
+      assert.match(parsed.reply, /Uso de \/ahora/);
+    }
+  });
+});
+
+describe("/ahora: now.md", () => {
+  const manual = '---\nupdated: 2026-10-23\nreading: []\nplaying: []\nlistening: []\nbuilding:\n  - "Noesis"\n---\n';
+
+  test("parseNow lee el fichero escrito a mano y el que escribe buildNow", () => {
+    const state = parseNow(manual, "2026-01-01");
+    assert.equal(state.updated, "2026-10-23");
+    assert.deepEqual(state.lists, { reading: [], playing: [], listening: [], building: ["Noesis"] });
+    assert.deepEqual(parseNow(buildNow(state), "2026-01-01"), state);
+  });
+
+  test("parseNow: sin fichero, estado vacío", () => {
+    assert.deepEqual(parseNow(undefined, "2026-01-01"), emptyNow("2026-01-01"));
+  });
+
+  test("añadir sin duplicar (ni por mayúsculas ni tildes) y actualizar la fecha", () => {
+    const state = parseNow(manual, "2026-01-01");
+    const next = applyNow(state, { op: "añadir", list: "building", items: ["noesis", "Web"] }, "2026-10-24");
+    assert.deepEqual(next.lists.building, ["Noesis", "Web"]);
+    assert.equal(next.updated, "2026-10-24");
+    assert.deepEqual(state.lists.building, ["Noesis"]); // no muta el original
+  });
+
+  test("quitar sin tildes ni mayúsculas; algo inexistente es un error", () => {
+    const state = parseNow(buildNow({ ...emptyNow("2026-10-23"), lists: { ...emptyNow("x").lists, listening: ["Café Tacvba"] } }), "x");
+    assert.deepEqual(applyNow(state, { op: "quitar", list: "listening", items: ["cafe tacvba"] }, "2026-10-24").lists.listening, []);
+    assert.throws(() => applyNow(state, { op: "quitar", list: "listening", items: ["Otro"] }, "2026-10-24"), /No hay "Otro" en escuchando/);
+  });
+
+  test("vaciar y nota (poner, conservar al editar listas y borrar)", () => {
+    let state = parseNow(manual, "x");
+    state = applyNow(state, { op: "nota", text: "Mucho trabajo" }, "2026-10-24");
+    assert.match(buildNow(state), /\n---\n\nMucho trabajo\n$/);
+    state = parseNow(buildNow(state), "x");
+    assert.equal(state.body, "Mucho trabajo");
+
+    state = applyNow(state, { op: "vaciar", list: "building" }, "2026-10-24");
+    assert.equal(state.body, "Mucho trabajo");
+    assert.deepEqual(state.lists.building, []);
+    assert.equal(applyNow(state, { op: "nota", text: "" }, "2026-10-24").body, "");
   });
 });
 
@@ -177,12 +243,15 @@ describe("madridToIso", () => {
 });
 
 describe("handleUpdate", () => {
+  const nowFile = '---\nupdated: 2026-10-23\nreading: []\nplaying: []\nlistening: []\nbuilding:\n  - "Noesis"\n---\n';
+
   function setup({ trips = ["asturias-2026"], processed = false } = {}) {
     const calls = { commits: [], replies: [] };
     const deps = {
       allowedUsers: [1],
       siteUrl: "https://ejemplo.eu",
       github: {
+        readFile: async () => nowFile,
         tripExists: async (slug) => trips.includes(slug),
         alreadyProcessed: async () => processed,
         readSlugs: async () => [],
@@ -235,6 +304,27 @@ describe("handleUpdate", () => {
     await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Faro #viaje asturias-2026" }), deps);
     assert.ok(!calls.commits[0].files.some((file) => file.path.includes("/viajes/")));
     assert.doesNotMatch(calls.replies[0], /He creado/);
+  });
+
+  test("/ahora leyendo: un commit en now.md que conserva el resto", async () => {
+    const { calls, deps } = setup();
+    await handleUpdate(withMessage({ text: "/ahora leyendo Dune" }), deps);
+    assert.equal(calls.commits.length, 1);
+    assert.match(calls.commits[0].message, /^chore\(ahora\): añadir leyendo: Dune\n\nTelegram-Update: 7$/);
+    const [file] = calls.commits[0].files;
+    assert.equal(file.path, "src/content/now.md");
+    assert.match(file.content, /reading: \["Dune"\]/);
+    assert.match(file.content, /building: \["Noesis"\]/);
+    assert.match(calls.replies[0], /leyendo: Dune/);
+  });
+
+  test("/ahora sin argumentos o con un error: responde sin commit", async () => {
+    const { calls, deps } = setup();
+    await handleUpdate(withMessage({ text: "/ahora" }), deps);
+    await handleUpdate(withMessage({ text: "/ahora quitar leyendo Dune" }), deps);
+    assert.equal(calls.commits.length, 0);
+    assert.match(calls.replies[0], /construyendo: Noesis/);
+    assert.match(calls.replies[1], /No hay "Dune" en leyendo/);
   });
 
   test("texto: un commit con el .md y respuesta con la URL", async () => {
@@ -293,6 +383,14 @@ describe("api/telegram", () => {
 });
 
 describe("cliente de GitHub", () => {
+  test("readFile: devuelve el contenido, o undefined si el fichero no existe", async () => {
+    const fetch = async (url) =>
+      new URL(url).pathname.endsWith("/now.md") ? new Response("hola") : new Response("no", { status: 404 });
+    const github = createGithub({ token: "x", repo: "a/b", fetch });
+    assert.equal(await github.readFile("src/content/now.md"), "hola");
+    assert.equal(await github.readFile("src/content/nada.md"), undefined);
+  });
+
   test("commitFiles: un solo commit con todos los ficheros y reintento si la rama avanzó", async () => {
     const log = [];
     let patches = 0;

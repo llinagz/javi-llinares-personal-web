@@ -1,4 +1,5 @@
 // Orquestador: de un update de Telegram a un commit en el repo. Las dependencias se inyectan (ver api/telegram.mjs).
+import { NOW_PATH, applyNow, buildNow, formatNow, parseNow, summarize } from "./ahora.mjs";
 import { buildGardenEntry, buildPhotoEntry, buildTripEntry } from "./entrada.mjs";
 import { parseMessage } from "./mensaje.mjs";
 
@@ -38,6 +39,25 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
     const parsed = parseMessage(message);
     if (parsed.kind === "ignorar") return;
     if (parsed.reply) return await say(parsed.reply);
+
+    if (parsed.kind === "ahora") {
+      const today = madridDate(message.date);
+      const current = parseNow(await github.readFile(NOW_PATH), today);
+      if (parsed.action.op === "ver") return await say(formatNow(current));
+      if (await github.alreadyProcessed(update.update_id)) return;
+
+      let next;
+      try {
+        next = applyNow(current, parsed.action, today);
+      } catch (error) {
+        return await say(error.message); // uso incorrecto (p. ej. quitar algo que no está): sin commit
+      }
+      await github.commitFiles({
+        files: [{ path: NOW_PATH, content: buildNow(next) }],
+        message: `chore(ahora): ${summarize(parsed.action)}\n\nTelegram-Update: ${update.update_id}`
+      });
+      return await say(`${formatNow(next)}\n\nVisible en ~1 min: ${siteUrl}/`);
+    }
 
     const { tags, text } = parsed;
     if (parsed.kind === "carrete" && tags.borrador) {
