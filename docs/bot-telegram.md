@@ -40,8 +40,13 @@ Lo mismo que responde `/ayuda` (el texto está en `HELP`, en `bot/mensaje.mjs`; 
 | `#viaje <slug>` (foto) | Asocia la foto al viaje. Si no existe, lo crea publicado (título del slug, lugar = título, inicio = fecha de la foto, resumen provisional) en el mismo commit |
 | Cualquier otra `#palabra` (texto o foto) | Tema (`topics`, en minúsculas y sin repetir); se quita del título y del slug. Cada tema tiene su página en `/temas/<tema>/` |
 | `#borrador` (texto) | `draft: true`. No vale con fotos |
+| `/ahora` | Muestra el estado de la tarjeta "Ahora" (sin commit) |
+| `/ahora leyendo Dune, Ubik` | Añade a la lista (`leyendo`, `jugando`, `escuchando` o `construyendo`), sin duplicados. Un commit en `src/content/now.md` con `updated` = hoy |
+| `/ahora quitar leyendo Dune` | Quita un elemento (sin distinguir mayúsculas ni tildes); si no está, responde con un error y no hace commit |
+| `/ahora vaciar jugando` | Vacía la lista (su fila desaparece de la portada) |
+| `/ahora nota <texto>` | Reemplaza la nota libre de la tarjeta; sin texto, la borra |
 
-Las etiquetas pueden ir en cualquier parte y se quitan del texto. Orden en la portada: el jardín usa `created` y las fotos `date`, ambos **con hora** cuando el bot la conoce (hora del mensaje; en fotos con EXIF, la de la cámara interpretada como hora de Madrid), para que lo último enviado el mismo día sea lo que sale en la home.
+`/ahora` es un comando, no una etiqueta: la lógica está en `bot/ahora.mjs` (lee y reescribe `now.md` con `frontmatter()`); si cambias el esquema de `now` en `src/content.config.ts`, revísalo. Las etiquetas pueden ir en cualquier parte y se quitan del texto. Orden en la portada: el jardín usa `created` y las fotos `date`, ambos **con hora** cuando el bot la conoce (hora del mensaje; en fotos con EXIF, la de la cámara interpretada como hora de Madrid), para que lo último enviado el mismo día sea lo que sale en la home.
 
 ## Probarlo sin tocar producción
 

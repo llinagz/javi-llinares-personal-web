@@ -37,7 +37,7 @@ npm run nuevo -- jardin "Mi idea"      # directo: jardin, carrete (o foto) o via
 - **Nunca sobrescribe**: si el fichero ya existe, no escribe nada.
 - Ctrl+C cancela sin crear nada.
 
-Qué **no** hace: no reduce la foto ni le quita el GPS (hazlo tú antes de publicar, ver sección 6), no rellena los datos de cámara y no sirve para `now.md` ni para proyectos (esos se editan a mano). Al terminar te recuerda los pasos siguientes.
+Qué **no** hace: no reduce la foto ni le quita el GPS (hazlo tú antes de publicar, ver sección 6), no rellena los datos de cámara y no sirve para `now.md` (usa `/ahora` en el bot o edítalo a mano) ni para proyectos (a mano). Al terminar te recuerda los pasos siguientes.
 
 ## 2. Qué fichero crear
 
@@ -231,7 +231,7 @@ El viaje más reciente publicado aparece en la tarjeta "ahora" de la portada com
 
 ## 7. "Ahora" (`src/content/now.md`)
 
-Alimenta la tarjeta oscura de la portada. Solo se edita, no se crea.
+Alimenta la tarjeta oscura de la portada. Solo se edita, no se crea. Desde el móvil se gestiona con `/ahora` (ver sección 12).
 
 ```md
 ---
@@ -322,8 +322,13 @@ Para publicar en el momento sin tocar el portátil. Preparación y variables: [b
 | `#viaje <slug>` en el pie | Asocia la foto a ese viaje. Si no existe, el bot lo crea publicado, con título derivado del slug (`cadiz-2026` → "Cadiz 2026"), lugar igual al título, inicio en la fecha de la foto y un resumen provisional. Edita `src/content/viajes/<slug>.md` para pulirlo |
 | Cualquier otra `#palabra` (p. ej. `#rutina`) en un texto o pie | Se guarda como tema (`topics`, en minúsculas) y se quita del título y del slug |
 | `#borrador` en un texto | Se guarda con `draft: true`. **No vale con fotos** (repo público) |
+| `/ahora` | Muestra el estado de "Ahora" |
+| `/ahora leyendo Dune, Ubik` | Añade a `leyendo`, `jugando`, `escuchando` o `construyendo` (sin duplicados) y pone `updated` a hoy |
+| `/ahora quitar leyendo Dune` | Quita un elemento; si no está, avisa y no cambia nada |
+| `/ahora vaciar jugando` | Vacía la lista (oculta su fila) |
+| `/ahora nota <texto>` | Cambia la nota libre; sin texto, la borra |
 
 - La foto se reduce a 2560 px y se le quitan **todos** los metadatos, GPS incluido. Si la mandas como documento, se aprovecha el EXIF para rellenar cámara, focal, apertura, velocidad e ISO y la fecha.
 - Una entrada por foto: en un álbum solo la primera lleva pie.
 - El bot responde con el enlace (visible en ~1 minuto) o con el motivo del fallo. Commitea directo a la rama configurada.
-- El bot no toca `now.md`, viajes ni artículos largos: eso sigue siendo a mano.
+- El bot solo toca `now.md` con `/ahora`; los viajes (más allá de crearlos con `#viaje`) y los artículos largos siguen siendo a mano.

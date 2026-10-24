@@ -38,6 +38,16 @@ export function createGithub({ token, repo, branch = "main", fetch = globalThis.
     return raws.map(slugFrom).filter(Boolean);
   }
 
+  // Contenido de un fichero de la rama, o `undefined` si no existe.
+  async function readFile(path) {
+    try {
+      return await api(`/contents/${encodeURI(path)}?ref=${branch}`, { accept: "application/vnd.github.raw+json" });
+    } catch (error) {
+      if (error.status === 404) return undefined;
+      throw error;
+    }
+  }
+
   async function tripExists(slug) {
     return (await readSlugs("viajes")).includes(slug);
   }
@@ -72,5 +82,5 @@ export function createGithub({ token, repo, branch = "main", fetch = globalThis.
     }
   }
 
-  return { readSlugs, tripExists, alreadyProcessed, commitFiles };
+  return { readSlugs, readFile, tripExists, alreadyProcessed, commitFiles };
 }
