@@ -22,7 +22,7 @@ const { project } = Astro.props;
             <Badge tone="soft">{project.data.status}</Badge>
             <span class="font-mono text-sm text-terminal-text/[0.62]">{formatDate(project.data.date)}</span>
           </div>
-          <h1 class="mt-6 max-w-4xl font-serif text-4xl font-semibold leading-tight tracking-tight text-paper md:text-6xl">
+          <h1 class="page-title mt-6 max-w-4xl text-paper">
             {project.data.name}
           </h1>
           <p class="mt-6 max-w-3xl text-xl leading-8 text-terminal-text/[0.72]">{project.data.longDescription}</p>
