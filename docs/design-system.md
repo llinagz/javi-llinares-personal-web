@@ -220,14 +220,14 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 ### Portada "mesa de trabajo"
 
-- Banda oscura (`matrix-section`) con rejilla bento de 12 columnas en `lg` (una columna en móvil): `Ahora` (3, alta) · última entrada regada (5, alta) · foto y último viaje apiladas (4). Debajo, "Para empezar" y una fila de enlaces discretos. Si faltan piezas la rejilla se reacomoda en `index.astro`.
+- Banda oscura (`matrix-section`) con rejilla bento de 12 columnas en `lg` (una columna en móvil): `Ahora` (3, alta) · última entrada regada (5, alta) · foto y último viaje apiladas (4). Debajo, la rejilla "El jardín" (`GardenGrid`, hasta 16 piezas en total contando las de arriba) y una fila de enlaces discretos. Si faltan piezas la rejilla se reacomoda en `index.astro`.
 - Tarjetas con `.garden-card` (borde fino, fondo terminal suave, sin sombra) y metadatos en `.garden-chip` (mono). Excepción consciente a "cuerpos largos nunca sobre oscuro": aquí solo hay extractos cortos en serif.
 - `HomeIntro`: cabecera compacta (`~/javi`, titular serif y una frase). Sin botones.
 - `NowWidget`: título "Ahora" en serif, nota y filas con contenido (`nowRows`), chip de estado al pie. Se alimenta de `src/content/now.md`.
 - `RecentGardenEntry`: la entrada con `updated ?? created` más reciente, con su estado (🌱 🌿 🌳), título serif grande y extracto.
 - `RecentPhoto`: última foto del carrete rellenando la celda (`object-cover`) con el título y el año en un chip. La foto completa está en su página.
 - `RecentTrip`: último viaje publicado, con curvas de nivel decorativas en SVG (no hay datos de ruta).
-- `StartHere`: hasta 3 entradas `featured` en lista compacta. Es lo que da sentido al campo `featured`.
+- `GardenGrid`: rejilla "El jardín" (4 columnas en escritorio) con tarjetas compactas `.garden-card`: chip de etapa y tipo, título serif, extracto y fecha de riego. Completa hasta 16 piezas en total junto a Ahora, entrada, foto y viaje; las `featured` van primero.
 - Proyectos, diseño web, sobre mí y newsletter quedan como enlaces discretos, en segundo plano.
 
 ### Lectura en papel

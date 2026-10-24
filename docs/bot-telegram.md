@@ -36,6 +36,7 @@ Lo mismo que responde `/ayuda` (el texto está en `HELP`, en `bot/mensaje.mjs`; 
 | Texto | Pensamiento del jardín. Primera línea = título; el resto = cuerpo (con una sola línea sirve de ambos) |
 | Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption` |
 | `#semilla`, `#creciendo`, `#perenne` (texto) | Etapa de la entrada; por defecto `semilla` |
+| `#destacada` (texto) | Escribe `featured: true`: la entrada va la primera en la rejilla "El jardín" de la portada. Con fotos se rechaza |
 | `#viaje <slug>` (foto) | Asocia la foto al viaje. Si no existe, lo crea publicado (título del slug, lugar = título, inicio = fecha de la foto, resumen provisional) en el mismo commit |
 | Cualquier otra `#palabra` (texto o foto) | Tema (`topics`, en minúsculas y sin repetir); se quita del título y del slug. Cada tema tiene su página en `/temas/<tema>/` |
 | `#borrador` (texto) | `draft: true`. No vale con fotos |

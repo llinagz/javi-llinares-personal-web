@@ -4,6 +4,7 @@ export const HELP = [
   "Convenciones:",
   "• Texto sin foto → pensamiento del jardín. La primera línea es el título; el resto, el cuerpo (con una sola línea, sirve de ambos).",
   "• #semilla, #creciendo o #perenne (solo en texto) → etapa de la entrada (por defecto, semilla).",
+  "• #destacada (solo en texto) → fija la entrada en la rejilla de la portada (featured).",
   "• Foto con pie → foto del carrete. La primera línea del pie es el título; el resto, el pie.",
   "• #viaje <slug> (solo en fotos) → asocia la foto a ese viaje; si no existe, lo crea (título derivado del slug, editable después).",
   "• Cualquier otra #palabra (p. ej. #rutina), en texto o en fotos → tema; no queda en el título y enlaza a /temas/<tema>/.",
@@ -20,7 +21,7 @@ const IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"];
 
 // Quita las etiquetas del texto y las devuelve aparte.
 function extractTags(raw = "") {
-  const tags = { viaje: undefined, borrador: false, stage: undefined, topics: [] };
+  const tags = { viaje: undefined, borrador: false, destacada: false, stage: undefined, topics: [] };
   const text = raw
     .replace(/(^|\s)#(semilla|creciendo|perenne)\b/gi, (_, space, stage) => {
       tags.stage = stage.toLowerCase();
@@ -28,6 +29,10 @@ function extractTags(raw = "") {
     })
     .replace(/(^|\s)#viaje\s+([a-z0-9]+(?:-[a-z0-9]+)*)/gi, (_, space, slug) => {
       tags.viaje = slug.toLowerCase();
+      return space;
+    })
+    .replace(/(^|\s)#destacada\b/gi, (_, space) => {
+      tags.destacada = true;
       return space;
     })
     .replace(/(^|\s)#borrador\b/gi, (_, space) => {

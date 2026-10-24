@@ -109,7 +109,7 @@ draft: false
 | `description` | no | Si falta, el extracto sale del primer párrafo |
 | `topics` | no | Lista de etiquetas |
 | `image` | no | Ruta **relativa al `.md`** hacia `src/assets/images/jardin/` |
-| `featured` | no (`false`) | `true` → puede salir en "Para empezar" en la portada |
+| `featured` | no (`false`) | `true` → va delante en la rejilla "El jardín" de la portada (con el bot: `#destacada`) |
 | `draft` | no (`false`) | `true` → solo se ve en `npm run dev` |
 | `work` | solo en `analisis` | Ficha de la obra (ver abajo) |
 
@@ -295,7 +295,7 @@ currentStage: "Dónde está ahora."
 | La imagen no se encuentra | Ruta mal calculada. Es relativa al `.md`, no a la raíz del proyecto |
 | Mi entrada no sale en la web publicada | Tiene `draft: true` |
 | No aparece "Carrete" en el menú | No hay ninguna foto publicada (todas son borrador) |
-| No sale en la portada | La portada muestra solo la entrada regada más reciente, más hasta tres con `featured: true`. Para destacarla, usa `featured: true` o cambia `updated` |
+| No sale en la portada | La portada muestra la entrada regada más reciente aparte y una rejilla "El jardín" que completa hasta 16 piezas en total (con Ahora, foto y viaje), con las `featured: true` primero y el resto por riego. Para fijarla, usa `featured: true` (`#destacada` en el bot) o cambia `updated` |
 | La fecha da error | Formato `AAAA-MM-DD`, sin comillas ni horas |
 | Un texto con `:` o comillas rompe el frontmatter | Entrecomilla los valores de texto: `title: "Algo: otra cosa"` |
 
@@ -317,6 +317,7 @@ Para publicar en el momento sin tocar el portátil. Preparación y variables: [b
 |---|---|
 | Texto | Pensamiento del jardín (`semilla` por defecto). La primera línea es el título; el resto, el cuerpo (con una sola línea, sirve de ambos) |
 | `#semilla`, `#creciendo` o `#perenne` en un texto | Fija la etapa (`stage`) de la entrada |
+| `#destacada` en un texto | Escribe `featured: true` (no vale con fotos) |
 | Foto (o imagen como documento) con pie | Foto del carrete. Primera línea del pie = título; el resto = `caption`. Sin pie: "Foto del <fecha>" |
 | `#viaje <slug>` en el pie | Asocia la foto a ese viaje. Si no existe, el bot lo crea publicado, con título derivado del slug (`cadiz-2026` → "Cadiz 2026"), lugar igual al título, inicio en la fecha de la foto y un resumen provisional. Edita `src/content/viajes/<slug>.md` para pulirlo |
 | Cualquier otra `#palabra` (p. ej. `#rutina`) en un texto o pie | Se guarda como tema (`topics`, en minúsculas) y se quita del título y del slug |

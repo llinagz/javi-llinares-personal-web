@@ -43,6 +43,9 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
     if (parsed.kind === "carrete" && tags.borrador) {
       return await say("#borrador no vale con fotos: el repositorio es público y la imagen quedaría accesible. Envíala sin la etiqueta.");
     }
+    if (parsed.kind === "carrete" && tags.destacada) {
+      return await say("#destacada solo vale con texto: las fotos no se destacan. Envíala sin la etiqueta.");
+    }
     if (await github.alreadyProcessed(update.update_id)) return;
 
     const today = madridDate(message.date);
@@ -54,6 +57,7 @@ export async function handleUpdate(update, { allowedUsers, github, telegram, pro
         date: today,
         createdAt: isoSeconds(new Date(message.date * 1000)),
         borrador: tags.borrador,
+        destacada: tags.destacada,
         stage: tags.stage,
         topics: tags.topics,
         slugs: await github.readSlugs("jardin")
