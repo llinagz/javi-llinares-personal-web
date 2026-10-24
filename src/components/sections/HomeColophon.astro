@@ -1,0 +1,28 @@
+---
+import Button from "@/components/ui/Button.astro";
+
+const linkClass =
+  "text-primary underline decoration-primary/[0.3] underline-offset-4 transition-colors hover:decoration-primary";
+---
+
+<section class="paper-band py-14 md:py-20" aria-labelledby="colophon-title">
+  <div class="container">
+    <div class="max-w-3xl" data-reveal style="--reveal-index:1">
+      <h2 id="colophon-title" class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary">
+        ~/fuera-del-jardín
+      </h2>
+      <p class="editorial-serif mt-4 text-2xl leading-snug text-ink md:text-3xl">
+        Además del jardín, construyo cosas pequeñas en <a class={linkClass} href="/projects">Proyectos</a>, hago webs para
+        otra gente en <a class={linkClass} href="/servicios/diseno-web/">Diseño web</a> y escribo
+        <a class={linkClass} href="https://vidaentredosmundos.substack.com/" target="_blank" rel="noopener noreferrer"
+          >Vida entre dos mundos</a
+        >, mi newsletter. Si quieres saber quién hay detrás, está <a class={linkClass} href="/about">Sobre mí</a>.
+      </p>
+      <div class="mt-8">
+        <Button href="https://vidaentredosmundos.substack.com/" variant="secondary" external>
+          Suscribirme a la newsletter ↗
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>

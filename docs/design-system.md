@@ -142,6 +142,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 ### Uso recomendado
 
+- `page-title` para el `h1` de toda página con banda oscura (listados, fichas, about, 404): un único tamaño (`clamp(2.6rem, 7vw, 4.75rem)`), peso 900 y Cabinet Grotesk. No poner tamaños propios en esos `h1`.
 - `display-type` para hero headlines, títulos principales y grandes llamadas editoriales.
 - `editorial-serif` para citas, bloques de énfasis narrativo y textos de síntesis emocional.
 - `font-sans` para navegación, cuerpo base, labels, botones y UI estructural.
@@ -228,7 +229,7 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 - `RecentPhoto`: última foto del carrete rellenando la celda (`object-cover`) con el título y el año en un chip. La foto completa está en su página.
 - `RecentTrip`: último viaje publicado, con curvas de nivel decorativas en SVG (no hay datos de ruta).
 - `GardenGrid`: rejilla "El jardín" (4 columnas en escritorio) con tarjetas compactas `.garden-card`: chip de etapa y tipo, título serif, extracto y fecha de riego. Completa hasta 16 piezas en total junto a Ahora, entrada, foto y viaje; las `featured` van primero.
-- Proyectos, diseño web, sobre mí y newsletter quedan como enlaces discretos, en segundo plano.
+- `HomeColophon`: cierre de la home en una banda `paper-band` (la mesa oscura acaba y el footer oscuro vuelve después). Un párrafo serif en primera persona lleva Proyectos, Diseño web, la newsletter y Sobre mí como enlaces dentro del texto, más un botón secundario a Substack. Los textos son provisionales.
 
 ### Lectura en papel
 

@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import GardenGrid from "@/components/sections/GardenGrid.astro";
+import HomeColophon from "@/components/sections/HomeColophon.astro";
 import HomeIntro from "@/components/sections/HomeIntro.astro";
 import NowWidget from "@/components/sections/NowWidget.astro";
 import RecentGardenEntry from "@/components/sections/RecentGardenEntry.astro";
@@ -31,12 +32,6 @@ const rest = entries.filter((entry) => entry.id !== recent?.id);
 const gardenCards = [...rest.filter((e) => e.data.featured), ...rest.filter((e) => !e.data.featured)].slice(0, MAX_PIEZAS - fixedPieces);
 const rightRows = photo && trip ? "" : "lg:row-span-2";
 
-const links = [
-  { href: "/projects", label: "Proyectos" },
-  { href: "/servicios/diseno-web/", label: "Diseño web" },
-  { href: "/about", label: "Sobre mí" },
-  { href: "https://vidaentredosmundos.substack.com/", label: "Newsletter", external: true }
-];
 ---
 
 <BaseLayout>
@@ -51,20 +46,7 @@ const links = [
 
       <GardenGrid class="mt-8 lg:col-span-12" entries={gardenCards} />
 
-      <nav class="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-terminal-text/[0.12] pt-6 font-mono text-sm lg:col-span-12" aria-label="Más sitios">
-        {
-          links.map((link) => (
-            <a
-              class="text-terminal-text/[0.78] underline decoration-terminal-text/[0.3] underline-offset-4 transition-colors hover:text-paper hover:decoration-paper"
-              href={link.href}
-              target={link.external ? "_blank" : undefined}
-              rel={link.external ? "noopener noreferrer" : undefined}
-            >
-              {link.label}
-            </a>
-          ))
-        }
-      </nav>
     </div>
   </section>
+  <HomeColophon />
 </BaseLayout>

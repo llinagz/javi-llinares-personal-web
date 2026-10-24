@@ -84,6 +84,15 @@ svg {
   letter-spacing: -0.06em;
 }
 
+/* Título principal de página (h1 de las bandas oscuras). Un solo tamaño y peso en toda la web. */
+.page-title {
+  font-family: "Cabinet Grotesk", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(2.6rem, 7vw, 4.75rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
 .editorial-serif {
   font-family: Georgia, Cambria, "Times New Roman", serif;
 }
@@ -677,8 +686,8 @@ body:has(.lightbox[open]) {
     max-width: 9ch;
   }
 
-  .page-hero h1.display-type {
-    font-size: clamp(2.7rem, 14vw, 4rem);
+  .page-hero h1.page-title {
+    font-size: clamp(2.6rem, 12vw, 3.75rem);
   }
 }
 
