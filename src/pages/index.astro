@@ -3,7 +3,6 @@ import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import GardenGrid from "@/components/sections/GardenGrid.astro";
 import HomeColophon from "@/components/sections/HomeColophon.astro";
-import HomeIntro from "@/components/sections/HomeIntro.astro";
 import NowWidget from "@/components/sections/NowWidget.astro";
 import RecentGardenEntry from "@/components/sections/RecentGardenEntry.astro";
 import RecentPhoto from "@/components/sections/RecentPhoto.astro";
@@ -36,11 +35,10 @@ const rightRows = photo && trip ? "" : "lg:row-span-2";
 
 <BaseLayout>
   <section class="matrix-section pb-16 pt-28 md:pb-24 md:pt-32">
+    <h1 class="sr-only">Jardín digital de Javi Llinares</h1>
     <div class="container relative grid gap-4 lg:grid-cols-12">
-      <HomeIntro class="mb-4 lg:col-span-12" />
-
-      {hasNow && <NowWidget class="lg:col-span-3 lg:row-span-2" now={now} />}
       {recent && <RecentGardenEntry class={`${entryClass} lg:row-span-2`} entry={recent} />}
+      {hasNow && <NowWidget class="lg:order-first lg:col-span-3 lg:row-span-2" now={now} />}
       {photo && <RecentPhoto class={`lg:col-span-4 ${rightRows}`} photo={photo} />}
       {trip && <RecentTrip class={`lg:col-span-4 ${rightRows}`} trip={trip} />}
 
