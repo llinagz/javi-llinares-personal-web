@@ -1,52 +1,393 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import NewsletterSection from "@/components/sections/NewsletterSection.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+
+// Retrato opcional: si existe src/assets/images/about/retrato.{jpg,jpeg,png,webp} aparece solo.
+const portraits = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/about/retrato.{jpg,jpeg,png,webp}",
+  { eager: true }
+);
+const portrait = Object.values(portraits)[0]?.default;
+
+const facts = [
+  { key: "ahora", value: "Plexus Tech, Vigo" },
+  { key: "oficio", value: ".NET, Vue + TypeScript, PostgreSQL, Azure" },
+  { key: "antes", value: "Historia, audiovisual, 3D y videojuegos" },
+  { key: "idiomas", value: "español y gallego; inglés e italiano para trabajar" }
+];
+
+const stages = [
+  {
+    years: "2008–2013",
+    title: "Historia",
+    text: "Licenciado por la Universidad de Santiago de Compostela, con Historia antigua e Historia de América. Aquí aprendí a preguntar por qué antes de cómo."
+  },
+  {
+    years: "2013–2016",
+    title: "Audiovisual",
+    text: "Posproducción y fotografía, prácticas en Lua Ideas (spots para la Xunta y Leyma), el ciclo de Animación 3D en el CES y prácticas de grafismo en Mediaset España."
+  },
+  {
+    years: "2016–2018",
+    title: "Videojuegos y 3D",
+    text: "Vagalume Games, Gato Salvaje Studio y Urbansimulations: modelado, retopología, shaders, iluminación y guion."
+  },
+  {
+    years: "2019–2021",
+    title: "Web",
+    text: "Diseño WordPress, SEO y campañas en Innova Consultores, mientras sacaba el ciclo superior de Desarrollo de Aplicaciones Web."
+  },
+  {
+    years: "2021–hoy",
+    title: "Software .NET",
+    text: "Cwellt, Serikat y, desde 2024, Plexus Tech: del móvil y la web al backend, la nube y la migración de sistemas legacy."
+  }
+];
+
+const achievements = [
+  {
+    scope: "Plexus Tech",
+    title: "Refactorizar un sistema de más de 300 repositorios",
+    text: "Participo en su paso a microservicios .NET sobre Azure. La meta es menos deuda técnica, más escalabilidad y un equipo que despliega con más rapidez. Es un trabajo de equipo y aún está en marcha."
+  },
+  {
+    scope: "Plexus Tech",
+    title: "De desarrollar a acompañar",
+    text: "Además de programar, tutorizo a compañeros nuevos, analizo y estimo proyectos y documento procesos y APIs. Es la parte del oficio que más me gusta cuidar."
+  },
+  {
+    scope: "Cwellt",
+    title: "Software donde fallar no es una opción",
+    text: "Apps móviles con Xamarin.Forms y web con React para el sector aeronáutico y clientes internacionales, con requisitos de fiabilidad estrictos. Refactoricé módulos clave para reducir errores en producción."
+  },
+  {
+    scope: "Serikat",
+    title: "Estabilizar entregas críticas",
+    text: "APIs REST con ASP.NET Core y servicios en Azure. En fases de entrega crítica, el análisis de causa raíz me sirvió para resolver incidencias complejas y estabilizar releases."
+  },
+  {
+    scope: "Gato Salvaje",
+    title: "Un año en The Waylanders",
+    text: "Modelado 3D, retopología, baking y mapeado UV de los modelos esculpidos en ZBrush. Mi primer trabajo en un estudio de videojuegos, en mi ciudad natal."
+  },
+  {
+    scope: "Webs",
+    title: "Webs para negocios reales",
+    text: "Marina Melia, Vanenbikke e Innova Idiomas, entre otras. Escucho primero, ordeno el mensaje y luego diseño.",
+    href: "/servicios/diseno-web/",
+    cta: "Ver el servicio"
+  },
+  {
+    scope: "Esta web",
+    title: "Un jardín digital que se publica desde el móvil",
+    text: "Astro estático, escritura en Markdown y un bot de Telegram propio que crea las entradas. Lo construí para tener un espacio mío, sin depender de ninguna red social.",
+    href: "/projects/",
+    cta: "Ver proyectos"
+  }
+];
+
+const principles = [
+  {
+    title: "Sin fanatismo",
+    text: "Los lenguajes son herramientas. Elijo la tecnología según el problema y no me caso con ninguna."
+  },
+  {
+    title: "Conceptos antes que sintaxis",
+    text: "La sintaxis cambia; la arquitectura, el código limpio y la claridad conceptual valen para cualquier lenguaje."
+  },
+  {
+    title: "Entender el porqué",
+    text: "Vengo de Historia, y se nota: me gusta comprender el producto, hablar con negocio y mirar desde el usuario."
+  },
+  {
+    title: "La IA, supervisada",
+    text: "La uso a diario para aprender y para trabajar (Claude Code, MCP, skills, agentes), pero con criterio propio. Me interesa la ingeniería de contexto."
+  }
+];
+
+const loves = [
+  "Caminar por el monte, cruzar aldeas y seguir ríos.",
+  "Correr por el paseo marítimo y Samil, y entrenar CrossFit en el box.",
+  "Leer al atardecer. Ahora, la trilogía Nacidos de la bruma.",
+  "Videojuegos: me importan sus historias y su arte.",
+  "El cine en sala, con sus planos y su fotografía.",
+  "Música tradicional y festivales como el de Ortigueira.",
+  "Café recién molido y desayunos salados.",
+  "Escribir sin pantallas alrededor."
+];
+
+const posts = [
+  {
+    title: "Programar sin fanatismo",
+    text: "O por qué tener mentalidad de mercenario te liberará.",
+    href: "https://vidaentredosmundos.substack.com/p/programar-sin-fanatismo"
+  },
+  {
+    title: "Entendiendo la arquitectura de software",
+    text: "Antes de ponerte a construir tu casa, cimiéntala bien.",
+    href: "https://vidaentredosmundos.substack.com/p/entendiendo-la-arquitectura-de-software"
+  },
+  {
+    title: "Contra el algoritmo",
+    text: "La paz de tener un espacio digital sin depender de las redes sociales.",
+    href: "https://vidaentredosmundos.substack.com/p/contra-el-algoritmo"
+  },
+  {
+    title: "La paradoja de la lentitud",
+    text: "O por qué correr despacio es lo único que te hará correr rápido.",
+    href: "https://vidaentredosmundos.substack.com/p/la-paradoja-de-la-lentitud"
+  }
+];
+
+const contact = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/javierllinaresbarral" },
+  { label: "GitHub", href: "https://github.com/llinagz" },
+  { label: "Manfred", href: "https://www.getmanfred.com/perfil/javillinares" }
+];
 ---
 
-<BaseLayout title="Sobre mí | Javi Llinares" description="Quién es Javi Llinares y qué intenta construir con esta web personal.">
+<BaseLayout
+  title="Sobre mí | Javi Llinares"
+  description="De la Historia al software: la trayectoria, los logros y las aficiones de Javi Llinares, desarrollador .NET en Vigo."
+>
   <section class="matrix-page page-hero">
-    <div class="container relative grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
-      <aside>
-        <p class="terminal-label">~/about</p>
-        <h1 class="page-title mt-4 text-paper">
-          Me interesa construir bien sin dejar de vivir con atención.
-        </h1>
-      </aside>
-
-      <div class="matrix-panel rounded-[1.75rem] p-7">
-        <p class="editorial-serif relative text-2xl leading-tight text-paper md:text-4xl">
-          Claridad antes que espectáculo. Profundidad antes que prisa.
+    <div class="container relative grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+      <div>
+        <p class="terminal-label">~/sobre-mí</p>
+        <h1 class="page-title mt-4 text-paper">Llegué al software por el camino largo.</h1>
+        <p class="mt-8 max-w-2xl text-xl leading-9 text-terminal-text/[0.72]">
+          Soy Javi Llinares, desarrollador .NET y analista en Vigo. Licenciado en Historia, antes
+          grafista y artista 3D. Hoy me dedico a que sistemas con más de quince años de historia
+          sigan evolucionando sin romperse.
         </p>
       </div>
+
+      <aside class="matrix-panel rounded-[1.75rem] p-7">
+        <div class="relative">
+          {
+            portrait && (
+              <Image
+                src={portrait}
+                alt="Retrato de Javi Llinares"
+                widths={[320, 640]}
+                sizes="(min-width: 1024px) 420px, 100vw"
+                class="mb-7 aspect-[4/3] w-full rounded-2xl border border-paper/15 object-cover"
+              />
+            )
+          }
+          <dl class="grid gap-4 font-mono text-sm">
+            {
+              facts.map((fact) => (
+                <div class="grid gap-1 border-b border-paper/10 pb-4 last:border-b-0 last:pb-0 sm:grid-cols-[6rem_1fr]">
+                  <dt class="text-clay-light">{fact.key}</dt>
+                  <dd class="text-terminal-text">{fact.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </aside>
     </div>
   </section>
 
-  <section class="paper-band py-14 md:py-20">
+  <section class="paper-band section">
     <div class="container">
       <div class="prose-content prose-shell mx-auto">
+        <h2>Una carrera con muchos desvíos</h2>
         <p>
-          Soy Javi Llinares. Esta web nace como un hogar tranquilo para ordenar lo que voy
-          aprendiendo entre software, producto, lectura, cultura y vida cotidiana.
+          Estudié Historia porque me interesaba entender por qué las cosas son como son. Esa
+          pregunta no me ha abandonado: es la que hago cada vez que me toca un sistema que no
+          conozco.
         </p>
         <p>
-          No quiero que funcione como una vitrina de logros ni como una marca inflada. Prefiero
-          que sea un archivo honesto: proyectos con contexto, artículos que muestren el proceso
-          de pensamiento y notas que conecten lo técnico con lo humano.
+          Después me atrajo la imagen. Pasé por una productora en A Coruña, estudié Animación 3D y
+          acabé en los estudios de Mediaset en Madrid, donde aprendí que en televisión todo tiene
+          que estar hecho «para antes de ayer». Luego vinieron los videojuegos: una start-up que
+          hacía un juego sobre la ansiedad, un año modelando para <em>The Waylanders</em> y unos
+          meses con ZBrush en un proyecto para Zara Home.
         </p>
-        <h2>Qué encontrarás aquí</h2>
         <p>
-          Artículos sobre programación y arquitectura, ideas de producto, lecturas que dejan
-          poso, tecnología mirada con calma y reflexiones sobre cómo construir una vida que no
-          quede absorbida por la productividad.
+          Lo que más me enganchaba no era el modelado, sino lo que había detrás: las herramientas,
+          los procesos y los sistemas. Empecé diseñando webs en WordPress, estudié Desarrollo de
+          Aplicaciones Web a distancia y en 2021 entré en el mundo .NET, donde sigo.
         </p>
-        <h2>La brújula</h2>
         <p>
-          Claridad antes que espectáculo. Profundidad antes que prisa. Competencia técnica sin
-          perder calidez. Y una sospecha bastante persistente: las mejores cosas se construyen
-          cuando uno aprende a sostener dos mundos a la vez.
+          Hoy me muevo entre backend, frontend, bases de datos y despliegues. No soy especialista
+          de un solo rincón y no pretendo serlo: soy un generalista que aprende lo que haga falta.
+          Lo que sí tengo claro es que me gusta meterme en sistemas complejos, refactorizar y
+          sacar algo valioso de código antiguo.
         </p>
       </div>
     </div>
   </section>
-  <NewsletterSection />
+
+  <section class="matrix-section section">
+    <div class="container relative">
+      <p class="terminal-label">trayectoria.log</p>
+      <h2 class="display-type mt-4 max-w-4xl text-4xl font-black leading-[0.96] text-paper md:text-6xl">
+        Cinco etapas, un mismo hilo.
+      </h2>
+      <ol class="mt-12 grid gap-4">
+        {
+          stages.map((stage) => (
+            <li class="paper-panel grid gap-3 rounded-[1.5rem] p-6 md:grid-cols-[10rem_12rem_1fr] md:items-baseline md:gap-6">
+              <span class="display-type text-3xl font-black leading-none text-primary/[0.55]">
+                {stage.years}
+              </span>
+              <h3 class="text-xl font-semibold text-text">{stage.title}</h3>
+              <p class="text-base leading-7 text-muted">{stage.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="paper-band section">
+    <div class="container">
+      <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+        <div>
+          <p class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary">
+            lo que he conseguido
+          </p>
+          <h2 class="display-type mt-4 text-4xl font-black leading-[0.96] text-text md:text-6xl">
+            Lo que he hecho, sin adornos.
+          </h2>
+        </div>
+        <p class="max-w-2xl text-lg leading-8 text-muted">
+          No tengo cifras de ventas ni métricas heroicas. Tengo trabajo en sistemas reales,
+          algunos muy grandes, y un criterio que he ido puliendo en cada uno.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-5 md:grid-cols-2">
+        {
+          achievements.map((item) => (
+            <article class="paper-panel flex flex-col justify-between rounded-[1.5rem] p-7">
+              <div>
+                <Badge tone="soft">{item.scope}</Badge>
+                <h3 class="mt-5 text-xl font-semibold leading-snug text-text">{item.title}</h3>
+                <p class="mt-4 text-sm leading-6 text-muted">{item.text}</p>
+              </div>
+              {item.href && (
+                <a class="mt-6 text-sm font-semibold text-primary hover:underline" href={item.href}>
+                  {item.cta}
+                </a>
+              )}
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="matrix-section section">
+    <div class="container relative grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div>
+        <p class="terminal-label">como-trabajo.md</p>
+        <h2 class="display-type mt-4 text-4xl font-black leading-[0.96] text-paper md:text-6xl">
+          Cómo trabajo.
+        </h2>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        {
+          principles.map((item) => (
+            <article class="paper-panel rounded-[1.5rem] p-6">
+              <h3 class="text-lg font-semibold text-text">{item.title}</h3>
+              <p class="mt-3 text-sm leading-6 text-muted">{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="paper-band section">
+    <div class="container grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <p class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-primary">
+          fuera de la pantalla
+        </p>
+        <h2 class="display-type mt-4 text-4xl font-black leading-[0.96] text-text md:text-6xl">
+          Lo que me hace vibrar.
+        </h2>
+        <p class="editorial-serif mt-6 max-w-md text-xl leading-8 text-muted">
+          Mi día perfecto tiene poco de productivo y mucho de atención.
+        </p>
+        <a
+          class="mt-6 inline-block text-sm font-semibold text-primary hover:underline"
+          href="https://vidaentredosmundos.substack.com/p/un-dia-perfecto"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Leer «Un día perfecto»
+        </a>
+      </div>
+      <ul class="editorial-serif grid gap-x-10 gap-y-5 text-xl leading-8 text-prose md:grid-cols-2">
+        {loves.map((item) => <li class="border-t border-border pt-4">{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="matrix-section section">
+    <div class="container relative">
+      <div class="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-end">
+        <div>
+          <p class="terminal-label">newsletter.substack</p>
+          <h2 class="display-type mt-4 text-4xl font-black leading-[0.96] text-paper md:text-6xl">
+            Escribo para pensar despacio.
+          </h2>
+        </div>
+        <p class="max-w-xl text-lg leading-8 text-terminal-text/[0.72]">
+          <em>Vida entre dos mundos</em> reúne reflexiones y aprendizajes lentos en un mundo que va
+          muy rápido. Los dos mundos son el técnico y el humano, y me interesa sobre todo lo que
+          pasa cuando se tocan.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-4 md:grid-cols-2">
+        {
+          posts.map((post) => (
+            <a
+              class="paper-panel group rounded-[1.5rem] p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/35"
+              href={post.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h3 class="text-lg font-semibold text-text group-hover:text-primary">{post.title}</h3>
+              <p class="mt-3 text-sm leading-6 text-muted">{post.text}</p>
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="mt-10">
+        <Button href="https://vidaentredosmundos.substack.com/" external>Suscribirme</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper-band section">
+    <div class="container">
+      <div class="prose-content prose-shell mx-auto text-center">
+        <h2>Si algo de esto te resuena, escríbeme.</h2>
+        <p>
+          Me interesan los proyectos que mezclan tecnología con humanidad, cultura y conexión real.
+          Y siempre hay café.
+        </p>
+      </div>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <Button href="mailto:hola@javierllinares.eu">hola@javierllinares.eu</Button>
+        {
+          contact.map((link) => (
+            <Button href={link.href} variant="secondary" external>
+              {link.label}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 </BaseLayout>
