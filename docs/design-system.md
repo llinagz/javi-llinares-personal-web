@@ -305,6 +305,9 @@ Es el ancla de marca. Debe comunicar criterio, calma y profundidad.
 
 - Debe sentirse cercano, reflexivo y honesto.
 - Evitar la estética de bio profesional inflada.
+- `about.astro` alterna bandas oscuras y de papel: hero con ficha en mono (`dl` dentro de `matrix-panel`) → historia en `prose-content` → trayectoria por etapas (`ol` de `paper-panel` con el año en `display-type`) → logros (tarjetas con `Badge` de ámbito) → principios → gustos en serif a dos columnas → newsletter → contacto.
+- Los logros se apoyan siempre en un hecho del CV; no se inventan cifras.
+- Retrato opcional: si existe `src/assets/images/about/retrato.{jpg,jpeg,png,webp}` aparece en el hero; si no, no se pinta nada. Reducirlo y quitar el GPS antes de commitearlo.
 
 ## Lo Que Debemos Evitar
 
