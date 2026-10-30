@@ -1,7 +1,7 @@
 ---
 import { Image, getImage } from "astro:assets";
 import Lightbox from "@/components/ui/Lightbox.astro";
-import { photoAlt, photoMeta, type Photo } from "@/lib/content";
+import { photoAlt, photoMeta, photoSize, photoSource, type Photo } from "@/lib/content";
 
 interface Props {
   photos: Photo[];
@@ -12,10 +12,12 @@ const { photos } = Astro.props;
 // Versión grande para el visor: se guarda en data-* y la crea el script bajo demanda.
 const items = await Promise.all(
   photos.map(async (photo) => {
-    const full = Math.min(1920, photo.data.image.width);
+    const size = photoSize(photo);
+    const full = Math.min(1920, size.width);
     const large = await getImage({
-      src: photo.data.image,
+      ...photoSource(photo),
       width: full,
+      height: Math.round((size.height * full) / size.width),
       widths: [...new Set([Math.min(1280, full), full])]
     });
     return { photo, large };
@@ -41,7 +43,7 @@ const items = await Promise.all(
           <div class="overflow-hidden rounded-xl border border-border bg-surface">
             <Image
               class="h-auto w-full transition duration-500 group-hover:scale-[1.02]"
-              src={photo.data.image}
+              {...photoSource(photo)}
               alt={photoAlt(photo)}
               widths={[400, 640, 960]}
               sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"

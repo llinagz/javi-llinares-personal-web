@@ -1,4 +1,5 @@
 // Webhook del bot de Telegram (función de Vercel). Ver docs/bot-telegram.md.
+import { createBlob } from "../bot/blob.mjs";
 import { createGithub } from "../bot/github.mjs";
 import { processPhoto } from "../bot/foto.mjs";
 import { handleUpdate } from "../bot/procesar.mjs";
@@ -26,6 +27,7 @@ export async function POST(request) {
       github: createGithub({ token: env.GITHUB_TOKEN, repo: env.GITHUB_REPO, branch: env.GITHUB_BRANCH || "main" }),
       telegram: createTelegram({ token: env.TELEGRAM_BOT_TOKEN }),
       processPhoto,
+      blob: createBlob(),
       siteUrl: env.SITE_URL || "https://javierllinares.eu"
     });
   }

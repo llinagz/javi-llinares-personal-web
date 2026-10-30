@@ -49,14 +49,17 @@ const viajes = defineCollection({
   })
 });
 
-// Carrete: una entrada por foto.
+// Carrete: una entrada por foto. `image` es una ruta relativa a `src/assets/images/carrete/` (fotos manuales) o una URL
+// de Vercel Blob (fotos del bot de Telegram, que no se guardan en git); en ese caso `width` y `height` son obligatorios.
 const carrete = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/carrete" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     slug: z.string(),
     date: z.coerce.date(),
-    image: image(),
+    image: z.union([z.string().url(), image()]),
+    width: z.number().int().positive().optional(),
+    height: z.number().int().positive().optional(),
     alt: z.string().optional(),
     caption: z.string().optional(),
     location: z.string().optional(),
@@ -68,6 +71,15 @@ const carrete = defineCollection({
     shutterSpeed: z.string().optional(),
     iso: z.number().optional(),
     draft: z.boolean().default(false)
+  }).superRefine((data, ctx) => {
+    // Al validar, una imagen local es un marcador de texto (`__ASTRO_IMAGE_…`): solo las URL empiezan por http.
+    if (typeof data.image === "string" && /^https?:\/\//.test(data.image) && !(data.width && data.height)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["width"],
+        message: "Una imagen remota necesita `width` y `height`."
+      });
+    }
   })
 });
 

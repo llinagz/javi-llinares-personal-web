@@ -11,7 +11,7 @@ if (!url || !token || !secret) {
 const response = await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ url, secret_token: secret, allowed_updates: ["message"], drop_pending_updates: true })
+  body: JSON.stringify({ url, secret_token: secret, allowed_updates: ["message", "callback_query"], drop_pending_updates: true })
 });
 const result = await response.json();
 console.log(result.ok ? `✔ Webhook registrado en ${url}` : `✖ ${result.description}`);

@@ -9,8 +9,14 @@ export const slugify = (text) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+// Valor de un campo escalar del frontmatter de un .md, sin comillas (solo busca en la cabecera).
+export function fieldFrom(raw, key) {
+  const head = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
+  return head.match(new RegExp(`^${key}:[ \\t]*["']?([^"'\\r\\n]+?)["']?[ \\t]*$`, "m"))?.[1];
+}
+
 // Slug declarado en el frontmatter de un .md (el nombre del fichero no tiene por qué coincidir).
-export const slugFrom = (raw) => raw.match(/^slug:\s*["']?([^"'\r\n]+?)["']?\s*$/m)?.[1];
+export const slugFrom = (raw) => fieldFrom(raw, "slug");
 
 // Marca un valor que se escribe tal cual, sin comillas (fechas).
 export const date = (text) => ({ raw: text });

@@ -71,17 +71,25 @@ export function buildTripEntry({ slug, date }) {
 
 // Foto del carrete: título = primera línea del pie; el resto de líneas es el `caption`.
 // `dateTime` (ISO con hora) desempata fotos del mismo día en la portada; sin él, se escribe solo la fecha.
-export function buildPhotoEntry({ text, date, dateTime, exif = {}, viaje, topics = [], slugs, image }) {
+// La imagen vive en Vercel Blob (fuera de git): el `.md` guarda su URL y sus dimensiones, y es el único fichero.
+// El slug se calcula antes de subirla (ver `photoSlug`) para nombrar el blob.
+export function photoSlug({ text, date, slugs }) {
+  const { first } = splitLines(text);
+  return uniqueSlug(first ? shorten(first) : `Foto del ${longDate(date)}`, slugs, `foto-${date}`);
+}
+
+export function buildPhotoEntry({ text, date, dateTime, exif = {}, viaje, topics = [], slugs, imageUrl, width, height }) {
   const { first, rest } = splitLines(text);
   const title = first ? shorten(first) : `Foto del ${longDate(date)}`;
-  const slug = uniqueSlug(title, slugs, `foto-${date}`);
-  const imageName = `${slug}.jpg`;
+  const slug = photoSlug({ text, date, slugs });
 
   const content = frontmatter([
     ["title", title],
     ["slug", slug],
     ["date", raw(dateTime ?? date)],
-    ["image", `../../assets/images/carrete/${imageName}`],
+    ["image", imageUrl],
+    ["width", width],
+    ["height", height],
     ["caption", rest],
     ["trip", viaje],
     ["topics", topics],
@@ -98,9 +106,6 @@ export function buildPhotoEntry({ text, date, dateTime, exif = {}, viaje, topics
     title,
     section: "carrete",
     draft: false,
-    files: [
-      { path: `src/content/carrete/${slug}.md`, content },
-      { path: `src/assets/images/carrete/${imageName}`, content: image }
-    ]
+    files: [{ path: `src/content/carrete/${slug}.md`, content }]
   };
 }

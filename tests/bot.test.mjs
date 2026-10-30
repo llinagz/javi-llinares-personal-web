@@ -5,10 +5,13 @@ import sharp from "sharp";
 import { POST } from "../api/telegram.mjs";
 import { createGithub } from "../bot/github.mjs";
 import { applyNow, buildNow, emptyNow, parseNow } from "../bot/ahora.mjs";
-import { buildGardenEntry, buildPhotoEntry } from "../bot/entrada.mjs";
+import { buildGardenEntry, buildPhotoEntry, photoSlug } from "../bot/entrada.mjs";
 import { processPhoto } from "../bot/foto.mjs";
+import { formatRecent, imageOf, isExample, listRecent, setDraft, targetFrom } from "../bot/gestion.mjs";
 import { parseMessage } from "../bot/mensaje.mjs";
 import { handleUpdate, madridToIso } from "../bot/procesar.mjs";
+
+const URL_BLOB = "https://abc123.public.blob.vercel-storage.com/carrete/faro-x1y2.jpg";
 
 describe("parseMessage", () => {
   test("texto sin foto → jardín", () => {
@@ -70,10 +73,68 @@ describe("parseMessage", () => {
 
   test("la ayuda cubre cada etiqueta y comando, con ejemplos, y cabe en un mensaje de Telegram", () => {
     const { reply } = parseMessage({ text: "/ayuda" });
-    for (const word of ["#semilla", "#creciendo", "#perenne", "#destacada", "#borrador", "#viaje", "/ahora", "quitar", "vaciar", "nota", "EJEMPLOS"]) {
+    for (const word of ["#semilla", "#creciendo", "#perenne", "#destacada", "#borrador", "#viaje", "/ahora", "quitar", "vaciar", "nota", "/borrar", "/ocultar", "/mostrar", "/ultimas", "EJEMPLOS"]) {
       assert.ok(reply.includes(word), `falta "${word}" en la ayuda`);
     }
     assert.ok(reply.length < 4096, "Telegram corta los mensajes de más de 4096 caracteres");
+  });
+
+  test("/borrar, /ocultar y /mostrar: slug opcional y mensaje citado", () => {
+    assert.deepEqual(parseMessage({ text: "/borrar Mi-Slug" }), { kind: "gestion", op: "borrar", arg: "mi-slug", quoted: undefined });
+    assert.deepEqual(parseMessage({ text: "/ocultar@mi_bot", reply_to_message: { text: "Publicado: https://x.eu/jardin/a/" } }), {
+      kind: "gestion",
+      op: "ocultar",
+      arg: undefined,
+      quoted: "Publicado: https://x.eu/jardin/a/"
+    });
+    assert.equal(parseMessage({ text: "/mostrar a" }).op, "mostrar");
+    assert.equal(parseMessage({ text: "/ultimas" }).kind, "ultimas");
+    assert.equal(parseMessage({ text: "/borrar a b" }).kind, "error"); // más de un argumento: no se publica como pensamiento
+  });
+});
+
+describe("gestión de lo publicado", () => {
+  const post = '---\ntitle: "Hola"\nslug: "hola"\ncreated: 2026-10-23T10:00:00Z\n---\n\nCuerpo\n';
+
+  test("targetFrom saca sección y slug de la URL o de «jardin/slug»", () => {
+    assert.deepEqual(targetFrom("Publicado (visible en ~1 min): https://x.eu/jardin/leer-despacio/"), { collection: "jardin", slug: "leer-despacio" });
+    assert.deepEqual(targetFrom("¿Borrar carrete/faro-2?\n«Faro»"), { collection: "carrete", slug: "faro-2" });
+    assert.equal(targetFrom("hola"), undefined);
+    assert.equal(targetFrom(undefined), undefined);
+  });
+
+  test("setDraft añade, quita y es idempotente; toca solo el frontmatter", () => {
+    const hidden = setDraft(post, true);
+    assert.match(hidden, /created: 2026-10-23T10:00:00Z\ndraft: true\n---\n\nCuerpo\n$/);
+    assert.equal(setDraft(hidden, true), hidden);
+    assert.equal(setDraft(hidden, false), post);
+    assert.equal(setDraft(post, false), post);
+    assert.equal(setDraft("sin frontmatter", true), "sin frontmatter");
+  });
+
+  test("imageOf distingue la URL del almacén de una imagen local", () => {
+    assert.deepEqual(imageOf("src/content/carrete/a.md", `---\nimage: "${URL_BLOB}"\n---\n`), { url: URL_BLOB });
+    assert.deepEqual(imageOf("src/content/carrete/a.md", '---\nimage: "../../assets/images/carrete/a.jpg"\n---\n'), {
+      path: "src/assets/images/carrete/a.jpg"
+    });
+    assert.equal(imageOf("src/content/jardin/a.md", post), undefined);
+  });
+
+  test("listRecent ordena por fecha, limita y marca los borradores", () => {
+    const entries = [
+      { collection: "jardin", slug: "viejo", raw: '---\ntitle: "Viejo"\nslug: "viejo"\ncreated: 2026-01-01\n---\n' },
+      { collection: "carrete", slug: "foto", raw: '---\ntitle: "Foto"\nslug: "foto"\ndate: 2026-10-20T08:05:00Z\n---\n' },
+      { collection: "jardin", slug: "oculto", raw: '---\ntitle: "Oculto"\nslug: "oculto"\ncreated: 2026-05-05\ndraft: true\n---\n' }
+    ];
+    const items = listRecent(entries, 2);
+    assert.deepEqual(items.map((item) => item.slug), ["foto", "oculto"]);
+    assert.equal(formatRecent(items), "• carrete/foto\n  Foto · 2026-10-20\n• jardin/oculto\n  Oculto · 2026-05-05 · borrador");
+    assert.match(formatRecent([]), /Todavía no hay nada/);
+  });
+
+  test("isExample reconoce los borradores de prueba", () => {
+    assert.ok(isExample("ejemplo-costa"));
+    assert.ok(!isExample("mi-ejemplo"));
   });
 });
 
@@ -179,7 +240,7 @@ describe("entradas", () => {
   test("los temas llegan al frontmatter del jardín y del carrete", () => {
     const garden = buildGardenEntry({ text: "Algo", date: "2026-10-23", topics: ["rutina", "gym"], slugs: [] });
     assert.match(garden.files[0].content, /topics: \["rutina","gym"\]/);
-    const photo = buildPhotoEntry({ text: "Foto", date: "2026-10-23", topics: ["rutina"], slugs: [], image: Buffer.from("x") });
+    const photo = buildPhotoEntry({ text: "Foto", date: "2026-10-23", topics: ["rutina"], slugs: [], imageUrl: URL_BLOB, width: 3, height: 2 });
     assert.match(photo.files[0].content, /topics: \["rutina"\]/);
   });
 
@@ -193,25 +254,33 @@ describe("entradas", () => {
     assert.ok(entry.title.length <= 70 && entry.title.endsWith("…"));
   });
 
-  test("foto: pie de varias líneas, viaje y ficha técnica", () => {
+  test("foto: un único .md con la URL del almacén, sus dimensiones, pie de varias líneas, viaje y ficha técnica", () => {
     const entry = buildPhotoEntry({
       text: "Faro\nCon niebla",
       date: "2026-10-20",
       exif: { camera: "Sony ILCE-7M4", focalLength: "35 mm", aperture: "f/1.8", shutterSpeed: "1/250", iso: 100 },
       viaje: "asturias-2026",
       slugs: [],
-      image: Buffer.from("x")
+      imageUrl: URL_BLOB,
+      width: 2560,
+      height: 1707
     });
-    const [md, img] = entry.files;
-    assert.equal(img.path, "src/assets/images/carrete/faro.jpg");
+    assert.equal(entry.files.length, 1);
+    assert.equal(entry.files[0].path, "src/content/carrete/faro.md");
     assert.equal(
-      md.content,
-      '---\ntitle: "Faro"\nslug: "faro"\ndate: 2026-10-20\nimage: "../../assets/images/carrete/faro.jpg"\ncaption: "Con niebla"\ntrip: "asturias-2026"\ncamera: "Sony ILCE-7M4"\nfocalLength: "35 mm"\naperture: "f/1.8"\nshutterSpeed: "1/250"\niso: 100\n---\n'
+      entry.files[0].content,
+      `---\ntitle: "Faro"\nslug: "faro"\ndate: 2026-10-20\nimage: "${URL_BLOB}"\nwidth: 2560\nheight: 1707\ncaption: "Con niebla"\ntrip: "asturias-2026"\ncamera: "Sony ILCE-7M4"\nfocalLength: "35 mm"\naperture: "f/1.8"\nshutterSpeed: "1/250"\niso: 100\n---\n`
     );
   });
 
+  test("photoSlug coincide con el slug de la entrada (nombra el blob antes de crearla)", () => {
+    const args = { text: "Faro", date: "2026-10-20", slugs: ["faro"] };
+    assert.equal(photoSlug(args), "faro-2");
+    assert.equal(buildPhotoEntry({ ...args, imageUrl: URL_BLOB, width: 1, height: 1 }).slug, "faro-2");
+  });
+
   test("foto sin pie: título por defecto con la fecha", () => {
-    const entry = buildPhotoEntry({ text: "", date: "2026-10-23", slugs: [], image: Buffer.from("x") });
+    const entry = buildPhotoEntry({ text: "", date: "2026-10-23", slugs: [], imageUrl: URL_BLOB, width: 3, height: 2 });
     assert.equal(entry.title, "Foto del 23 de octubre de 2026");
   });
 });
@@ -227,9 +296,10 @@ describe("processPhoto", () => {
       .toBuffer();
     assert.ok((await exifr.gps(original))?.latitude, "el original de la prueba debe llevar GPS");
 
-    const { image, exif } = await processPhoto(original);
+    const { image, width, height, exif } = await processPhoto(original);
     const meta = await sharp(image).metadata();
     assert.equal(Math.max(meta.width, meta.height), 2560);
+    assert.deepEqual({ width, height }, { width: meta.width, height: meta.height });
     assert.equal(meta.format, "jpeg");
     assert.equal(meta.exif, undefined);
     assert.equal(await exifr.gps(image), undefined);
@@ -253,8 +323,12 @@ describe("madridToIso", () => {
 describe("handleUpdate", () => {
   const nowFile = '---\nupdated: 2026-10-23\nreading: []\nplaying: []\nlistening: []\nbuilding:\n  - "Noesis"\n---\n';
 
-  function setup({ trips = ["asturias-2026"], processed = false } = {}) {
-    const calls = { commits: [], replies: [] };
+  const gardenRaw = '---\ntitle: "Una idea"\nslug: "una-idea"\ncreated: 2026-10-23T10:00:00Z\n---\n\nCuerpo\n';
+  const photoRaw = (slug, image = URL_BLOB, extra = "") =>
+    `---\ntitle: "Faro"\nslug: "${slug}"\ndate: 2026-10-20\nimage: "${image}"\nwidth: 10\nheight: 5\n${extra}---\n`;
+
+  function setup({ trips = ["asturias-2026"], processed = false, entries = [], failCommit = false, failRemove = false } = {}) {
+    const calls = { commits: [], replies: [], uploads: [], removed: [], answered: [], edits: [] };
     const deps = {
       allowedUsers: [1],
       siteUrl: "https://ejemplo.eu",
@@ -263,13 +337,31 @@ describe("handleUpdate", () => {
         tripExists: async (slug) => trips.includes(slug),
         alreadyProcessed: async () => processed,
         readSlugs: async () => [],
-        commitFiles: async (commit) => calls.commits.push(commit)
+        readEntries: async (collection) => entries.filter((entry) => entry.collection === collection),
+        findEntry: async (slug, collections) =>
+          entries.find((entry) => entry.slug === slug && (!collections || collections.includes(entry.collection))),
+        commitFiles: async (commit) => {
+          if (failCommit) throw new Error("GitHub caído");
+          calls.commits.push(commit);
+        }
       },
       telegram: {
         downloadFile: async () => Buffer.from("raw"),
-        reply: async (_, text) => calls.replies.push(text)
+        reply: async (_, text, options) => calls.replies.push(options ? { text, ...options } : text),
+        answerCallback: async (id) => calls.answered.push(id),
+        editMessage: async (_chat, _message, text) => calls.edits.push(text)
       },
-      processPhoto: async () => ({ image: Buffer.from("jpg"), exif: { takenOn: "2026-10-20" } })
+      blob: {
+        upload: async (name) => {
+          calls.uploads.push(name);
+          return URL_BLOB;
+        },
+        remove: async (url) => {
+          if (failRemove) throw new Error("Blob caído");
+          calls.removed.push(url);
+        }
+      },
+      processPhoto: async () => ({ image: Buffer.from("jpg"), width: 2560, height: 1707, exif: { takenOn: "2026-10-20" } })
     };
     return { calls, deps };
   }
@@ -279,7 +371,7 @@ describe("handleUpdate", () => {
   test("usuario no autorizado: no hace nada ni responde", async () => {
     const { calls, deps } = setup();
     await handleUpdate(withMessage({ from: { id: 99 }, text: "hola" }), deps);
-    assert.deepEqual(calls, { commits: [], replies: [] });
+    assert.ok(Object.values(calls).every((list) => list.length === 0));
   });
 
   test("update repetido: no duplica", async () => {
@@ -343,26 +435,151 @@ describe("handleUpdate", () => {
     assert.match(calls.replies[0], /https:\/\/ejemplo\.eu\/jardin\/una-idea\//);
   });
 
-  test("foto: un único commit con imagen y .md, con la fecha del EXIF", async () => {
+  test("foto: sube la imagen al almacén y el commit lleva solo el .md, con la fecha del EXIF", async () => {
     const { calls, deps } = setup();
     await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Faro #viaje asturias-2026" }), deps);
+    assert.deepEqual(calls.uploads, ["carrete/faro.jpg"]);
     assert.equal(calls.commits.length, 1);
-    assert.deepEqual(calls.commits[0].files.map((file) => file.path), [
-      "src/content/carrete/faro.md",
-      "src/assets/images/carrete/faro.jpg"
-    ]);
-    assert.match(calls.commits[0].files[0].content, /date: 2026-10-20\n/);
+    assert.deepEqual(calls.commits[0].files.map((file) => file.path), ["src/content/carrete/faro.md"]);
+    const { content } = calls.commits[0].files[0];
+    assert.match(content, /date: 2026-10-20\n/);
+    assert.match(content, new RegExp(`image: "${URL_BLOB}"\\nwidth: 2560\\nheight: 1707\\n`));
+    assert.deepEqual(calls.removed, []);
+  });
+
+  test("foto: si el commit falla, la imagen se retira del almacén", async () => {
+    const { calls, deps } = setup({ failCommit: true });
+    await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Faro" }), deps);
+    assert.deepEqual(calls.removed, [URL_BLOB]);
+    assert.match(calls.replies[0], /No he podido publicarlo: GitHub caído/);
   });
 
   test("foto sin EXIF: la fecha lleva la hora del mensaje; con hora EXIF, esa hora (Madrid)", async () => {
     const { calls, deps } = setup();
-    deps.processPhoto = async () => ({ image: Buffer.from("jpg"), exif: {} });
+    deps.processPhoto = async () => ({ image: Buffer.from("jpg"), width: 3, height: 2, exif: {} });
     await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Sin exif" }), deps);
     assert.match(calls.commits[0].files[0].content, /date: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\n/);
 
-    deps.processPhoto = async () => ({ image: Buffer.from("jpg"), exif: { takenOn: "2026-10-20", takenAt: "2026-10-20T10:05:00" } });
+    deps.processPhoto = async () => ({ image: Buffer.from("jpg"), width: 3, height: 2, exif: { takenOn: "2026-10-20", takenAt: "2026-10-20T10:05:00" } });
     await handleUpdate(withMessage({ photo: [{ file_id: "a" }], caption: "Con exif" }), deps);
     assert.match(calls.commits[1].files[0].content, /date: 2026-10-20T08:05:00Z\n/);
+  });
+
+  test("borrador: la respuesta incluye jardin/<slug> para poder gestionarlo luego", async () => {
+    const { calls, deps } = setup();
+    await handleUpdate(withMessage({ text: "Idea #borrador" }), deps);
+    assert.equal(calls.replies[0], "Guardado como borrador: jardin/idea");
+  });
+
+  describe("gestión", () => {
+    const entries = [
+      { collection: "jardin", slug: "una-idea", path: "src/content/jardin/una-idea.md", raw: gardenRaw },
+      { collection: "jardin", slug: "ejemplo-pensamiento", path: "src/content/jardin/ejemplo-pensamiento.md", raw: gardenRaw },
+      { collection: "carrete", slug: "faro", path: "src/content/carrete/faro.md", raw: photoRaw("faro", URL_BLOB, 'trip: "asturias-2026"\n') },
+      { collection: "carrete", slug: "local", path: "src/content/carrete/local.md", raw: photoRaw("local", "../../assets/images/carrete/local.jpg") }
+    ];
+    const callback = (data, text, from = 1) => ({
+      update_id: 8,
+      callback_query: { id: "cb", from: { id: from }, data, message: { message_id: 5, chat: { id: 1 }, text } }
+    });
+
+    test("/ultimas lista lo publicado sin hacer commit", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(withMessage({ text: "/ultimas" }), deps);
+      assert.equal(calls.commits.length, 0);
+      assert.match(calls.replies[0], /jardin\/una-idea/);
+      assert.match(calls.replies[0], /carrete\/faro/);
+    });
+
+    test("/borrar por slug o respondiendo: pide confirmación con botones y no hace commit", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(withMessage({ text: "/borrar una-idea" }), deps);
+      await handleUpdate(withMessage({ text: "/borrar", reply_to_message: { text: "Publicado (visible en ~1 min): https://ejemplo.eu/carrete/faro/" } }), deps);
+      assert.equal(calls.commits.length, 0);
+      assert.match(calls.replies[0].text, /^¿Borrar jardin\/una-idea\?/);
+      assert.match(calls.replies[1].text, /^¿Borrar carrete\/faro\?/);
+      assert.deepEqual(calls.replies[0].buttons.map((button) => button.data), ["borrar", "cancelar"]);
+    });
+
+    test("/borrar: sin destino, con slug inexistente o ejemplo-*, responde sin botones", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(withMessage({ text: "/borrar" }), deps);
+      await handleUpdate(withMessage({ text: "/borrar nada" }), deps);
+      await handleUpdate(withMessage({ text: "/borrar ejemplo-pensamiento" }), deps);
+      assert.equal(calls.commits.length, 0);
+      assert.ok(calls.replies.every((reply) => typeof reply === "string"));
+      assert.match(calls.replies[0], /Responde con \/borrar/);
+      assert.match(calls.replies[1], /No encuentro «nada»/);
+      assert.match(calls.replies[2], /ejemplo-\*/);
+    });
+
+    test("confirmar borra el .md y quita la imagen del almacén; avisa del viaje sin fotos", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(callback("borrar", "¿Borrar carrete/faro?\n«Faro»"), deps);
+      assert.deepEqual(calls.answered, ["cb"]);
+      assert.deepEqual(calls.commits[0].files, [{ path: "src/content/carrete/faro.md", delete: true }]);
+      assert.match(calls.commits[0].message, /^chore\(carrete\): borrar faro\n\nTelegram-Update: 8$/);
+      assert.deepEqual(calls.removed, [URL_BLOB]);
+      assert.match(calls.edits[0], /Borrado: carrete\/faro/);
+      assert.match(calls.edits[0], /viaje «asturias-2026» se queda sin fotos/);
+    });
+
+    test("confirmar una foto con imagen local borra también el fichero de imagen", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(callback("borrar", "¿Borrar carrete/local?"), deps);
+      assert.deepEqual(calls.commits[0].files.map((file) => file.path), ["src/content/carrete/local.md", "src/assets/images/carrete/local.jpg"]);
+      assert.deepEqual(calls.removed, []);
+    });
+
+    test("una imagen local compartida con otra entrada no se borra", async () => {
+      const shared = [...entries, { collection: "carrete", slug: "copia", path: "src/content/carrete/copia.md", raw: photoRaw("copia", "../../assets/images/carrete/local.jpg") }];
+      const { calls, deps } = setup({ entries: shared });
+      await handleUpdate(callback("borrar", "¿Borrar carrete/local?"), deps);
+      assert.deepEqual(calls.commits[0].files.map((file) => file.path), ["src/content/carrete/local.md"]);
+    });
+
+    test("confirmar un texto: un commit y aviso de que sigue en el historial", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(callback("borrar", "¿Borrar jardin/una-idea?"), deps);
+      assert.deepEqual(calls.commits[0].files, [{ path: "src/content/jardin/una-idea.md", delete: true }]);
+      assert.deepEqual(calls.removed, []);
+      assert.match(calls.edits[0], /historial de git/);
+    });
+
+    test("si el almacén falla tras el commit, lo cuenta", async () => {
+      const { calls, deps } = setup({ entries, failRemove: true });
+      await handleUpdate(callback("borrar", "¿Borrar carrete/faro?"), deps);
+      assert.equal(calls.commits.length, 1);
+      assert.match(calls.edits[0], /no he podido quitar la imagen del almacén \(Blob caído\)/);
+    });
+
+    test("cancelar, un usuario ajeno o un segundo toque no borran nada", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(callback("cancelar", "¿Borrar jardin/una-idea?"), deps);
+      assert.match(calls.edits[0], /Cancelado/);
+      await handleUpdate(callback("borrar", "¿Borrar jardin/una-idea?", 99), deps);
+      await handleUpdate(callback("borrar", "¿Borrar jardin/ya-borrada?"), deps);
+      await handleUpdate(callback("borrar", "¿Borrar jardin/ejemplo-pensamiento?"), deps);
+      assert.equal(calls.commits.length, 0);
+      assert.deepEqual(calls.removed, []);
+      assert.match(calls.edits[1], /ya no existe/);
+      assert.match(calls.edits[2], /No sé qué borrar/);
+      assert.equal(calls.answered.length, 3); // el de otra cuenta ni se contesta
+    });
+
+    test("/ocultar y /mostrar solo cambian draft; con fotos o repetido, responden sin commit", async () => {
+      const { calls, deps } = setup({ entries });
+      await handleUpdate(withMessage({ text: "/ocultar una-idea" }), deps);
+      assert.match(calls.commits[0].message, /^chore\(jardin\): ocultar una-idea/);
+      assert.match(calls.commits[0].files[0].content, /created: 2026-10-23T10:00:00Z\ndraft: true\n---/);
+      assert.match(calls.replies[0], /Oculta \(borrador\): jardin\/una-idea/);
+
+      await handleUpdate(withMessage({ text: "/mostrar una-idea" }), deps); // ya publicada: sin cambios
+      await handleUpdate(withMessage({ text: "/ocultar faro" }), deps);
+      assert.equal(calls.commits.length, 1);
+      assert.match(calls.replies[1], /ya estaba publicada/);
+      assert.match(calls.replies[2], /Para una foto usa \/borrar/);
+    });
   });
 });
 
@@ -402,6 +619,7 @@ describe("cliente de GitHub", () => {
   test("commitFiles: un solo commit con todos los ficheros y reintento si la rama avanzó", async () => {
     const log = [];
     let patches = 0;
+    let tree;
     const fetch = async (url, { method = "GET", body } = {}) => {
       const path = new URL(url).pathname.replace("/repos/a/b", "");
       log.push(`${method} ${path}`);
@@ -409,18 +627,39 @@ describe("cliente de GitHub", () => {
       if (path === "/git/ref/heads/main") return json({ object: { sha: "p" + patches } });
       if (path.startsWith("/git/commits/p")) return json({ tree: { sha: "t" } });
       if (path === "/git/blobs") return json({ sha: "b" });
-      if (path === "/git/trees") return json({ sha: "nt" });
+      if (path === "/git/trees") {
+        tree = JSON.parse(body).tree;
+        return json({ sha: "nt" });
+      }
       if (path === "/git/commits") return json({ sha: "c" + patches });
       if (method === "PATCH") return ++patches === 1 ? json({ message: "no fast-forward" }, 422) : json({});
       throw new Error("ruta inesperada " + path);
     };
     const github = createGithub({ token: "x", repo: "a/b", fetch });
     const sha = await github.commitFiles({
-      files: [{ path: "a.md", content: "hola" }, { path: "b.jpg", content: Buffer.from("img") }],
+      files: [{ path: "a.md", content: "hola" }, { path: "b.jpg", content: Buffer.from("img") }, { path: "c.jpg", delete: true }],
       message: "m"
     });
     assert.equal(sha, "c1");
-    assert.equal(log.filter((line) => line === "POST /git/blobs").length, 2);
+    assert.equal(log.filter((line) => line === "POST /git/blobs").length, 2); // el borrado no sube blob
     assert.equal(log.filter((line) => line === "POST /git/commits").length, 2);
+    assert.deepEqual(tree.map(({ path, sha }) => [path, sha]), [["a.md", "b"], ["b.jpg", "b"], ["c.jpg", null]]);
+  });
+
+  test("findEntry: busca por slug en las colecciones y devuelve el fichero", async () => {
+    const files = { "src/content/jardin/a.md": '---\nslug: "a"\n---\n', "src/content/carrete/b.md": '---\nslug: "b"\n---\n' };
+    const fetch = async (url) => {
+      const path = new URL(url).pathname.replace("/repos/a/b", "");
+      const json = (data) => new Response(JSON.stringify(data));
+      if (path === "/git/ref/heads/main") return json({ object: { sha: "p" } });
+      if (path === "/git/commits/p") return json({ tree: { sha: "t" } });
+      if (path === "/git/trees/t") return json({ tree: Object.keys(files).map((p) => ({ type: "blob", path: p })) });
+      if (path.startsWith("/contents/")) return new Response(files[decodeURI(path.slice("/contents/".length))]);
+      throw new Error("ruta inesperada " + path);
+    };
+    const github = createGithub({ token: "x", repo: "a/b", fetch });
+    assert.deepEqual(await github.findEntry("b"), { collection: "carrete", path: "src/content/carrete/b.md", raw: files["src/content/carrete/b.md"], slug: "b" });
+    assert.equal(await github.findEntry("b", ["jardin"]), undefined);
+    assert.equal(await github.findEntry("nada"), undefined);
   });
 });

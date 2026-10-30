@@ -11,13 +11,32 @@ export function createTelegram({ token, fetch = globalThis.fetch }) {
     return Buffer.from(await response.arrayBuffer());
   }
 
-  async function reply(chatId, text) {
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const call = (method, body) =>
+    fetch(`https://api.telegram.org/bot${token}/${method}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true })
+      body: JSON.stringify(body)
+    });
+
+  // `buttons`: [{ text, data }] en una fila (botones en línea bajo el mensaje).
+  async function reply(chatId, text, { buttons } = {}) {
+    await call("sendMessage", {
+      chat_id: chatId,
+      text,
+      disable_web_page_preview: true,
+      ...(buttons ? { reply_markup: { inline_keyboard: [buttons.map(({ text: label, data }) => ({ text: label, callback_data: data }))] } } : {})
     });
   }
 
-  return { downloadFile, reply };
+  // Quita el "cargando" del botón pulsado.
+  async function answerCallback(id, text) {
+    await call("answerCallbackQuery", { callback_query_id: id, ...(text ? { text } : {}) });
+  }
+
+  // Sustituye el texto de un mensaje y, al no mandar `reply_markup`, le quita los botones.
+  async function editMessage(chatId, messageId, text) {
+    await call("editMessageText", { chat_id: chatId, message_id: messageId, text, disable_web_page_preview: true });
+  }
+
+  return { downloadFile, reply, answerCallback, editMessage };
 }

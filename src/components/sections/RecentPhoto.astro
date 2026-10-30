@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { photoAlt, type Photo } from "@/lib/content";
+import { photoAlt, photoSource, type Photo } from "@/lib/content";
 
 interface Props {
   photo: Photo;
@@ -18,7 +18,7 @@ const { photo, class: customClass = "" } = Astro.props;
 >
   <Image
     class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
-    src={photo.data.image}
+    {...photoSource(photo)}
     alt={photoAlt(photo)}
     widths={[480, 720, 960, 1280]}
     sizes="(min-width: 1024px) 420px, 100vw"

@@ -97,6 +97,21 @@ export function photoAlt(photo: Photo): string {
   return photo.data.alt ?? photo.data.caption ?? photo.data.title;
 }
 
+// Props de `<Image>` / `getImage` para una foto: el import local, o la URL remota (Blob) con sus dimensiones.
+export type PhotoSource = { src: ImageMetadata } | { src: string; width: number; height: number };
+
+export function photoSource(photo: Photo): PhotoSource {
+  const { image, width, height } = photo.data;
+  // El esquema exige `width` y `height` cuando `image` es una URL.
+  return typeof image === "string" ? { src: image, width: width!, height: height! } : { src: image };
+}
+
+// Tamaño original de la foto, sea local o remota.
+export function photoSize(photo: Photo): { width: number; height: number } {
+  const { image, width, height } = photo.data;
+  return typeof image === "string" ? { width: width!, height: height! } : { width: image.width, height: image.height };
+}
+
 // Línea de micro-metadatos de una foto: lugar · fecha · cámara.
 export function photoMeta(photo: Photo): string {
   const { location, date, camera, focalLength, aperture } = photo.data;
