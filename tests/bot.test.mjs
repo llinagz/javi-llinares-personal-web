@@ -67,6 +67,14 @@ describe("parseMessage", () => {
     assert.equal(parseMessage({ text: "/start" }).kind, "comando");
     assert.equal(parseMessage({}).kind, "ignorar");
   });
+
+  test("la ayuda cubre cada etiqueta y comando, con ejemplos, y cabe en un mensaje de Telegram", () => {
+    const { reply } = parseMessage({ text: "/ayuda" });
+    for (const word of ["#semilla", "#creciendo", "#perenne", "#destacada", "#borrador", "#viaje", "/ahora", "quitar", "vaciar", "nota", "EJEMPLOS"]) {
+      assert.ok(reply.includes(word), `falta "${word}" en la ayuda`);
+    }
+    assert.ok(reply.length < 4096, "Telegram corta los mensajes de más de 4096 caracteres");
+  });
 });
 
 describe("/ahora: mensaje", () => {

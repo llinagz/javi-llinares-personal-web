@@ -29,7 +29,7 @@ Código: `bot/` (lógica, con dependencias inyectadas), `api/telegram.mjs` (endp
 
 ## Qué entiende el bot
 
-Lo mismo que responde `/ayuda` (el texto está en `HELP`, en `bot/mensaje.mjs`; si cambias las etiquetas, actualiza ambos sitios y el manual de contenido):
+Lo mismo que responde `/ayuda` (también `/start` y `/help`), organizado por secciones y con ejemplos. El texto está en `HELP`, en `bot/mensaje.mjs`; si cambias las etiquetas, actualiza ambos sitios y el manual de contenido (un test comprueba que la ayuda mencione cada etiqueta y quepa en un mensaje de Telegram):
 
 | Envías | Resultado |
 |---|---|
