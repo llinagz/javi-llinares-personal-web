@@ -45,14 +45,14 @@ async function readCard(buffer) {
   }
 }
 
-// → { image: Buffer (JPEG sin metadatos, ≤2560 px), exif: {...} }
+// → { image: Buffer (JPEG sin metadatos, ≤2560 px), width, height, exif: {...} }
 export async function processPhoto(buffer) {
   const exif = await readCard(buffer);
   // Sin `withMetadata`, sharp no copia ningún metadato (EXIF, GPS, ICC…) al resultado.
-  const image = await sharp(buffer)
+  const { data: image, info } = await sharp(buffer)
     .rotate()
     .resize(MAX_SIDE, MAX_SIDE, { fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: 85, mozjpeg: true })
-    .toBuffer();
-  return { image, exif };
+    .toBuffer({ resolveWithObject: true });
+  return { image, width: info.width, height: info.height, exif };
 }

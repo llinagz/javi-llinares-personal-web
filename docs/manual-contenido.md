@@ -173,7 +173,8 @@ Solo hacen falta `title`, `slug`, `date` e `image`. El resto es opcional.
 | Campo | Obligatorio | Notas |
 |---|---|---|
 | `title`, `slug`, `date` | sí | `date` en `AAAA-MM-DD` |
-| `image` | sí | Ruta relativa al `.md` hacia `src/assets/images/carrete/` |
+| `image` | sí | Ruta relativa al `.md` hacia `src/assets/images/carrete/` (fotos manuales), **o una URL** de Vercel Blob (las fotos del bot de Telegram, que no se guardan en git) |
+| `width`, `height` | solo con URL | Dimensiones en píxeles de la imagen remota. El bot las rellena; con una ruta local no hacen falta |
 | `caption` | no | Pie de foto en la página de la foto |
 | `alt` | no | Si falta, se usa `caption` y luego `title` |
 | `location` | no | Aparece en los metadatos de la foto |
@@ -327,8 +328,13 @@ Para publicar en el momento sin tocar el portátil. Preparación y variables: [b
 | `/ahora quitar leyendo Dune` | Quita un elemento; si no está, avisa y no cambia nada |
 | `/ahora vaciar jugando` | Vacía la lista (oculta su fila) |
 | `/ahora nota <texto>` | Cambia la nota libre; sin texto, la borra |
+| `/ultimas` | Lista las últimas 10 piezas (jardín y carrete) con su `jardin/<slug>` o `carrete/<slug>`; sin commit |
+| `/borrar` respondiendo a un mensaje del bot, o `/borrar <slug>` | Pide confirmación con botones **[Sí, borrar] [Cancelar]**; al confirmar elimina la entrada (y la imagen) en un commit |
+| `/ocultar`, `/mostrar` (por respuesta o con slug) | Solo para textos del jardín: pone o quita `draft: true`, sin borrar nada |
 
 - La foto se reduce a 2560 px y se le quitan **todos** los metadatos, GPS incluido. Si la mandas como documento, se aprovecha el EXIF para rellenar cámara, focal, apertura, velocidad e ISO y la fecha.
+- **Las fotos del bot no se guardan en git**: la imagen va a Vercel Blob y el `.md` solo lleva su URL (`image`, `width`, `height`). Por eso `/borrar` las elimina de verdad del almacén. Un texto borrado sí queda en el historial de git (unos KB).
+- `/borrar` no toca las entradas `ejemplo-*` (las necesitan los tests) y no borra el viaje de una foto, aunque se quede sin fotos.
 - Una entrada por foto: en un álbum solo la primera lleva pie.
 - El bot responde con el enlace (visible en ~1 minuto) o con el motivo del fallo. Commitea directo a la rama configurada.
 - El bot solo toca `now.md` con `/ahora`; los viajes (más allá de crearlos con `#viaje`) y los artículos largos siguen siendo a mano.

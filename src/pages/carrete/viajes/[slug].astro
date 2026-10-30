@@ -3,7 +3,7 @@ import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PhotoGrid from "@/components/sections/PhotoGrid.astro";
-import { formatDate, isPublished, type Photo, type Trip } from "@/lib/content";
+import { formatDate, isPublished, photoSource, type Photo, type Trip } from "@/lib/content";
 
 export async function getStaticPaths() {
   const trips = await getCollection("viajes", isPublished);
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 const { trip, photos } = Astro.props as { trip: Trip; photos: Photo[] };
 const { data } = trip;
 const { Content } = await render(trip);
-const cover = data.cover ?? photos[0]?.data.image;
+const cover = data.cover ?? (photos[0] ? photoSource(photos[0]).src : undefined);
 const dates = [data.startDate, data.endDate].filter((date): date is Date => Boolean(date)).map(formatDate).join(" – ");
 ---
 

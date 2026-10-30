@@ -32,6 +32,11 @@ export const HELP = [
   "• /ahora vaciar jugando → vacía la lista (su fila desaparece).",
   "• /ahora nota Mudándome de piso → cambia la nota; /ahora nota sin texto la borra.",
   "",
+  "🗑 GESTIONAR LO PUBLICADO",
+  "• /ultimas → lista lo último publicado, con su jardin/<slug> o carrete/<slug>.",
+  "• /borrar → respondiendo a un «Publicado…» del bot (o /borrar <slug>) pide confirmación y lo elimina. Las fotos desaparecen del almacén; el texto queda en el historial de git.",
+  "• /ocultar y /mostrar (solo texto) → pasa una entrada a borrador o la vuelve a publicar.",
+  "",
   "💡 EJEMPLOS",
   "1) Pensamiento corto:",
   "Leer despacio ⏎ Cuando leo con prisa no recuerdo nada. #creciendo #lectura",
@@ -126,6 +131,17 @@ export function parseMessage(message) {
 
   const now = raw.match(/^\/ahora(?:@\w+)?(?:\s+([\s\S]*))?$/i);
   if (now) return parseNowCommand(now[1] ?? "");
+
+  if (/^\/ultimas(?:@\w+)?\s*$/i.test(raw)) return { kind: "ultimas" };
+
+  // `/borrar`, `/ocultar`, `/mostrar`: el destino sale del slug que se escribe o del mensaje al que se responde.
+  const manage = raw.match(/^\/(borrar|ocultar|mostrar)(?:@\w+)?(?:\s+([\s\S]*))?$/i);
+  if (manage) {
+    const op = manage[1].toLowerCase();
+    const arg = manage[2]?.trim().toLowerCase();
+    if (arg && /\s/.test(arg)) return { kind: "error", reply: `Uso: /${op} <slug>, o /${op} respondiendo a un mensaje mío. /ultimas muestra los slugs.` };
+    return { kind: "gestion", op, arg: arg || undefined, quoted: message.reply_to_message?.text };
+  }
 
   const photo = message.photo?.at(-1);
   const document = message.document;

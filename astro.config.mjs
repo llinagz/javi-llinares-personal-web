@@ -8,6 +8,10 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [rehypeSidenotes]
   },
+  image: {
+    // Las fotos del bot viven en Vercel Blob; Astro las descarga y optimiza (WebP + srcset) durante el build.
+    remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com" }]
+  },
   redirects: {
     "/blog": "/jardin",
     "/blog/[slug]": "/jardin/[slug]"

@@ -27,15 +27,31 @@ export function createGithub({ token, repo, branch = "main", fetch = globalThis.
 
   const headSha = async () => (await api(`/git/ref/heads/${branch}`)).object.sha;
 
-  async function readSlugs(collection) {
+  // Todas las entradas `.md` de una colección: [{ path, raw, slug }].
+  async function readEntries(collection) {
     const commit = await api(`/git/commits/${await headSha()}`);
     const tree = await api(`/git/trees/${commit.tree.sha}?recursive=1`);
     const prefix = `src/content/${collection}/`;
     const files = tree.tree.filter((node) => node.type === "blob" && node.path.startsWith(prefix) && node.path.endsWith(".md"));
-    const raws = await Promise.all(
-      files.map((node) => api(`/contents/${encodeURI(node.path)}?ref=${branch}`, { accept: "application/vnd.github.raw+json" }))
+    return Promise.all(
+      files.map(async (node) => {
+        const raw = await api(`/contents/${encodeURI(node.path)}?ref=${branch}`, { accept: "application/vnd.github.raw+json" });
+        return { path: node.path, raw, slug: slugFrom(raw) };
+      })
     );
-    return raws.map(slugFrom).filter(Boolean);
+  }
+
+  async function readSlugs(collection) {
+    return (await readEntries(collection)).map((entry) => entry.slug).filter(Boolean);
+  }
+
+  // La entrada del jardín o del carrete con ese slug, o `undefined`: { collection, path, raw, slug }.
+  async function findEntry(slug, collections = ["jardin", "carrete"]) {
+    for (const collection of collections) {
+      const found = (await readEntries(collection)).find((entry) => entry.slug === slug);
+      if (found) return { collection, ...found };
+    }
+    return undefined;
   }
 
   // Contenido de un fichero de la rama, o `undefined` si no existe.
@@ -58,10 +74,12 @@ export function createGithub({ token, repo, branch = "main", fetch = globalThis.
     return commits.some((entry) => entry.commit.message.includes(`Telegram-Update: ${updateId}`));
   }
 
-  // Un único commit con todos los ficheros (texto o Buffer). Reintenta si la rama avanzó mientras tanto.
+  // Un único commit con todos los ficheros (texto o Buffer); `{ path, delete: true }` borra el fichero.
+  // Reintenta si la rama avanzó mientras tanto.
   async function commitFiles({ files, message }) {
     const blobs = await Promise.all(
-      files.map(async ({ path, content }) => {
+      files.map(async ({ path, content, delete: remove }) => {
+        if (remove) return { path, mode: "100644", type: "blob", sha: null };
         const data = Buffer.isBuffer(content) ? content : Buffer.from(content, "utf8");
         const blob = await api("/git/blobs", { method: "POST", body: { content: data.toString("base64"), encoding: "base64" } });
         return { path, mode: "100644", type: "blob", sha: blob.sha };
@@ -82,5 +100,5 @@ export function createGithub({ token, repo, branch = "main", fetch = globalThis.
     }
   }
 
-  return { readSlugs, readFile, tripExists, alreadyProcessed, commitFiles };
+  return { readEntries, readSlugs, findEntry, readFile, tripExists, alreadyProcessed, commitFiles };
 }
