@@ -1,18 +1,27 @@
 ---
 interface Props {
   tone?: "default" | "soft";
+  href?: string;
 }
 
-const { tone = "default" } = Astro.props;
+const { tone = "default", href } = Astro.props;
+const className = [
+  "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.02em]",
+  tone === "soft"
+    ? "border-primary/15 bg-primary-soft text-primary-dark"
+    : "border-primary/10 bg-paper/90 text-muted",
+  href && "transition hover:border-primary/40 hover:text-primary"
+];
 ---
 
-<span
-  class:list={[
-    "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.02em]",
-    tone === "soft"
-      ? "border-primary/15 bg-primary-soft text-primary-dark"
-      : "border-primary/10 bg-paper/90 text-muted"
-  ]}
->
-  <slot />
-</span>
+{
+  href ? (
+    <a class:list={className} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <span class:list={className}>
+      <slot />
+    </span>
+  )
+}

@@ -1,22 +1,50 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import HeroSection from "@/components/sections/HeroSection.astro";
-import WebDesignServicesSection from "@/components/sections/WebDesignServicesSection.astro";
-import LatestArticlesSection from "@/components/sections/LatestArticlesSection.astro";
-import FeaturedProjectsSection from "@/components/sections/FeaturedProjectsSection.astro";
-import PersonalPhilosophySection from "@/components/sections/PersonalPhilosophySection.astro";
-import NewsletterSection from "@/components/sections/NewsletterSection.astro";
+import GardenGrid from "@/components/sections/GardenGrid.astro";
+import HomeColophon from "@/components/sections/HomeColophon.astro";
+import NowWidget from "@/components/sections/NowWidget.astro";
+import RecentGardenEntry from "@/components/sections/RecentGardenEntry.astro";
+import RecentPhoto from "@/components/sections/RecentPhoto.astro";
+import RecentTrip from "@/components/sections/RecentTrip.astro";
+import { isPublished, nowRows, sortByDateDesc, sortByTendedDesc } from "@/lib/content";
 
-const posts = await getCollection("blog", ({ data }) => !data.draft && data.featured);
-const projects = await getCollection("projects", ({ data }) => data.featured);
+const entries = sortByTendedDesc(await getCollection("jardin", isPublished));
+const [recent] = entries;
+
+const [photo] = sortByDateDesc(await getCollection("carrete", isPublished));
+const [trip] = (await getCollection("viajes", isPublished)).sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+const [now] = await getCollection("now");
+const hasNow = nowRows(now).length > 0 || Boolean(now?.body?.trim());
+
+// La home muestra hasta MAX_PIEZAS componentes: Ahora, entrada reciente, foto, viaje y tarjetas del jardín
+// (primero las `featured`, luego por riego más reciente).
+const MAX_PIEZAS = 16;
+
+// La rejilla se reacomoda según qué piezas existan: Ahora (3) · entrada (resto) · foto y viaje (4).
+const hasRight = Boolean(photo || trip);
+const entryClass = hasNow
+  ? hasRight ? "lg:col-span-5" : "lg:col-span-9"
+  : hasRight ? "lg:col-span-8" : "lg:col-span-12";
+const fixedPieces = [hasNow, recent, photo, trip].filter(Boolean).length;
+const rest = entries.filter((entry) => entry.id !== recent?.id);
+const gardenCards = [...rest.filter((e) => e.data.featured), ...rest.filter((e) => !e.data.featured)].slice(0, MAX_PIEZAS - fixedPieces);
+const rightRows = photo && trip ? "" : "lg:row-span-2";
+
 ---
 
 <BaseLayout>
-  <HeroSection />
-  <WebDesignServicesSection />
-  <LatestArticlesSection posts={posts} />
-  <FeaturedProjectsSection projects={projects} />
-  <PersonalPhilosophySection />
-  <NewsletterSection />
+  <section class="matrix-section pb-16 pt-28 md:pb-24 md:pt-32">
+    <h1 class="sr-only">Jardín digital de Javi Llinares</h1>
+    <div class="container relative grid gap-4 lg:grid-cols-12">
+      {recent && <RecentGardenEntry class={`${entryClass} lg:row-span-2`} entry={recent} />}
+      {hasNow && <NowWidget class="lg:order-first lg:col-span-3 lg:row-span-2" now={now} />}
+      {photo && <RecentPhoto class={`lg:col-span-4 ${rightRows}`} photo={photo} />}
+      {trip && <RecentTrip class={`lg:col-span-4 ${rightRows}`} trip={trip} />}
+
+      <GardenGrid class="mt-8 lg:col-span-12" entries={gardenCards} />
+
+    </div>
+  </section>
+  <HomeColophon />
 </BaseLayout>

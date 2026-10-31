@@ -1,0 +1,96 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PhotoGrid from "@/components/sections/PhotoGrid.astro";
+import Card from "@/components/ui/Card.astro";
+import { formatMonth, getTopicIndex, type Photo, type Trip } from "@/lib/content";
+
+interface Props {
+  photos: Photo[];
+  trips?: Trip[];
+  activeTopic?: { slug: string; label: string };
+}
+
+const { photos, trips = [], activeTopic } = Astro.props;
+
+// Solo los temas que llevan alguna foto; los más fotografiados primero.
+const topics = [...(await getTopicIndex()).values()]
+  .filter((topic) => topic.photos.length > 0)
+  .sort((a, b) => b.photos.length - a.photos.length || a.label.localeCompare(b.label, "es"));
+
+const filters = [
+  { href: "/carrete", label: "Todo", active: !activeTopic },
+  ...topics.map((topic) => ({
+    href: `/carrete/tema/${topic.slug}`,
+    label: `#${topic.label}`,
+    active: activeTopic?.slug === topic.slug
+  }))
+];
+const title = activeTopic ? `#${activeTopic.label} | Carrete | Javi Llinares` : "Carrete | Javi Llinares";
+const description = activeTopic
+  ? `Fotografías del carrete de Javi Llinares sobre ${activeTopic.label}.`
+  : "El carrete de Javi Llinares: fotografías de viajes y paseos, sin métricas ni prisa.";
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">./carrete</p>
+        <h1 class="page-title mt-4 text-paper">
+          Lo que miro cuando salgo.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
+          Fotografías de viajes y paseos. Sin likes, sin contadores y sin algoritmo: solo la imagen y el sitio donde estuve.
+        </p>
+      </div>
+      {
+        topics.length > 0 && (
+          <nav class="mt-10 flex flex-wrap gap-3" aria-label="Filtrar por tema">
+            {filters.map((filter) => (
+              <a
+                class:list={[
+                  "rounded-full border px-4 py-2 font-mono text-sm transition",
+                  filter.active
+                    ? "border-paper bg-paper text-ink"
+                    : "border-paper/20 text-terminal-text/[0.78] hover:border-paper/50 hover:text-paper"
+                ]}
+                href={filter.href}
+                aria-current={filter.active ? "page" : undefined}
+              >
+                {filter.label}
+              </a>
+            ))}
+          </nav>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      {
+        photos.length === 0 ? (
+          <p class="editorial-serif text-2xl text-ink">El carrete está vacío por ahora. Pronto habrá algo que mirar.</p>
+        ) : (
+          <>
+            {trips.length > 0 && (
+              <div class="mb-14">
+                <h2 class="terminal-label text-primary">Viajes</h2>
+                <div class="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  {trips.map((trip) => (
+                    <Card href={`/carrete/viajes/${trip.data.slug}`}>
+                      <p class="font-mono text-xs text-muted">{trip.data.place} · {formatMonth(trip.data.startDate)}</p>
+                      <h3 class="mt-3 text-xl font-semibold leading-snug text-text group-hover:text-primary">{trip.data.title}</h3>
+                      <p class="mt-3 text-sm leading-6 text-muted">{trip.data.summary}</p>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            <PhotoGrid photos={photos} />
+          </>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

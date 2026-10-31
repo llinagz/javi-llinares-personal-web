@@ -1,0 +1,21 @@
+---
+import { getCollection, render } from "astro:content";
+import GardenEntryLayout from "@/layouts/GardenEntryLayout.astro";
+import { isPublished } from "@/lib/content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("jardin", isPublished);
+
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<GardenEntryLayout entry={entry}>
+  <Content />
+</GardenEntryLayout>

@@ -1,0 +1,109 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Card from "@/components/ui/Card.astro";
+import Badge from "@/components/ui/Badge.astro";
+import {
+  excerpt,
+  formatDate,
+  gardenStages,
+  gardenTypes,
+  lastTended,
+  readingTime,
+  type GardenEntry,
+  type GardenType
+} from "@/lib/content";
+
+interface Props {
+  entries: GardenEntry[];
+  activeType?: GardenType;
+}
+
+const { entries, activeType } = Astro.props;
+const filters = [
+  { href: "/jardin", label: "Todo", active: !activeType },
+  ...(Object.entries(gardenTypes) as [GardenType, string][]).map(([type, label]) => ({
+    href: `/jardin/tipo/${type}`,
+    label,
+    active: activeType === type
+  }))
+];
+const title = activeType ? `${gardenTypes[activeType]} | Jardín | Javi Llinares` : "Jardín | Javi Llinares";
+---
+
+<BaseLayout title={title} description="El jardín de Javi Llinares: pensamientos, reflexiones, artículos y análisis de libros y videojuegos, en distintos grados de madurez.">
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">./jardin</p>
+        <h1 class="page-title mt-4 text-paper">
+          Un jardín que voy cuidando.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
+          Ideas que empiezan como semilla, crecen con el tiempo y algunas llegan a perennes.
+          Importa menos cuándo las escribí que cuándo las regué por última vez.
+        </p>
+      </div>
+      <nav class="mt-10 flex flex-wrap gap-3" aria-label="Filtrar por tipo">
+        {
+          filters.map((filter) => (
+            <a
+              class:list={[
+                "rounded-full border px-4 py-2 font-mono text-sm transition",
+                filter.active
+                  ? "border-paper bg-paper text-ink"
+                  : "border-paper/20 text-terminal-text/[0.78] hover:border-paper/50 hover:text-paper"
+              ]}
+              href={filter.href}
+              aria-current={filter.active ? "page" : undefined}
+            >
+              {filter.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      {
+        entries.length === 0 ? (
+          <p class="editorial-serif text-2xl text-ink">Todavía no hay nada plantado en este rincón.</p>
+        ) : (
+          <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {entries.map((entry) => (
+              <Card href={`/jardin/${entry.data.slug}`}>
+                {entry.data.image && (
+                  <div class="-mx-6 -mt-6 mb-5 overflow-hidden border-b border-primary/10 bg-primary-soft">
+                    <Image
+                      class="h-56 w-full object-cover grayscale-[0.15]"
+                      src={entry.data.image}
+                      alt=""
+                      aria-hidden="true"
+                      widths={[400, 640, 800]}
+                      sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                    />
+                  </div>
+                )}
+                <div class="flex items-center justify-between gap-3">
+                  <Badge tone="soft">{gardenTypes[entry.data.type]}</Badge>
+                  <span class="font-mono text-xs text-muted">
+                    {gardenStages[entry.data.stage].icon} {gardenStages[entry.data.stage].label}
+                  </span>
+                </div>
+                <h2 class="mt-5 text-xl font-semibold leading-snug text-text group-hover:text-primary">
+                  {entry.data.title}
+                </h2>
+                <p class="mt-3 text-sm leading-6 text-muted">{excerpt(entry)}</p>
+                <p class="mt-6 font-mono text-xs text-muted">
+                  {formatDate(lastTended(entry))} · {readingTime(entry.body)}
+                </p>
+              </Card>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

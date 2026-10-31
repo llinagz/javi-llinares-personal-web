@@ -1,0 +1,38 @@
+---
+import { excerpt, formatDate, gardenStages, gardenTypes, lastTended, readingTime, type GardenEntry } from "@/lib/content";
+
+interface Props {
+  entry: GardenEntry;
+  class?: string;
+}
+
+const { entry, class: customClass = "" } = Astro.props;
+const { data } = entry;
+const stage = gardenStages[data.stage];
+---
+
+<a
+  class:list={["garden-card group p-7 md:p-8", customClass]}
+  href={`/jardin/${data.slug}`}
+  data-reveal
+  style="--reveal-index:0"
+>
+  <div class="flex items-start justify-between gap-4">
+    <span class="garden-chip">{stage.icon} {stage.label} · {gardenTypes[data.type].toLowerCase()} · {data.created.getFullYear()}</span>
+    <svg class="h-14 w-10 shrink-0 text-clay-light/[0.8]" viewBox="0 0 40 56" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
+      <path d="M20 54V18" />
+      <path d="M20 18c-8-2-12-9-11-16 8 1 12 8 11 16Z" />
+      <path d="M20 18c8-2 12-9 11-16-8 1-12 8-11 16Z" />
+      <path d="M20 34c-6-1-9-6-8-11 6 1 9 5 8 11Z" />
+      <path d="M20 34c6-1 9-6 8-11-6 1-9 5-8 11Z" />
+    </svg>
+  </div>
+
+  <h2 class="editorial-serif mt-8 text-4xl font-normal leading-[1.02] text-terminal-text md:text-5xl">{data.title}</h2>
+  <p class="editorial-serif mt-6 line-clamp-5 text-lg leading-8 text-terminal-text/[0.78]">{excerpt(entry)}</p>
+
+  <div class="mt-auto pt-8">
+    <p class="editorial-serif text-lg text-terminal-text transition-colors group-hover:text-clay-light">leer entrada →</p>
+    <p class="mt-2 font-mono text-xs text-terminal-text/[0.6]">regado el {formatDate(lastTended(entry))} · {readingTime(entry.body)}</p>
+  </div>
+</a>

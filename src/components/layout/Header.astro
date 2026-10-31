@@ -1,33 +1,40 @@
 ---
+import { hasPublishedPhotos } from "@/lib/content";
+
 const navItems = [
-  { href: "/", label: "Inicio" },
-  { href: "/blog", label: "Blog" },
-  { href: "/projects", label: "Proyectos" },
-  { href: "/servicios/diseno-web/", label: "Diseño web" },
-  { href: "/about", label: "Sobre mí" }
+  { href: "/jardin", label: "/jardín" },
+  ...((await hasPublishedPhotos()) ? [{ href: "/carrete", label: "/carrete" }] : []),
+  { href: "/temas", label: "/temas" },
+  { href: "/projects", label: "/proyectos" },
+  { href: "/servicios/diseno-web/", label: "/diseño-web" },
+  { href: "/about", label: "/sobre-mí" }
 ];
+
+const { pathname } = Astro.url;
+const isActive = (href: string) => pathname === href || pathname.startsWith(`${href.replace(/\/$/, "")}/`);
 ---
 
-<header class="fixed left-0 right-0 top-4 z-50">
+<header class="site-header fixed left-0 right-0 top-4 z-50">
   <div class="container flex min-h-16 items-center justify-between gap-4 rounded-full border border-paper/18 bg-terminal/[0.76] px-4 shadow-[0_18px_70px_rgba(3,9,9,0.28)] backdrop-blur-xl md:px-6">
-    <a class="display-type text-xl font-black text-paper" href="/">
+    <a class="editorial-serif text-2xl text-paper" href="/">
       Javi Llinares
     </a>
 
-    <nav class="hidden items-center gap-7 md:flex" aria-label="Navegación principal">
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Navegación principal">
       {
         navItems.map((item) => (
-          <a class="text-sm font-semibold text-terminal-text/[0.78] transition hover:text-paper" href={item.href}>
+          <a
+            class:list={[
+              "rounded-lg px-3 py-1.5 font-mono text-sm transition hover:text-paper",
+              isActive(item.href) ? "bg-paper/[0.08] text-paper" : "text-terminal-text/[0.72]"
+            ]}
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
             {item.label}
           </a>
         ))
       }
-      <a
-        class="rounded-full bg-paper px-5 py-2.5 text-sm font-bold text-ink transition hover:bg-white"
-        href="/blog"
-      >
-        Leer artículos
-      </a>
     </nav>
 
     <button
@@ -51,7 +58,14 @@ const navItems = [
     <div class="grid gap-2">
       {
         navItems.map((item) => (
-          <a class="rounded-2xl px-3 py-2 text-sm font-semibold text-terminal-text/[0.82] hover:bg-paper/[0.08] hover:text-paper" href={item.href}>
+          <a
+            class:list={[
+              "rounded-2xl px-3 py-2 font-mono text-sm hover:bg-paper/[0.08] hover:text-paper",
+              isActive(item.href) ? "bg-paper/[0.08] text-paper" : "text-terminal-text/[0.82]"
+            ]}
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
             {item.label}
           </a>
         ))

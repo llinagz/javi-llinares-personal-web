@@ -1,0 +1,29 @@
+---
+import { Image } from "astro:assets";
+import { photoAlt, photoSource, type Photo } from "@/lib/content";
+
+interface Props {
+  photo: Photo;
+  class?: string;
+}
+
+const { photo, class: customClass = "" } = Astro.props;
+---
+
+<a
+  class:list={["garden-card group min-h-[15rem]", customClass]}
+  href={`/carrete/${photo.data.slug}`}
+  data-reveal
+  style="--reveal-index:3"
+>
+  <Image
+    class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
+    {...photoSource(photo)}
+    alt={photoAlt(photo)}
+    widths={[480, 720, 960, 1280]}
+    sizes="(min-width: 1024px) 420px, 100vw"
+  />
+  <span class="garden-chip relative mt-auto m-4 self-start bg-terminal/[0.72] backdrop-blur-sm">
+    {photo.data.title}, {photo.data.date.getFullYear()}
+  </span>
+</a>

@@ -1,0 +1,95 @@
+---
+// Visor a pantalla completa para las fotos de `PhotoGrid`. Es mejora progresiva: sin JS, cada foto sigue
+// siendo un enlace a su página. El <img> se crea desde el script para no duplicar cada foto en el HTML.
+---
+
+<dialog class="lightbox" data-lightbox-dialog aria-label="Visor de fotografías">
+  <div class="lightbox__stage" data-lightbox-stage style="touch-action: pan-y;"></div>
+  <button class="lightbox__button lightbox__button--close" type="button" data-lightbox-close aria-label="Cerrar">×</button>
+  <button class="lightbox__button lightbox__button--prev" type="button" data-lightbox-prev aria-label="Foto anterior">←</button>
+  <button class="lightbox__button lightbox__button--next" type="button" data-lightbox-next aria-label="Foto siguiente">→</button>
+  <div class="lightbox__bar">
+    <p data-lightbox-caption aria-live="polite"></p>
+    <p data-lightbox-counter></p>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox-dialog]");
+  const stage = dialog?.querySelector<HTMLElement>("[data-lightbox-stage]");
+  const caption = dialog?.querySelector<HTMLElement>("[data-lightbox-caption]");
+  const counter = dialog?.querySelector<HTMLElement>("[data-lightbox-counter]");
+  const prev = dialog?.querySelector<HTMLButtonElement>("[data-lightbox-prev]");
+  const next = dialog?.querySelector<HTMLButtonElement>("[data-lightbox-next]");
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[data-lightbox]"));
+
+  if (dialog && stage && caption && counter && prev && next && links.length > 0) {
+    const single = links.length < 2;
+    prev.hidden = single;
+    next.hidden = single;
+
+    let index = 0;
+
+    const show = (target: number) => {
+      index = (target + links.length) % links.length;
+      const { src, srcset, width, height, alt, meta } = links[index].dataset;
+
+      const image = document.createElement("img");
+      image.src = src ?? "";
+      if (srcset) image.srcset = srcset;
+      image.sizes = "100vw";
+      image.width = Number(width) || 0;
+      image.height = Number(height) || 0;
+      image.alt = alt ?? "";
+
+      stage.replaceChildren(image);
+      caption.textContent = meta ?? "";
+      counter.textContent = single ? "" : `${index + 1} / ${links.length}`;
+    };
+
+    links.forEach((link, position) => {
+      link.addEventListener("click", (event) => {
+        // Respeta abrir en pestaña nueva o con teclas modificadoras.
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        show(position);
+        dialog.showModal();
+      });
+    });
+
+    prev.addEventListener("click", () => show(index - 1));
+    next.addEventListener("click", () => show(index + 1));
+    dialog.querySelector("[data-lightbox-close]")?.addEventListener("click", () => dialog.close());
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog || event.target === stage) dialog.close();
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      if (single) return;
+      if (event.key === "ArrowLeft") show(index - 1);
+      if (event.key === "ArrowRight") show(index + 1);
+    });
+
+    // Deslizar en táctil.
+    let startX: number | undefined;
+    stage.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "touch") startX = event.clientX;
+    });
+    stage.addEventListener("pointerup", (event) => {
+      if (startX === undefined || single) return;
+      const delta = event.clientX - startX;
+      startX = undefined;
+      if (Math.abs(delta) > 50) show(delta > 0 ? index - 1 : index + 1);
+    });
+    stage.addEventListener("pointercancel", () => {
+      startX = undefined;
+    });
+
+    // Al cerrar, el foco vuelve a la miniatura que se había abierto.
+    dialog.addEventListener("close", () => {
+      stage.replaceChildren();
+      links[index].focus();
+    });
+  }
+</script>

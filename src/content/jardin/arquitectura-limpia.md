@@ -1,13 +1,13 @@
 ---
 title: "Arquitectura limpia para proyectos pequeños"
 slug: "arquitectura-limpia-para-proyectos-pequenos"
-excerpt: "Notas prácticas para mantener claridad técnica sin convertir un proyecto personal en una ceremonia de capas innecesarias."
-date: 2026-02-06
-readingTime: "6 min"
-category: "Programación"
-tags: ["arquitectura", "software", "clean-code"]
-draft: false
+description: "Notas prácticas para mantener claridad técnica sin convertir un proyecto personal en una ceremonia de capas innecesarias."
+type: "articulo"
+stage: "perenne"
+created: 2026-02-06
+topics: ["programación", "arquitectura", "software", "clean-code"]
 featured: true
+draft: false
 ---
 
 Un proyecto pequeño no necesita fingir que es una plataforma enorme. Pero sí necesita límites comprensibles.

@@ -7,7 +7,7 @@ import "@/styles/global.css";
 interface Props {
   title?: string;
   description?: string;
-  image?: ImageMetadata;
+  image?: ImageMetadata | string; // string: URL remota (foto en Blob), que Astro descarga en el build
   type?: "website" | "article";
 }
 
@@ -35,7 +35,7 @@ const socialImageUrl = socialImage ? new URL(socialImage.src, canonical) : undef
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://api.fontshare.com" />
     <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800,900&display=swap" />
-    <link rel="alternate" type="application/rss+xml" title="Javi Llinares | Blog" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Javi Llinares | Jardín" href="/rss.xml" />
     <meta name="description" content={description} />
     <meta property="og:site_name" content="Javi Llinares" />
     <meta property="og:locale" content="es_ES" />

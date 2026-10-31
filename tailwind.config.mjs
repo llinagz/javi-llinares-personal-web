@@ -10,6 +10,7 @@ export default {
         surface: "var(--color-surface)",
         text: "var(--color-text)",
         muted: "var(--color-muted)",
+        prose: "var(--color-prose)",
         border: "var(--color-border)",
         ink: "rgb(var(--color-ink-rgb) / <alpha-value>)",
         paper: "rgb(var(--color-paper-rgb) / <alpha-value>)",

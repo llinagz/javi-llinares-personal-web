@@ -1,0 +1,50 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { getTopicIndex } from "@/lib/content";
+
+// Más piezas primero; a igualdad, orden alfabético.
+const topics = [...(await getTopicIndex()).values()]
+  .map((topic) => ({ ...topic, count: topic.entries.length + topic.photos.length }))
+  .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "es"));
+---
+
+<BaseLayout
+  title="Temas | Javi Llinares"
+  description="Los temas que cruzan el jardín y el carrete de Javi Llinares, para recorrer lo publicado por afinidad."
+>
+  <section class="matrix-page page-hero">
+    <div class="container relative">
+      <div class="section-heading">
+        <p class="terminal-label">./temas</p>
+        <h1 class="page-title mt-4 text-paper">
+          Hilos que se repiten.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-terminal-text/[0.72]">
+          Los mismos temas aparecen en ideas y en fotos. Aquí están todos, por si quieres tirar de uno.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="paper-band py-14 md:py-20">
+    <div class="container">
+      {
+        topics.length === 0 ? (
+          <p class="editorial-serif text-2xl text-ink">Todavía no hay temas. Aparecerán según vaya etiquetando.</p>
+        ) : (
+          <ul class="flex flex-wrap gap-3" aria-label="Temas">
+            {topics.map((topic) => (
+              <li>
+                <Badge href={`/temas/${topic.slug}`}>
+                  #{topic.label}
+                  <span class="ml-2 font-mono text-[0.7rem] font-normal opacity-70">{topic.count}</span>
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

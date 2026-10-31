@@ -1,0 +1,13 @@
+---
+import { getCollection } from "astro:content";
+import PhotoListing from "@/components/sections/PhotoListing.astro";
+import { isPublished, sortByDateDesc } from "@/lib/content";
+
+const photos = sortByDateDesc(await getCollection("carrete", isPublished));
+const tripIds = new Set(photos.flatMap((photo) => (photo.data.trip ? [photo.data.trip.id] : [])));
+const trips = (await getCollection("viajes", isPublished))
+  .filter((trip) => tripIds.has(trip.id))
+  .sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+---
+
+<PhotoListing photos={photos} trips={trips} />

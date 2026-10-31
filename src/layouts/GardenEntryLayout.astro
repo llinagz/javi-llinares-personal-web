@@ -1,0 +1,107 @@
+---
+import "@fontsource-variable/literata";
+import "@fontsource-variable/literata/wght-italic.css";
+import { Image } from "astro:assets";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Badge from "@/components/ui/Badge.astro";
+import {
+  excerpt,
+  formatDate,
+  gardenStages,
+  gardenTypes,
+  readingTime,
+  topicSlug,
+  type GardenEntry
+} from "@/lib/content";
+
+interface Props {
+  entry: GardenEntry;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const stage = gardenStages[data.stage];
+const summary = excerpt(entry);
+const watered = data.updated && data.updated.getTime() !== data.created.getTime() ? data.updated : undefined;
+---
+
+<BaseLayout title={`${data.title} | Javi Llinares`} description={summary} image={data.image} type="article">
+  <article class="reading-page pb-24 pt-28 md:pt-36">
+    <div class="container">
+      <div class="reading-shell">
+        <header>
+          <a class="font-mono text-sm font-bold text-primary transition-colors hover:text-primary-dark" href="/jardin">← Jardín</a>
+          <div class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <Badge tone="soft">{gardenTypes[data.type]}</Badge>
+            <Badge>{stage.icon} {stage.label}</Badge>
+            <span class="font-mono text-sm text-muted">{formatDate(data.created)}</span>
+            {
+              watered && (
+                <>
+                  <span class="font-mono text-sm text-muted" aria-hidden="true">/</span>
+                  <span class="font-mono text-sm text-muted">regado el {formatDate(watered)}</span>
+                </>
+              )
+            }
+            <span class="font-mono text-sm text-muted" aria-hidden="true">/</span>
+            <span class="font-mono text-sm text-muted">{readingTime(entry.body)}</span>
+          </div>
+          <h1 class="reading-title mt-6 text-4xl font-semibold leading-tight tracking-tight text-text md:text-5xl">
+            {data.title}
+          </h1>
+          {data.description && <p class="reading-title mt-6 text-xl leading-8 text-prose">{data.description}</p>}
+          {
+            data.work && (
+              <dl class="mt-8 grid max-w-xl gap-1 rounded-2xl border border-border bg-surface p-5 font-mono text-sm text-prose">
+                <div class="flex gap-3">
+                  <dt class="text-muted">obra</dt>
+                  <dd>{data.work.title}</dd>
+                </div>
+                <div class="flex gap-3">
+                  <dt class="text-muted">{data.work.kind === "libro" ? "autor" : "estudio"}</dt>
+                  <dd>{data.work.creator}</dd>
+                </div>
+                <div class="flex gap-3">
+                  <dt class="text-muted">formato</dt>
+                  <dd>
+                    {data.work.kind}
+                    {data.work.platform && ` · ${data.work.platform}`}
+                    {data.work.year && ` · ${data.work.year}`}
+                  </dd>
+                </div>
+              </dl>
+            )
+          }
+          {
+            data.image && (
+              <Image
+                class="mt-10 h-auto w-full rounded-2xl border border-border"
+                src={data.image}
+                alt={`Imagen editorial de ${data.title}`}
+                widths={[640, 960, 1280]}
+                sizes="(min-width: 1024px) 936px, 100vw"
+                loading="eager"
+              />
+            )
+          }
+        </header>
+
+        <div class="reading-column mt-12">
+          <slot />
+        </div>
+
+        {
+          data.topics.length > 0 && (
+            <ul class="mt-12 flex flex-wrap gap-2 border-t border-border pt-6" aria-label="Temas">
+              {data.topics.map((topic) => (
+                <li>
+                  <Badge href={topicSlug(topic) ? `/temas/${topicSlug(topic)}` : undefined}>{topic}</Badge>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </div>
+  </article>
+</BaseLayout>
