@@ -227,7 +227,7 @@ El viaje más reciente publicado aparece en la tarjeta "ahora" de la portada com
 - **Cómo se referencian:** con una ruta relativa **al fichero `.md`**. Desde `src/content/carrete/faro.md`, la ruta es `"../../assets/images/carrete/faro.jpg"`.
 - **Tamaño:** reduce las fotos reales a unos **2560 px de lado largo** antes de subirlas.
 - **Privacidad (importante):** **quita el GPS del EXIF** antes del commit. Si no, tu ubicación exacta queda en el repositorio y en el sitio publicado. Una vez subida, está en el historial de Git aunque la borres después.
-- **Borradores:** `draft: true` oculta la **página**, pero Astro copia igualmente la imagen original al build. **No commitees fotos privadas**, ni siquiera como borrador.
+- **Borradores:** `draft: true` oculta la **página**, pero la imagen sigue en el repositorio, que es público. **No commitees fotos privadas**, ni siquiera como borrador.
 - La web las convierte a WebP con varios tamaños sola. No hace falta que las prepares tú.
 
 ## 7. "Ahora" (`src/content/now.md`)
