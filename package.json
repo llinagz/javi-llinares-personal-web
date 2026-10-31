@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "prebuild": "node -e \"for (const d of ['.astro', 'node_modules/.astro']) require('fs').rmSync(d + '/data-store.json', { force: true })\"",
     "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check",
