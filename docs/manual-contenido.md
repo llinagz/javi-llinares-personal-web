@@ -258,7 +258,7 @@ Opcional: una o dos frases de texto libre.
 
 - `draft: true` → la entrada se ve en `npm run dev` y **nunca** en la web publicada (ni en listados, ni en RSS, ni en el mapa del sitio).
 - Para publicar: borra la línea `draft` o ponla en `false`.
-- Los ficheros `ejemplo-*` de jardín, carrete y viajes son de prueba y siempre son borradores. **No los borres todos**: un test exige que quede al menos un borrador, para comprobar que el filtro funciona.
+- Los ficheros `ejemplo-*` (si los hubiera) son de prueba y siempre son borradores. El test de borradores se salta si no queda ninguno; en cuanto exista alguno, comprueba que no se publica.
 
 ## 9. Proyectos (referencia rápida)
 

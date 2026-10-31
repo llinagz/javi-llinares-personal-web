@@ -18,7 +18,7 @@ Cuando construyo software, aparecen decisiones pequeñas que parecen técnicas p
 
 La web empieza como archivo personal. No pretende sonar definitiva ni producir respuestas cerradas. Me interesa más conservar el proceso: hipótesis, pruebas, errores, lecturas y cambios de criterio.
 
-El blog será una forma de pensar en público con cierta disciplina. Ni diario íntimo ni escaparate: un punto intermedio.
+Esta web será una forma de pensar en público con cierta disciplina. Ni diario íntimo ni escaparate: un punto intermedio.
 
 ## Construir con más memoria
 
