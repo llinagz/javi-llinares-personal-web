@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 import rehypeSidenotes from "./src/lib/rehype-sidenotes.mjs";
+import dropUnusedOriginals from "./src/lib/astro-drop-unused-originals.mjs";
 
 export default defineConfig({
   site: "https://javierllinares.eu",
@@ -20,6 +21,7 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false
     }),
-    sitemap()
+    sitemap(),
+    dropUnusedOriginals()
   ]
 });

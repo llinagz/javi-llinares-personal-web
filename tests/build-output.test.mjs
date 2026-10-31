@@ -76,11 +76,34 @@ describe("contenido", () => {
     if (drafts === 0) t.skip("No hay borradores: el filtro no se está comprobando");
   });
 
-  // Astro emite a dist/_astro/ el original de toda imagen declarada con `image()`, también la de un
-  // borrador, pero sin enlazarla desde ninguna página. Por eso las fotos privadas no deben commitearse.
+  // Las fotos privadas no deben commitearse aunque sean borrador: el repositorio es público.
   test("ninguna página referencia imágenes de borradores", () => {
     const linked = allPages.filter(({ html }) => /\/_astro\/ejemplo-/.test(html)).map(({ route }) => route);
     assert.deepEqual(linked, []);
+  });
+
+  // Astro emite a dist/_astro/ el original de toda imagen declarada con `image()`; los quita
+  // src/lib/astro-drop-unused-originals.mjs.
+  test("no se publican imágenes sin referenciar en _astro/", () => {
+    const files = walk(dist);
+    const texts = files.filter((file) => /\.(html|css|js|xml|json|txt)$/.test(file)).map(read).join("\n");
+    const unused = files
+      .filter((file) => /\.(png|jpe?g|webp|avif|gif|tiff)$/.test(file))
+      .map((file) => relative(dist, file).replaceAll("\\", "/"))
+      .filter((path) => path.startsWith("_astro/"))
+      .filter((path) => {
+        const name = path.split("/").at(-1);
+        return !texts.includes(name) && !texts.includes(encodeURIComponent(name));
+      });
+    assert.deepEqual(unused, []);
+  });
+
+  test("toda imagen de _astro/ enlazada en el HTML existe", () => {
+    for (const { route, html } of pages) {
+      for (const [path] of html.matchAll(/\/_astro\/[^"'\s,)]+\.(?:png|jpe?g|webp|avif|gif|tiff)/g)) {
+        assert.ok(existsSync(join(dist, decodeURIComponent(path))), `${route} enlaza ${path}, que no existe`);
+      }
+    }
   });
 
   test("hay una página por cada entrada publicada", () => {
